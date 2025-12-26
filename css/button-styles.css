@@ -1,0 +1,79 @@
+/* Parasite-themed Button Styles - Isolated Component Styles */
+
+/* Primary Button */
+.btn-parasite-primary {
+    position: relative !important;
+    overflow: hidden !important;
+    padding: 0.75rem 2rem !important; /* py-3 px-8 */
+    font-weight: 600 !important; /* Font-semibold */
+    letter-spacing: 0.05em !important; /* tracking-wider */
+    text-transform: uppercase !important;
+    background: linear-gradient(135deg, hsl(350 45% 50%), hsl(350 35% 35%)) !important;
+    color: hsl(0 0% 95%) !important; /* foreground */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border: none !important;
+    border-radius: 6px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 1rem !important;
+    width: auto !important;
+}
+
+.btn-parasite-primary::before { /* свечение при hover */
+    content: '' !important;
+    position: absolute !important;
+    inset: 0 !important;
+    background: linear-gradient(135deg, hsl(350 60% 60%), hsl(350 45% 50%)) !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+}
+
+.btn-parasite-primary:hover::before { 
+    opacity: 1 !important; 
+}
+
+.btn-parasite-primary:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 0 40px hsl(350 45% 50% / 0.4) !important;
+}
+
+/* Outline Button */
+.btn-parasite-outline {
+    position: relative !important;
+    padding: 0.75rem 2rem !important; /* py-3 px-8 */
+    font-weight: 600 !important; /* Font-semibold */
+    letter-spacing: 0.05em !important; /* tracking-wider */
+    text-transform: uppercase !important;
+    background: transparent !important;
+    border: 1px solid hsl(350 45% 50%) !important;
+    color: hsl(350 45% 50%) !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border-radius: 6px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 1rem !important;
+    width: auto !important;
+}
+
+.btn-parasite-outline:hover {
+    background: hsl(350 45% 50% / 0.1) !important;
+    box-shadow: 0 0 20px hsl(350 45% 50% / 0.3) !important;
+}
+
+/* Icon styles for both buttons */
+.btn-parasite-primary i,
+.btn-parasite-outline i {
+    width: 1rem !important; /* w-4 */
+    height: 1rem !important; /* h-4 */
+    color: currentColor !important; /* наследует от родителя */
+}

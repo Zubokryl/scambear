@@ -1,0 +1,209 @@
+/* Responsive Design */
+
+@media (max-width: 992px) {
+    .hero-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 30px;
+    }
+
+    .hero-title {
+        align-items: center;
+        font-size: 5rem;
+    }
+
+    .hero-description {
+        margin: 0 auto 30px;
+    }
+
+    .hero-stats {
+        justify-content: center;
+    }
+
+    .hero-cta {
+        justify-content: center;
+    }
+
+    .tv-container {
+        margin-top: 30px;
+        /* Re-scale for tablet */
+        transform: scale(0.9);
+        transform-origin: center top;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --header-height: 60px;
+    }
+
+    /* Mobile Navigation */
+    .nav-toggle {
+        display: flex;
+        z-index: 1001;
+    }
+
+    .nav-toggle.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 6px);
+    }
+
+    .nav-toggle.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .nav-toggle.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -6px);
+    }
+
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(10, 10, 10, 0.98);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: right 0.3s ease;
+        z-index: 1000;
+    }
+
+    .nav-menu.active {
+        right: 0;
+    }
+
+    .nav-menu li {
+        margin: 15px 0;
+    }
+
+    .nav-link {
+        font-size: 1.5rem;
+    }
+
+    /* Hero */
+    .hero-title {
+        font-size: 3.5rem;
+    }
+
+    .title-sub {
+        font-size: 1.5rem;
+        letter-spacing: 2px;
+    }
+
+    /* Adjust TV for mobile */
+    .tv-wrapper {
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+    }
+
+    .tv-frame-img {
+        position: static;
+        /* Let it flow */
+    }
+
+    .tv-screen-content {
+        /* Need to switch to percentage based on the wrapper width if flexible */
+        /* But simpler to keep fixed aspect ratio wrapper and scale usage */
+    }
+
+    .tv-container {
+        transform: scale(0.8);
+    }
+
+    /* Tentacles */
+    .tentacle-img {
+        width: 600px;
+        bottom: -30px;
+    }
+
+    .tentacle-1 {
+        left: -150px;
+    }
+
+    .tentacle-2 {
+        right: -150px;
+    }
+
+    /* Sections */
+    .section-title {
+        font-size: clamp(1.5rem, 4vh, 2.5rem);
+    }
+
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-info {
+        padding-right: 0;
+        order: 2;
+    }
+
+    .contact-form-container {
+        order: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 3rem;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .hero-cta {
+        flex-direction: column;
+    }
+
+    .tv-container {
+        transform: scale(0.65);
+        margin-top: -20px;
+        margin-bottom: -50px;
+    }
+
+    .tentacle-img {
+        width: 400px;
+        opacity: 0.6;
+    }
+}
+
+@media (max-width: 360px) {
+    .section-title {
+        font-size: clamp(1.2rem, 4vh, 2rem);
+        word-break: break-word;
+    }
+}
+
+@media (max-width: 320px) {
+    .section-title {
+        font-size: clamp(1rem, 4vh, 1.8rem);
+    }
+}
+
+@media (max-width: 300px) {
+    .section-title {
+        font-size: clamp(0.9rem, 4vh, 1.6rem);
+    }
+}
+
+@media (max-width: 360px) {
+    .section-title {
+        font-size: clamp(1.2rem, 4vh, 2rem);
+        word-break: break-word;
+    }
+}
+
+@media (max-width: 320px) {
+    .section-title {
+        font-size: clamp(1rem, 4vh, 1.8rem);
+    }
+}
+
+@media (max-width: 300px) {
+    .section-title {
+        font-size: clamp(0.9rem, 4vh, 1.6rem);
+    }
+}

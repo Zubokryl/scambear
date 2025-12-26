@@ -1,0 +1,258 @@
+/**
+ * Gallery Manager
+ * Handles gallery rendering and lightbox
+ */
+
+class GalleryManager {
+    constructor() {
+        this.grid = document.getElementById('galleryGrid');
+        this.filterBtns = document.querySelectorAll('.gallery-filter-btn');
+
+        // Lightbox elements
+        this.lightbox = document.getElementById('lightbox');
+        this.lightboxImg = document.getElementById('lightboxImage');
+        this.lightboxTitle = document.getElementById('lightboxTitle');
+        this.lightboxDesc = document.getElementById('lightboxDescription');
+        this.closeBtn = document.getElementById('lightboxClose');
+        this.prevBtn = document.getElementById('lightboxPrev');
+        this.nextBtn = document.getElementById('lightboxNext');
+
+        this.currentItems = [];
+        this.currentIndex = 0;
+        this.currentPage = 1;
+        this.itemsPerPage = 2; // Show 2 items per page for visibility
+        
+        // Define category slugs for URL routing
+        this.categorySlugs = {
+            'gallery-all': 'gallery',
+            'gallery-phishing': 'gallery',
+            'gallery-phone_scams': 'gallery',
+            'gallery-online_fraud': 'gallery',
+            'gallery-identity_theft': 'gallery'
+        };
+        
+        // Reverse mapping for hash lookup
+        this.slugToCategory = {};
+        for (const [category, slug] of Object.entries(this.categorySlugs)) {
+            this.slugToCategory[slug] = category;
+        };
+
+        this.init();
+        
+        // Load gallery content initially - REMOVED to avoid navigation conflicts
+        // this.loadGallery('all');
+        
+        // Handle initial URL if page loads with a category slug in the hash
+        // NOTE: This is handled by navigation.js now to avoid conflicts
+        // if (window.location.hash) {
+        //     setTimeout(() => {
+        //         this.handleInitialUrl();
+        //     }, 100);
+        // }
+        
+
+    }
+    
+    handleInitialUrl() {
+        // Check if there's a hash in the URL on page load
+        const hash = window.location.hash.substring(1);
+        
+        // Check if the hash is a gallery category slug
+        if (this.slugToCategory[hash]) {
+            const category = this.slugToCategory[hash].replace('gallery-', '');
+            
+            // Find the corresponding filter button and click it
+            const filterBtn = document.querySelector(`button[data-filter="${category}"]`);
+            if (filterBtn) {
+                // Remove active class from all buttons
+                this.filterBtns.forEach(b => b.classList.remove('active'));
+                // Add active class to the selected button
+                filterBtn.classList.add('active');
+                
+                // Trigger the filter
+                this.filterBtns.forEach(btn => {
+                    if (btn.dataset.filter === category) {
+                        btn.click();
+                    }
+                });
+            }
+        }
+    }
+    
+    updateUrl(category) {
+        // Create a slug for the gallery category
+        const slug = `gallery-${category}`;
+        
+        // Update the URL without page reload
+        const newUrl = `${window.location.pathname}#${slug}`;
+        window.history.pushState({}, '', newUrl);
+    }
+
+    init() {
+
+
+        // Filters
+        this.filterBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.filterBtns.forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                this.loadGallery(e.target.dataset.filter);
+            });
+        });
+
+        // Lightbox Controls
+        this.closeBtn.addEventListener('click', () => this.closeLightbox());
+        this.prevBtn.addEventListener('click', () => this.navigate(-1));
+        this.nextBtn.addEventListener('click', () => this.navigate(1));
+
+        // Keyboard Nav
+        document.addEventListener('keydown', (e) => {
+            if (!this.lightbox.classList.contains('active')) return;
+            if (e.key === 'Escape') this.closeLightbox();
+            if (e.key === 'ArrowLeft') this.navigate(-1);
+            if (e.key === 'ArrowRight') this.navigate(1);
+        });
+
+        this.lightbox.addEventListener('click', (e) => {
+            if (e.target === this.lightbox) this.closeLightbox();
+        });
+    }
+
+    async loadGallery(category, page = 1) {
+        if (!this.grid) return;
+        
+        this.currentCategory = category;
+        this.currentPage = page;
+
+        this.grid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i><p>Загрузка...</p></div>';
+
+        try {
+            this.currentItems = await api.getGallery({ category });
+            this.renderGrid(page);
+            
+            // Update URL for gallery section
+            this.updateUrl(category);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    renderGrid(page = 1) {
+        if (this.currentItems.length === 0) {
+            this.grid.innerHTML = '<p class="empty-state">Изображения не найдены<br>Попробуйте изменить параметры поиска или зайти позже.</p>';
+            return;
+        }
+        
+        // Calculate pagination
+        const startIndex = (page - 1) * this.itemsPerPage;
+        const endIndex = startIndex + this.itemsPerPage;
+        const itemsToShow = this.currentItems.slice(startIndex, endIndex);
+        const totalPages = Math.ceil(this.currentItems.length / this.itemsPerPage);
+
+        this.grid.innerHTML = itemsToShow.map((item, index) => `
+            <div class="gallery-item" onclick="galleryManager.openLightbox(${startIndex + index})">
+                <img src="${item.image_url || 'https://via.placeholder.com/400x200?text=Gallery+Image'}" alt="${item.title}" loading="lazy">
+                <div class="gallery-overlay">
+                    <h3>${item.title}</h3>
+                    <p>${this.getCategoryName(item.category)}</p>
+                </div>
+            </div>
+        `).join('');
+        
+        // Add pagination controls
+        if (totalPages >= 1) { // Show pagination for testing visibility
+            const paginationHtml = this.createPaginationHtml(page, totalPages);
+            this.grid.innerHTML += paginationHtml;
+        }
+    }
+
+    getCategoryName(slug) {
+        const names = {
+            'phishing': 'Фишинг',
+            'phone_scams': 'Телефон',
+            'online_fraud': 'Онлайн',
+            'identity_theft': 'Кража личности',
+            'general': 'Общее',
+            'all': 'Все'
+        };
+        return names[slug] || slug;
+    }
+
+    openLightbox(index) {
+        this.currentIndex = index;
+        this.updateLightboxContent();
+        this.lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    closeLightbox() {
+        this.lightbox.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    navigate(dir) {
+        this.currentIndex += dir;
+        if (this.currentIndex < 0) this.currentIndex = this.currentItems.length - 1;
+        if (this.currentIndex >= this.currentItems.length) this.currentIndex = 0;
+        this.updateLightboxContent();
+    }
+
+    updateLightboxContent() {
+        const item = this.currentItems[this.currentIndex];
+        this.lightboxImg.src = item.image_url || '';
+        this.lightboxTitle.innerText = item.title;
+        this.lightboxDesc.innerText = item.description || '';
+    }
+    
+    createPaginationHtml(currentPage, totalPages) {
+        let paginationHtml = '<div class="pagination">';
+        
+        // Previous button
+        if (currentPage > 1) {
+            paginationHtml += `<button onclick="galleryManager.goToPage('${this.currentCategory}', ${currentPage - 1})">&laquo; Назад</button>`;
+        } else {
+            paginationHtml += `<button disabled>&laquo; Назад</button>`;
+        }
+        
+        // Page numbers
+        const maxVisiblePages = 5;
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+        
+        if (endPage - startPage + 1 < maxVisiblePages) {
+            startPage = Math.max(1, endPage - maxVisiblePages + 1);
+        }
+        
+        for (let i = startPage; i <= endPage; i++) {
+            if (i === currentPage) {
+                paginationHtml += `<button class="active" onclick="galleryManager.goToPage('${this.currentCategory}', ${i})">${i}</button>`;
+            } else {
+                paginationHtml += `<button onclick="galleryManager.goToPage('${this.currentCategory}', ${i})">${i}</button>`;
+            }
+        }
+        
+        // Next button
+        if (currentPage < totalPages) {
+            paginationHtml += `<button onclick="galleryManager.goToPage('${this.currentCategory}', ${currentPage + 1})">Вперед &raquo;</button>`;
+        } else {
+            paginationHtml += `<button disabled>Вперед &raquo;</button>`;
+        }
+        
+        paginationHtml += '</div>';
+        return paginationHtml;
+    }
+    
+    goToPage(category, page) {
+        this.loadGallery(category, page);
+        // Scroll to top of gallery section
+        const container = this.grid;
+        if (container) {
+            // Use setTimeout to ensure content is rendered before scrolling
+            setTimeout(() => {
+                container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+    }
+}
+
+const galleryManager = new GalleryManager();

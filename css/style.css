@@ -1,0 +1,3601 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* CSS Variables & Reset */
+:root {
+    /* Colors - Muted Pink Cyberpunk Theme */
+    /* Original pink was #ff6b8a, making it more muted/darker per request */
+    --color-primary: #b0526a;
+    /* Muted Pink/Coral */
+    --color-primary-hover: #d66481;
+    --color-secondary: #ff9eb3;
+    /* Lighter pink for accents */
+    --color-dark: #0a0a0a;
+    /* Deep Black */
+    --color-darker: #050505;
+    --color-card-bg: #111111;
+    --color-text: #e0e0e0;
+    --color-text-muted: #888888;
+    --color-border: #333333;
+    --color-accent-violet: #6b5c73;
+
+    /* Fonts */
+    --font-heading: 'Bebas Neue', sans-serif;
+    --font-body: 'Inter', sans-serif;
+
+    /* Layout */
+    --container-width: 1200px;
+    --header-height: 70px;
+    --border-radius: 4px;
+    /* Sharper edges for cyberpunk feel */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--color-dark);
+    color: var(--color-text);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-heading);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+/* Quote styling */
+.section-quote {
+    position: relative;
+    padding-left: 2.5rem; /* Increased padding to accommodate the quotation mark */
+    color: rgba(136, 136, 136, 0.8); /* text-muted-foreground/80 */
+    font-style: italic;
+    margin: 0.5rem 0 1.5rem 0; /* Reduced top margin */
+    gap: 0.5rem; /* gap-2 */
+}
+
+.section-quote::before {
+    content: "\201C"; /* Unicode left double quotation mark */
+    position: absolute;
+    left: -1rem; /* Moved even closer to the text */
+    top: 0; /* Aligned with the top of the text */
+    font-size: 2.5rem;
+    color: var(--color-primary);
+    font-family: var(--font-heading);
+    line-height: 1;
+}
+
+.quote-text {
+    display: block;
+    font-size: 1.25rem; /* larger text size */
+    line-height: 1.6;
+    color: rgba(136, 136, 136, 0.8); /* text-muted-foreground/80 */
+    margin-top: 0.5rem;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+}
+
+ul {
+    list-style: none;
+}
+
+/* Utility Classes */
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    gap: 10px;
+    text-transform: uppercase;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(176, 82, 106, 0.3);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-hover);
+    box-shadow: 0 0 20px rgba(176, 82, 106, 0.6);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    border: 2px solid var(--color-primary);
+    color: var(--color-text);
+}
+
+.btn-secondary:hover {
+    background-color: rgba(176, 82, 106, 0.1);
+    color: #fff;
+}
+
+/* Navbar */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--header-height);
+    background-color: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    color: var(--color-primary);
+}
+
+.nav-menu {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-link {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    color: var(--color-text-muted);
+    position: relative;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: #fff;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--color-primary);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 100%;
+}
+
+.admin-link {
+    color: var(--color-primary) !important;
+}
+
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.nav-toggle span {
+    width: 25px;
+    height: 3px;
+    background-color: #fff;
+    transition: 0.3s;
+}
+
+/* Sections */
+.page-section {
+    display: none;
+    padding: 100px 0;
+    min-height: 100vh;
+    animation: fadeIn 0.5s ease;
+}
+
+.page-section.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Home Section Styles */
+#home {
+    padding: 0;
+}
+
+.hero-section {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Tentacles Background */
+.tentacles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.tentacle {
+    position: absolute;
+    bottom: -100px;
+    /* Hide start */
+    height: 120%;
+    width: 200px;
+    overflow: visible;
+}
+
+.tentacle-path {
+    fill: none;
+    stroke: #333;
+    /* Dark gray for tentacles */
+    stroke-width: 40;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
+}
+
+/* Horizontal Tentacles */
+.tentacles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.tentacle {
+    position: absolute;
+    overflow: visible;
+    opacity: 0.9;
+}
+
+.tentacle-left {
+    left: -200px;
+    bottom: 0;
+    width: 1000px;
+    height: 400px;
+    transform-origin: 0% 100%;
+}
+
+.tentacle-right {
+    right: -200px;
+    bottom: -50px;
+    width: 1000px;
+    height: 400px;
+    transform: scaleX(-1);
+    /* Mirror */
+    transform-origin: 0% 100%;
+}
+
+.tentacle-bg {
+    left: 50%;
+    bottom: -100px;
+    width: 1200px;
+    height: 500px;
+    transform: translateX(-50%);
+    filter: blur(3px);
+    /* Depth of field */
+    z-index: -1;
+}
+
+/* Realistic TV Set */
+.tv-container {
+    display: flex;
+    justify-content: center;
+    perspective: 1000px;
+    margin-top: 50px;
+}
+
+.tv-set {
+    position: relative;
+    transform: rotateY(-10deg) rotateX(5deg);
+    transition: transform 0.5s ease;
+    transform-style: preserve-3d;
+}
+
+.tv-set:hover {
+    transform: rotateY(0deg) rotateX(0deg);
+}
+
+.tv-case {
+    width: 420px;
+    height: 340px;
+    background: #1a1a1a;
+    border-radius: 30px;
+    padding: 20px;
+    box-shadow:
+        inset 0 0 10px rgba(0, 0, 0, 1),
+        0 0 0 2px #333,
+        0 20px 50px rgba(0, 0, 0, 0.6),
+        10px 10px 30px rgba(0, 0, 0, 0.5);
+    background-image: linear-gradient(135deg, #2a2a2a 0%, #111 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+/* Wood texture or Plastic texture via grain */
+.tv-case::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiMwMDAiLz48cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMzMzIiB4PSIwIiB5PSIwIi8+PC9zdmc+');
+    opacity: 0.1;
+    border-radius: 30px;
+    pointer-events: none;
+}
+
+.tv-screen-glass {
+    width: 100%;
+    height: 240px;
+    background: #000;
+    border-radius: 60px / 20px;
+    /* CRT Curve */
+    position: relative;
+    padding: 2px;
+    background: linear-gradient(135deg, #444, #111);
+    box-shadow: inset 0 0 20px #000;
+    overflow: hidden;
+}
+
+.tv-screen {
+    width: 100%;
+    height: 100%;
+    background-color: #050505;
+    border-radius: 58px / 18px;
+    position: relative;
+    overflow: hidden;
+    z-index: 10;
+}
+
+/* Control Panel on TV */
+.tv-controls {
+    margin-top: 15px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+}
+
+.tv-knob {
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, #444, #111);
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    border: 1px solid #222;
+}
+
+.tv-speaker {
+    display: flex;
+    gap: 3px;
+}
+
+.tv-speaker span {
+    width: 4px;
+    height: 20px;
+    background: #000;
+    border-radius: 2px;
+    box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.tv-reflection {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 300px;
+    height: 150px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    border-radius: 50px;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.scammer-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Scammer Mask like Parasite poster */
+.scammer-mask {
+    position: absolute;
+    top: 55px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120%;
+    height: 25px;
+    z-index: 5;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mask-strip {
+    width: 100%;
+    height: 100%;
+    background: #000;
+}
+
+.scammer-eyes {
+    position: relative;
+    z-index: 6;
+    /* On top of mask?? No, mask covers eyes usually. But user wants eyes to follow mouse */
+    /* Let's make eyes "glow" through the mask or sit just below it */
+    top: -10px;
+    display: flex;
+    gap: 30px;
+}
+
+.eye {
+    width: 25px;
+    height: 15px;
+    background: #fff;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 5px #fff;
+}
+
+.pupil {
+    width: 8px;
+    height: 8px;
+    background: #000;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.scammer-smile {
+    margin-top: 40px;
+}
+
+/* Button Animations */
+.pulse-btn:hover {
+    animation: btnPulse 1s infinite;
+}
+
+@keyframes btnPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(176, 82, 106, 0.7);
+    }
+
+    70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(176, 82, 106, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(176, 82, 106, 0);
+    }
+}
+
+.slide-btn {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.slide-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: var(--color-primary);
+    transition: width 0.3s ease;
+    z-index: -1;
+}
+
+.slide-btn:hover::before {
+    width: 100%;
+}
+
+.slide-btn:hover {
+    color: #fff;
+    border-color: var(--color-primary);
+}
+
+/* Info Section */
+.info-section {
+    background-color: #0e0e0e;
+    padding: 80px 0;
+    position: relative;
+    z-index: 5;
+}
+
+.section-title {
+    font-size: clamp(1.2rem, 4vh, 3rem);
+    text-align: center;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+/* Additional responsive adjustments for very small screens */
+@media (max-width: 480px) {
+    .section-title {
+        font-size: clamp(1rem, 4vh, 2.5rem);
+    }
+}
+
+@media (max-width: 360px) {
+    .section-title {
+        font-size: clamp(0.9rem, 4vh, 2rem);
+        word-break: break-word;
+    }
+}
+
+@media (max-width: 320px) {
+    .section-title {
+        font-size: clamp(0.8rem, 4vh, 1.8rem);
+    }
+}
+
+
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.info-card {
+    background-color: var(--color-card-bg);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-primary);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.info-icon {
+    font-size: 2.5rem;
+    color: var(--color-primary);
+    margin-bottom: 20px;
+}
+
+.info-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.info-card p {
+    color: var(--color-text-muted);
+}
+
+/* Common Grid & Filter Styles */
+.filter-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+
+.filter-btn,
+.gallery-filter-btn {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    padding: 8px 16px;
+    cursor: pointer;
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover,
+.gallery-filter-btn:hover,
+.filter-btn.active,
+.gallery-filter-btn.active {
+    background-color: var(--color-primary);
+    color: #fff;
+    border-color: var(--color-primary);
+}
+
+.articles-grid,
+.gallery-grid,
+.schemes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+/* Article Card */
+.article-card {
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.article-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-primary);
+}
+
+.article-image {
+    height: 200px;
+    background-color: transparent;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.article-category {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: var(--color-primary);
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    font-family: var(--font-heading);
+    letter-spacing: 1px;
+}
+
+.article-content {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.article-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    line-height: 1.2;
+}
+
+.article-excerpt {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    margin-bottom: 20px;
+    flex: 1;
+}
+
+.article-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #666;
+    border-top: 1px solid #222;
+    padding-top: 15px;
+}
+
+/* Scheme Card */
+.scheme-card {
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+}
+
+.scheme-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-primary);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.scheme-header {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 16px;
+}
+
+/* Social Network Card */
+.social-networks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.social-network-card {
+
+/* Simulacra Card */
+.simulacra-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.simulacra-card {    
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+}
+
+.simulacra-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-primary);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.scheme-category-platform {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.scheme-category-platform .scheme-category {
+    background-color: rgba(176, 82, 106, 0.2);
+    color: var(--color-secondary);
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    font-family: var(--font-heading);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 2px;
+}
+
+.scheme-header i {
+    color: var(--color-primary);
+    font-size: 1.2rem;
+    margin-left: auto;
+}
+
+.myth-reality {
+    margin-bottom: 16px;
+    padding: 12px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.myth-box {
+    margin-bottom: 12px;
+}
+
+.myth-label {
+    font-family: var(--font-heading);
+    font-weight: bold;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.myth-text {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+    font-style: italic;
+}
+
+.reality-box {
+    margin-bottom: 12px;
+}
+
+.reality-label {
+    font-family: var(--font-heading);
+    font-weight: bold;
+    color: #d63384; /* Pink-red color for reality */
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.reality-text {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.red-flags {
+    padding: 12px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.red-flags-label {
+    font-family: var(--font-heading);
+    font-weight: bold;
+    color: #dc3545; /* Red color for red flags */
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.red-flags-list {
+    padding-left: 16px;
+}
+
+.red-flags-list li {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-bottom: 6px;
+}
+
+.red-flags-list li:last-child {
+    margin-bottom: 0;
+}
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+}
+
+.social-network-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-primary);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.scheme-category-type {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.scheme-category-type .scheme-category {
+    background-color: rgba(106, 90, 120, 0.2); /* violet accent #6a5a78 */
+    color: #d8d2de; /* light violet text for #6a5a78 */
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    font-family: var(--font-heading);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 2px;
+}
+
+.scheme-header i {
+    color: var(--color-primary);
+    font-size: 1.2rem;
+    margin-left: auto;
+}
+
+.trust-network {
+    margin-bottom: 16px;
+    padding: 12px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.network-label {
+    font-family: var(--font-heading);
+    font-weight: normal; /* thinner font */
+    color: var(--color-text-muted); /* gray color */
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.network-connections {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.network-node {
+    background-color: rgba(136, 136, 136, 0.2); /* grayish background */
+    color: #fff; /* bright white text */
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    border-radius: 12px;
+}
+
+.network-connections i {
+    color: var(--color-primary);
+    font-size: 0.8rem;
+}
+
+.manipulation-pattern {
+    padding: 12px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pattern-label {
+    font-family: var(--font-heading);
+    font-weight: normal; /* thinner font */
+    color: var(--color-text-muted); /* gray color */
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.pattern-text {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-primary); /* pink color as requested for manipulation patterns */
+    font-weight: 500;
+    font-style: italic;
+}
+
+.scheme-category {
+    background-color: rgba(106, 90, 120, 0.2); /* violet accent #6a5a78 */
+    color: #d8d2de; /* light violet text for #6a5a78 */
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    font-family: var(--font-heading);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 2px;
+}
+
+.scheme-title {
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+    color: var(--color-text);
+    line-height: 1.3;
+    transition: color 0.3s ease; /* smooth color transition on hover */
+}
+
+.scheme-card:hover .scheme-title,
+.social-network-card:hover .scheme-title {
+    color: var(--color-primary);
+}
+
+.scheme-description {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    margin-bottom: 16px;
+    flex: 1;
+}
+
+.scheme-psychology {
+    margin-bottom: 16px;
+    padding: 12px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.psychology-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+}
+
+.psychology-item:last-child {
+    margin-bottom: 0;
+}
+
+.psychology-item i {
+    color: var(--color-primary);
+    margin-top: 3px;
+    font-size: 0.9rem;
+}
+
+.psychology-header {
+    font-family: var(--font-heading);
+    font-weight: normal;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.psychology-desc {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+/* Gallery Styles */
+.gallery-item {
+    position: relative;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    aspect-ratio: 16/9;
+    cursor: pointer;
+    border: 1px solid var(--color-border);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+    background-color: transparent;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.1);
+}
+
+.gallery-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    padding: 20px;
+    text-align: center;
+}
+
+.gallery-item:hover .gallery-overlay {
+    opacity: 1;
+}
+
+.gallery-overlay h3 {
+    color: #fff;
+    margin-bottom: 10px;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover .gallery-overlay h3 {
+    transform: translateY(0);
+}
+
+/* Contact Form */
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+}
+
+.contact-info {
+    padding-right: 30px;
+}
+
+.contact-list {
+    margin: 30px 0;
+}
+
+.contact-list li {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    color: var(--color-text);
+}
+
+.contact-list li i {
+    color: var(--color-primary);
+}
+
+.telegram-btn {
+    display: inline-block;
+    background-color: #0088cc;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.telegram-btn:hover {
+    background-color: #0077b5;
+    transform: translateY(-2px);
+}
+
+.contact-form {
+    background-color: var(--color-card-bg);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    background-color: #0a0a0a;
+    border: 1px solid var(--color-border);
+    color: #fff;
+    border-radius: 2px;
+    font-family: var(--font-body);
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.modal.active {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.modal-content {
+    background-color: var(--color-card-bg);
+    width: 100%;
+    max-width: 900px; /* Increased width for better reading */
+    /* Wider for article editor */
+    margin-top: 30px; /* Reduced margin */
+    margin-bottom: 30px; /* Added bottom margin */
+    border-radius: var(--border-radius);
+    padding: 40px; /* Increased padding */
+    position: relative;
+    border: 1px solid var(--color-border);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 15px;
+}
+
+.modal-header h3 {
+    font-size: 2rem;
+    color: var(--color-primary);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.modal-close:hover {
+    color: #fff;
+}
+
+/* Article Reading Modal Specific Styles */
+#readArticleModal .modal-content {
+    max-height: 85vh; /* Limit height to allow scrolling */
+    overflow-y: auto; /* Enable scrolling for long articles */
+}
+
+#readArticleModal .modal-content img {
+    max-width: 50% !important; /* Reduce image size to half */
+    height: auto;
+    display: block;
+    margin: 20px auto;
+}
+
+/* Improve readability for article content */
+.article-text {
+    line-height: 1.8; /* Better line spacing for readability */
+    font-size: 1.1rem; /* Slightly larger font */
+    color: var(--color-text);
+}
+
+/* Article tags */
+.article-tags {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag {
+    background-color: rgba(176, 82, 106, 0.2);
+    color: var(--color-secondary);
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-family: var(--font-body);
+}
+
+/* Article header in modal */
+.article-header {
+    margin-bottom: 25px;
+}
+
+.article-header h2 {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+    color: var(--color-primary);
+}
+
+.meta {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    background-color: var(--color-primary);
+    color: #fff;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-family: var(--font-heading);
+}
+
+.date {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+}
+
+/* Lightbox */
+.lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    z-index: 3000;
+    justify-content: center;
+    align-items: center;
+}
+
+.lightbox.active {
+    display: flex;
+}
+
+.lightbox-content {
+    max-width: 90%;
+    max-height: 90%;
+    text-align: center;
+    position: relative;
+}
+
+.lightbox-content img {
+    max-width: 100%;
+    max-height: 80vh;
+    border: 2px solid #333;
+}
+
+.lightbox-caption {
+    margin-top: 20px;
+    color: #fff;
+}
+
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next {
+    position: absolute;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 20px;
+    z-index: 3001;
+}
+
+.lightbox-close {
+    top: 20px;
+    right: 20px;
+}
+
+.lightbox-prev {
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.lightbox-next {
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Admin Panel */
+.admin-login-form {
+    background-color: var(--color-card-bg);
+    padding: 30px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    margin-bottom: 30px;
+    max-width: 400px;
+    margin: 0 auto 30px auto;
+}
+
+.admin-login-form h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--color-primary);
+}
+
+.admin-login-form .form-group {
+    margin-bottom: 15px;
+}
+
+.admin-login-form .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.admin-login-form .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
+.admin-login-form .btn {
+    width: 100%;
+}
+
+.admin-panel {
+    display: none;
+}
+
+.admin-panel.active {
+    display: block;
+}
+
+.admin-actions {
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-actions .btn {
+    margin-left: 10px;
+}
+
+.admin-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.admin-item {
+    background-color: var(--color-card-bg);
+    padding: 15px;
+    border: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: var(--border-radius);
+}
+
+.admin-item-info h4 {
+    margin-bottom: 5px;
+    font-family: var(--font-body);
+    font-weight: 600;
+}
+
+.admin-item-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--color-text-muted);
+    font-style: italic;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    width: 100%;
+    grid-column: 1 / -1;
+}
+
+.btn-icon {
+    background: none;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-icon:hover {
+    background-color: var(--color-primary);
+    color: #fff;
+    border-color: var(--color-primary);
+}
+
+.btn-icon.delete:hover {
+    background-color: #ff4444;
+    border-color: #ff4444;
+}
+
+/* Footer */
+.footer {
+    background-color: #050505;
+    padding: 30px 0 15px;
+    margin-top: 50px;
+    border-top: 1px solid #222;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-brand {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-social {
+    display: flex;
+    gap: 20px;
+}
+
+.footer-social a {
+    color: var(--color-text-muted);
+    font-size: 1.5rem;
+}
+
+.footer-social a:hover {
+    color: var(--color-primary);
+}
+
+.footer-copyright {
+    color: #444;
+    font-size: 0.75rem;
+    margin-top: 10px;
+}
+
+/* Footer Quote */
+.footer-quote {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Footer Title with Glitch */
+.footer-title {
+    position: relative;
+    display: inline-block;
+    overflow: hidden; /* ✅ Обрезает вылезающие полосы */
+    font-size: 1.5rem; /* Smaller than the main title */
+    line-height: 1;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    color: #fff; /* White color as requested */
+    margin: 5px 0;
+}
+
+/* Основной текст */
+.glitch__text {
+    position: relative;
+    z-index: 2;
+}
+
+/* Верхняя неоновая полоса (циан) */
+.glitch__layer--cyan {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    color: rgba(255, 255, 255, 0.7); /* Subtle white with transparency */
+    text-shadow: 2px 0 0 rgba(255, 255, 255, 0.5);
+    z-index: 1;
+    animation: glitch-cyan 2s infinite;
+    clip-path: inset(0 0 0 0);
+}
+
+/* Нижняя неоновая полоса (магента) */
+.glitch__layer--magenta {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    color: rgba(255, 255, 255, 0.7); /* Subtle white with transparency */
+    text-shadow: -2px 0 0 rgba(255, 255, 255, 0.5);
+    z-index: 3;
+    animation: glitch-magenta 2.5s infinite;
+    clip-path: inset(0 0 0 0);
+}
+
+/* ✅ АНИМАЦИИ — transform вместо clip */
+@keyframes glitch-cyan {
+    0%, 90%, 100% { 
+        transform: translateX(0);
+        clip-path: inset(0 0 0 0);
+    }
+    10% { 
+        transform: translateX(1px) skewX(-2deg);
+        clip-path: inset(1px 0 0 1px);
+    }
+    20% { 
+        transform: translateX(-0.5px) skewX(1deg);
+        clip-path: inset(0 1px 1px 0);
+    }
+    30%, 40% { 
+        transform: translateX(0.5px) skewY(0.5deg);
+        clip-path: inset(0.5px 0.5px 0 0.5px);
+    }
+    50% { 
+        transform: translateX(-1px) scale(1.01);
+        clip-path: inset(0 0 0.5px 0);
+    }
+    60%, 70% { 
+        transform: translateX(0.5px);
+        clip-path: inset(1.5px 0 0 1.5px);
+    }
+    80% { 
+        transform: translateX(-0.5px) skewX(1deg);
+        clip-path: inset(0 1.5px 1.5px 0);
+    }
+}
+
+@keyframes glitch-magenta {
+    0%, 95%, 100% { 
+        transform: translateX(0);
+        clip-path: inset(0 0 0 0);
+    }
+    5% { 
+        transform: translateX(-1px) skewX(2deg);
+        clip-path: inset(0 1px 1px 0);
+    }
+    15% { 
+        transform: translateX(0.5px) skewY(-1deg);
+        clip-path: inset(1px 0 0 1px);
+    }
+    25% { 
+        transform: translateX(-0.5px) scale(0.99);
+        clip-path: inset(0.5px 0.5px 0.5px 0.5px);
+    }
+    35%, 45% { 
+        transform: translateX(1px);
+        clip-path: inset(0 0 1px 0);
+    }
+    55% { 
+        transform: translateX(-0.5px) skewX(-1.5deg);
+        clip-path: inset(0 1.5px 0 0);
+    }
+    65%, 75% { 
+        transform: translateX(0.5px);
+        clip-path: inset(1px 0 1px 1px);
+    }
+    85% { 
+        transform: translateX(-1px) skewY(1deg);
+        clip-path: inset(0 0 0 1.5px);
+    }
+}
+
+/* ✅ Мобильная оптимизация */
+@media (max-width: 768px) {
+    .glitch__layer--cyan,
+    .glitch__layer--magenta {
+        animation-duration: 3s; /* Замедляем на мобилках */
+    }
+}
+
+/* ✅ Отключаем для пользователей с проблемами motion */
+@media (prefers-reduced-motion: reduce) {
+    .glitch__layer--cyan,
+    .glitch__layer--magenta {
+        animation: none;
+    }
+}
+
+/* Footer Title Description */
+.footer-description {
+    color: #666;
+    font-size: 0.75rem; /* Smaller font */
+    text-align: center;
+    max-width: 500px;
+    margin: 5px auto 10px;
+}
+
+/* Footer Sections */
+.footer-sections {
+    text-align: center;
+    margin: 10px 0;
+}
+
+.footer-sections-title {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.footer-link {
+    color: #888;
+    font-size: 0.75rem;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+    color: var(--color-primary);
+}
+/* ========================================= */
+/* NEW REALISTIC VISUALS (OVERRIDES)         */
+/* ========================================= */
+
+/* Reset Container for Images */
+.tentacles-container {
+    height: 600px !important;
+    bottom: -100px !important;
+    top: auto !important;
+    overflow: visible !important;
+}
+
+.tentacle-img {
+    position: absolute;
+    bottom: -50px;
+    width: 800px;
+    height: auto;
+    filter: drop-shadow(0 0 20px rgba(0,0,0,0.8));
+    transform-origin: 50% 100%;
+    opacity: 0.9;
+    transition: transform 0.1s linear; /* Smooth movement from JS */
+}
+
+.tentacle-1 {
+    left: -100px;
+    transform: rotate(-10deg);
+}
+
+.tentacle-2 {
+    right: -100px;
+    transform: rotate(10deg) scaleX(-1);
+}
+
+.tentacle-3 {
+    left: 40%;
+    bottom: -150px;
+    width: 700px;
+    transform: rotate(0deg);
+    opacity: 0.8;
+    z-index: 2;
+    filter: blur(2px) drop-shadow(0 0 20px rgba(0,0,0,0.8));
+}
+
+/* TV Overrides */
+.tv-container {
+    z-index: 10;
+    position: relative;
+    margin-top: 50px;
+}
+
+/* Hide old TV elements if they exist (though HTML is replaced, this is safety) */
+.tv-set { display: none; }
+
+.tv-wrapper {
+    position: relative;
+    width: 500px;
+    height: 400px;
+    transition: transform 0.3s ease;
+}
+
+.tv-wrapper:hover {
+    transform: scale(1.02);
+}
+
+.tv-frame-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    position: relative;
+    z-index: 20;
+    pointer-events: none;
+}
+
+.tv-screen-content {
+    position: absolute;
+    top: 14%; 
+    left: 17.5%; 
+    width: 56%;
+    height: 60%;
+    background: #000;
+    z-index: 15;
+    border-radius: 40% / 10%;
+    overflow: hidden;
+    box-shadow: inset 0 0 50px rgba(0,0,0,1);
+}
+
+.scammer-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%) contrast(1.2);
+    opacity: 0.8;
+}
+
+.glowing-eyes {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 20px;
+    z-index: 30;
+    display: flex;
+    justify-content: space-between;
+    padding: 0;
+}
+
+.glow-eye {
+    width: 8px; 
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #fff, 0 0 15px var(--color-primary);
+    position: relative;
+    opacity: 0.9;
+}
+
+.warning-badge {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: var(--color-primary);
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    z-index: 35;
+    animation: flash 2s infinite;
+}
+
+.tv-static {
+    z-index: 25;
+    opacity: 0.15;
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxmaWx0ZXIgaWQ9Im4iPjxmZVR1cmJ1bGVuY2UgdHlwZT0iZnJhY3RhbE5vaXNlIiBiYXNlRnJlcXVlbmN5PSIwLjUiIHN0aXRjaFRpbGVzPSJzdGl0Y2giLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgjbikiIG9wYWNpdHk9IjAuMSIvPjwvc3ZnPg==');
+}
+
+
+/* ========================================= */
+/* V3 UPDATE: SCAMMER HERO BACKGROUND        */
+/* ========================================= */
+
+.scammer-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10; /* Behind text (50), front of tentacles (1)? */
+    /* Wait, Tentacles are z-index 1. Hero Text is z-index 50? */
+    /* Let's check style.css default styles for hero-text */
+    pointer-events: none;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; /* Align to bottom usually looks better for busts */
+}
+
+.scammer-background img {
+    height: 90%; /* Adjust size */
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 50px rgba(0,0,0,0.8)) brightness(0.8) contrast(1.2);
+    /* Parasite poster style */
+    opacity: 1;
+}
+
+/* Make sure tentacles are REALLY in background */
+.tentacles-container {
+    z-index: 1 !important;
+    opacity: 0.3 !important; /* Semi-transparent */
+    filter: blur(2px);
+    bottom: -150px !important;
+    height: 100% !important;
+}
+
+/* Text needs to be on top */
+.hero-content {
+    z-index: 50 !important;
+    position: relative;
+}
+
+.hero-text.full-width {
+    width: 100%;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero-title {
+    font-size: 6rem; /* Bigger title */
+    text-shadow: 0 0 20px rgba(0,0,0,1);
+    margin-bottom: 20px;
+}
+
+/* Halftone overlay adjustment */
+.halftone-overlay {
+    z-index: 40 !important; /* Below text, above scammer? */
+    /* If on top of scammer, it gives texture */
+    opacity: 0.1 !important;
+}
+
+/* Responsive adjustments for Scammer Image */
+@media (max-width: 768px) {
+    .scammer-background img {
+        height: 60%;
+        bottom: 0;
+    }
+    .hero-title {
+        font-size: 4rem;
+    }
+}
+
+
+/* ========================================= */
+/* V4 UPDATE: BOMBASTIC PARASITE STYLE       */
+/* ========================================= */
+
+.hero-stats { display: none !important; }
+
+/* Text Alignment & Visibility */
+.hero-content {
+    align-items: flex-start; /* Move text to top part usually? Or center? */
+    /* User said 'aligned neatly and beautifully' */
+    /* Let's elevate it slightly so it sits over the 'head' or just above center */
+    padding-top: 100px; 
+}
+
+.hero-text.full-width {
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+    /* Ensure high legibility */
+    text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.hero-title {
+    font-size: 7rem; /* Even bigger */
+    letter-spacing: 5px;
+    margin-bottom: 30px;
+    line-height: 0.9;
+}
+
+.title-sub {
+    font-size: 2rem;
+    letter-spacing: 8px; /* Cinematic spacing */
+    background: #000; /* Partial background for contrast? */
+    display: inline-block;
+    padding: 0 10px;
+}
+
+.hero-description {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 30px auto;
+    background: rgba(0,0,0,0.6); /* Semi-transparent backing for legibility */
+    padding: 20px;
+    border-radius: 4px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Tentacles Layering */
+.tentacles-container {
+    height: 100% !important; 
+    bottom: -100px !important;
+}
+
+/* Background Tentacles: Behind Scammer (z-index < 10) */
+.tentacles-background {
+    z-index: 5 !important;
+    opacity: 0.4 !important; /* Slightly visible */
+    filter: blur(3px);
+}
+
+/* Foreground Tentacles: In front of Scammer (z-index > 10) */
+.tentacles-foreground {
+    z-index: 15 !important;
+    opacity: 0.4 !important; /* Ghostly */
+    mix-blend-mode: overlay; /* Blend nicely with image */
+    pointer-events: none;
+}
+
+.tentacles-foreground .tentacle-img {
+    filter: drop-shadow(0 0 10px #000);
+}
+
+/* Adjust Scammer Hero to be centered properly */
+.scammer-background {
+    align-items: center; /* Center vertical */
+}
+
+/* Video Background */
+.video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5; /* Behind scammer image */
+    overflow: hidden;
+}
+
+.background-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.7; /* Make video semi-transparent */
+    filter: brightness(0.6);
+}
+
+.dark-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent dark layer */
+    z-index: 6; /* Between video and scammer image */
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 4rem;
+    }
+    .title-sub {
+        font-size: 1.2rem;
+    }
+    .hero-content {
+        padding-top: 50px;
+    }
+}
+
+
+/* ========================================= */
+/* V5 UPDATE: BUTTONS, SCROLL, & TENTACLE FIX */
+/* ========================================= */
+
+.centered-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+/* Glitch Hover Effect for Buttons */
+.glitch-hover:hover {
+    animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+    color: red; /* Text turns red on glitch */
+    border-color: red;
+}
+
+@keyframes glitch-skew {
+    0% { transform: skew(0deg); }
+    20% { transform: skew(-10deg); }
+    40% { transform: skew(10deg); }
+    60% { transform: skew(-5deg); }
+    80% { transform: skew(5deg); }
+    100% { transform: skew(0deg); }
+}
+
+/* Real Scroll Indicator */
+.scroll-indicator {
+    position: absolute;
+    bottom: 30px; /* Position at bottom */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    color: #fff;
+    font-size: 2rem;
+    cursor: pointer;
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+    animation: bounce 2s infinite;
+}
+.scroll-indicator:hover {
+    opacity: 1;
+    color: var(--color-primary);
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
+    40% {transform: translateX(-50%) translateY(-20px);}
+    60% {transform: translateX(-50%) translateY(-10px);}
+}
+
+/* Adjust Tentacle Speed via CSS if needed, but JS handles movement */
+/* Making them smaller via CSS */
+.tentacle-img {
+    width: 25% !important; /* Smaller width compared to before */
+    max-width: 300px;
+}
+
+/* Responsive Button Layout */
+@media (max-width: 768px) {
+    .centered-buttons {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+    .hero-title {
+        font-size: 3.5rem; /* Smaller for mobile */
+    }
+}
+
+
+/* ========================================= */
+/* V6 UPDATE: RESTORATION & RIBBED BUTTONS   */
+/* ========================================= */
+
+/* Restore Tentacles Visibility */
+.tentacles-background {
+    opacity: 0.6 !important; /* Made more visible */
+    z-index: 1 !important; /* Keep behind scammer */
+    /* Ensure they are not pushed off screen */
+    bottom: -50px !important;
+}
+
+.tentacles-foreground {
+    opacity: 0.5 !important;
+    z-index: 20 !important; /* Definitely in front */
+    mix-blend-mode: normal !important; /* Easier to see */
+}
+
+/* Ensure Hero Text is fully visible */
+.hero-content {
+    z-index: 50 !important;
+    position: relative;
+}
+
+/* Ribbed/Muted Buttons (Cyberpunk Style) */
+.ribbed-btn {
+    position: relative;
+    background: #2a2a2a; /* Muted dark gray */
+    color: #aeaeae; /* Muted text */
+    border: 1px solid #444;
+    overflow: hidden;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+/* Scanline/Ribbed Texture */
+.ribbed-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.3) 3px,
+        rgba(0, 0, 0, 0.3) 4px
+    );
+    pointer-events: none;
+}
+
+.ribbed-btn:hover {
+    color: #fff;
+    background: #3a3a3a;
+    border-color: #666;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Specific tweaks for Primary vs Secondary if needed, currently both 'ribbed' */
+.ribbed-btn.btn-primary {
+    border-bottom: 3px solid #6b303e; /* Muted red accent */
+}
+
+.ribbed-btn.btn-secondary {
+    border-bottom: 3px solid #333;
+}
+
+
+/* ========================================= */
+/* V7 UPDATE: CTA BUTTONS & CLEANUP          */
+/* ========================================= */
+
+/* Old button styles removed - using V8 styles instead */
+
+.hero-cta {
+    width: 100%;
+    margin-top: 40px; /* More space since title is gone */
+}
+
+/* Flexbox utilities */
+.flex {
+    display: flex !important;
+}
+
+.flex-col {
+    flex-direction: column !important;
+}
+
+.items-center {
+    align-items: center !important;
+}
+
+.justify-center {
+    justify-content: center !important;
+}
+
+.gap-4 {
+    gap: 1rem !important;
+}
+
+.pt-6 {
+    padding-top: 1.5rem !important;
+}
+
+.w-full {
+    width: 100% !important;
+}
+
+/* Responsive classes */
+@media (min-width: 640px) {
+    .sm\:flex-row {
+        flex-direction: row !important;
+    }
+    
+    .sm\:w-auto {
+        width: auto !important;
+    }
+}
+
+.rounded-md {
+    border-radius: 0.375rem !important;
+}
+
+.w-4 {
+    width: 1rem !important;
+}
+
+.h-4 {
+    height: 1rem !important;
+}
+
+/* Adjust button width for mobile */
+@media (max-width: 640px) {
+    .btn-parasite, .btn-outline-parasite {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+/* Ensure V8 button styles take precedence */
+@media (max-width: 640px) {
+    .btn-parasite {
+        width: 100% !important;
+        margin-bottom: 10px !important;
+    }
+}
+
+
+/* ========================================= */
+/* V8 UPDATE: TAILWIND->CSS BUTTON PORT      */
+/* ========================================= */
+
+:root {
+    /* Defining HSL variables based on the provided Tailwind config */
+    --background: 0 0% 4%;
+    --foreground: 0 0% 95%;
+
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 350 45% 50%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 95%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 55%;
+
+    --accent: 350 45% 40%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 350 45% 50%;
+
+    /* Custom Parasite theme tokens */
+    --parasite-dark: 0 0% 4%;
+    --parasite-darker: 0 0% 2%;
+    --parasite-rose: 350 45% 50%;
+    --parasite-rose-muted: 350 35% 35%;
+    --parasite-rose-glow: 350 60% 60%;
+    --parasite-gray: 0 0% 35%;
+    --parasite-light-gray: 0 0% 55%;
+
+    /* Gradients */
+    --gradient-tentacle: linear-gradient(180deg, hsl(350 45% 25%), hsl(350 35% 15%), hsl(0 0% 8%));
+    --gradient-glow: radial-gradient(ellipse at center, hsl(350 45% 50% / 0.3), transparent 70%);
+    --gradient-vignette: radial-gradient(ellipse at center, transparent 40%, hsl(0 0% 0% / 0.8) 100%);
+
+    /* Shadows */
+    --shadow-glow: 0 0 40px hsl(350 45% 50% / 0.4);
+    --shadow-deep: 0 25px 50px -12px hsl(0 0% 0% / 0.8);
+
+    /* Transitions */
+    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Helper Class for Fade In */
+.fade-in-up {
+    animation: fade-in-up 0.8s ease-out forwards;
+    opacity: 0;
+}
+
+.delay-400 { animation-delay: 0.4s; }
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Button Styles - Using exact Tailwind styles from reference */
+div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a.btn-parasite {
+    position: relative !important;
+    overflow: hidden !important;
+    padding: 12px 32px !important; /* py-3 px-8 equivalent */
+    font-weight: 600 !important;
+    letter-spacing: 0.025em !important; /* tracking-wider equivalent */
+    text-transform: uppercase !important;
+    background: linear-gradient(135deg, hsl(var(--parasite-rose)), hsl(var(--parasite-rose-muted))) !important;
+    color: hsl(var(--foreground)) !important;
+    transition: var(--transition-smooth) !important;
+    border: none !important;
+    border-radius: 6px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    font-family: var(--font-body) !important;
+    font-size: 1rem !important;
+}
+
+/* General btn-parasite class as backup */
+.btn-parasite {
+    position: relative !important;
+    overflow: hidden !important;
+    padding: 12px 32px !important; /* py-3 px-8 equivalent */
+    font-weight: 600 !important;
+    letter-spacing: 0.025em !important; /* tracking-wider equivalent */
+    text-transform: uppercase !important;
+    background: linear-gradient(135deg, hsl(var(--parasite-rose)), hsl(var(--parasite-rose-muted))) !important;
+    color: hsl(var(--foreground)) !important;
+    transition: var(--transition-smooth) !important;
+    border: none !important;
+    border-radius: 6px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    font-family: var(--font-body) !important;
+    font-size: 1rem !important;
+}
+
+/* Most specific selector to override everything */
+a[href="#schemes"].btn-parasite {
+    position: relative !important;
+    overflow: hidden !important;
+    padding: 12px 32px !important; /* py-3 px-8 equivalent */
+    font-weight: 600 !important;
+    letter-spacing: 0.025em !important; /* tracking-wider equivalent */
+    text-transform: uppercase !important;
+    background: linear-gradient(135deg, hsl(var(--parasite-rose)), hsl(var(--parasite-rose-muted))) !important;
+    color: hsl(var(--foreground)) !important;
+    transition: var(--transition-smooth) !important;
+    border: none !important;
+    border-radius: 6px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    font-family: var(--font-body) !important;
+    font-size: 1rem !important;
+}
+
+/* Override any .btn, .btn-primary, .btn-secondary styles */
+a.btn.btn-parasite {
+    padding: 12px 32px !important;
+    font-weight: 600 !important;
+    background: linear-gradient(135deg, hsl(var(--parasite-rose)), hsl(var(--parasite-rose-muted))) !important;
+    color: hsl(var(--foreground)) !important;
+    border-radius: 6px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.025em !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    font-family: var(--font-body) !important;
+    font-size: 1rem !important;
+    border: none !important;
+    transition: var(--transition-smooth) !important;
+}
+
+/* Override ribbed button styles if applied */
+a.ribbed-btn.btn-parasite {
+    background: linear-gradient(135deg, hsl(var(--parasite-rose)), hsl(var(--parasite-rose-muted))) !important;
+    color: hsl(var(--foreground)) !important;
+    border: none !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.025em !important;
+    font-weight: 600 !important;
+    padding: 12px 32px !important;
+    border-radius: 6px !important;
+    background: linear-gradient(135deg, hsl(var(--parasite-rose)), hsl(var(--parasite-rose-muted))) !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+.btn-parasite::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, hsl(var(--parasite-rose-glow)), hsl(var(--parasite-rose)));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+/* Ensure content text/icon is above the pseudo-element */
+.btn-parasite span, 
+.btn-parasite i {
+    position: relative;
+    z-index: 10;
+}
+
+.btn-parasite:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: var(--shadow-glow) !important;
+}
+
+a.btn-parasite:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: var(--shadow-glow) !important;
+}
+
+.btn-parasite:hover::before {
+    opacity: 1;
+}
+
+/* Outline Button - Using exact Tailwind styles from reference */
+a.btn-outline-parasite {
+    position: relative !important;
+    padding: 12px 32px !important; /* py-3 px-8 equivalent */
+    font-weight: 600 !important;
+    letter-spacing: 0.025em !important; /* tracking-wider equivalent */
+    text-transform: uppercase !important;
+    background: transparent !important;
+    border: 1px solid hsl(var(--parasite-rose)) !important;
+    color: hsl(var(--parasite-rose)) !important;
+    transition: var(--transition-smooth) !important;
+    border-radius: 6px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    text-decoration: none !important;
+}
+
+.btn-outline-parasite {
+    position: relative !important;
+    padding: 12px 32px !important; /* py-3 px-8 equivalent */
+    font-weight: 600 !important;
+    letter-spacing: 0.025em !important; /* tracking-wider equivalent */
+    text-transform: uppercase !important;
+    background: transparent !important;
+    border: 1px solid hsl(var(--parasite-rose)) !important;
+    color: hsl(var(--parasite-rose)) !important;
+    transition: var(--transition-smooth) !important;
+    border-radius: 6px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    text-decoration: none !important;
+}
+
+a.btn-outline-parasite:hover {
+    background: hsl(var(--parasite-rose) / 0.1) !important; /* Using the exact syntax from reference */
+    box-shadow: 0 0 20px hsl(var(--parasite-rose) / 0.3) !important; /* Using the exact syntax from reference */
+    transform: translateY(-2px) !important;
+    color: hsl(var(--foreground)) !important;
+    border-color: hsl(var(--foreground)) !important;
+}
+
+.btn-outline-parasite:hover {
+    background: hsl(var(--parasite-rose) / 0.1) !important; /* Using the exact syntax from reference */
+    box-shadow: 0 0 20px hsl(var(--parasite-rose) / 0.3) !important; /* Using the exact syntax from reference */
+    transform: translateY(-2px) !important;
+    color: hsl(var(--foreground)) !important;
+    border-color: hsl(var(--foreground)) !important;
+}
+
+/* Card Parasite Style (If used later) */
+.card-parasite {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background: linear-gradient(145deg, hsl(var(--card)), hsl(var(--parasite-darker)));
+    border: 1px solid hsl(var(--border));
+    transition: var(--transition-smooth);
+}
+
+.card-parasite:hover {
+    border-color: hsla(var(--parasite-rose), 0.5);
+    box-shadow: 0 0 30px hsla(var(--parasite-rose), 0.15);
+    transform: translateY(-4px);
+}
+
+/* Final override to ensure btn-parasite styles take precedence over all other button styles */
+a[href="#schemes"].btn-parasite,
+a[href="#schemes"].btn,
+a[href="#schemes"].btn-primary,
+a[href="#schemes"].btn-secondary,
+a[href="#schemes"].ribbed-btn {
+    position: relative !important;
+    overflow: hidden !important;
+    padding: 12px 32px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.025em !important;
+    text-transform: uppercase !important;
+    background: linear-gradient(135deg, hsl(var(--parasite-rose)), hsl(var(--parasite-rose-muted))) !important;
+    color: hsl(var(--foreground)) !important;
+    transition: var(--transition-smooth) !important;
+    border: none !important;
+    border-radius: 6px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    font-family: var(--font-body) !important;
+    font-size: 1rem !important;
+    width: auto !important;
+}
+
+/* Dedicated styles for 'Изучить схемы' button - completely isolated */
+div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="#schemes"].btn-parasite {
+    position: relative !important;
+    overflow: hidden !important;
+    padding: 0.75rem 2rem !important; /* py-3 px-8 */
+    font-weight: 600 !important; /* font-semibold */
+    letter-spacing: 0.05em !important; /* tracking-wider */
+    text-transform: uppercase !important;
+    background: linear-gradient(135deg, hsl(350 45% 50%), hsl(350 35% 35%)) !important;
+    color: hsl(0 0% 95%) !important; /* foreground */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border: none !important;
+    border-radius: 6px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    font-family: 'Inter', sans-serif !important; /* body default */
+    font-size: 1rem !important;
+    width: auto !important;
+    /* Override any conflicting styles */
+    all: unset !important;
+    /* Reapply only our desired styles */
+    position: relative !important;
+    display: inline-flex !important;
+    padding: 0.75rem 2rem !important;
+    background: linear-gradient(135deg, hsl(350 45% 50%), hsl(350 35% 35%)) !important;
+    color: hsl(0 0% 95%) !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    border-radius: 6px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    cursor: pointer !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 1rem !important;
+    width: auto !important;
+    text-decoration: none !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Pseudo-element for hover glow effect */
+div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="#schemes"].btn-parasite::before {
+    content: '' !important;
+    position: absolute !important;
+    inset: 0 !important;
+    background: linear-gradient(135deg, hsl(350 60% 60%), hsl(350 45% 50%)) !important; /* parasite-rose-glow and parasite-rose */
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+    z-index: 1 !important;
+}
+
+/* Hover effects for primary button */
+div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="#schemes"].btn-parasite:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 0 40px hsl(350 45% 50% / 0.4) !important; /* shadow-glow */
+}
+
+div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="#schemes"].btn-parasite:hover::before {
+    opacity: 1 !important;
+}
+
+/* Dedicated styles for 'Пообщаться' button - completely isolated */
+div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="https://t.me/"] {
+    position: relative !important;
+    padding: 0.75rem 2rem !important; /* py-3 px-8 */
+    font-weight: 600 !important; /* font-semibold */
+    letter-spacing: 0.05em !important; /* tracking-wider */
+    text-transform: uppercase !important;
+    background: transparent !important;
+    border: 1px solid hsl(350 45% 50%) !important;
+    color: hsl(350 45% 50%) !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border-radius: 6px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    font-family: 'Inter', sans-serif !important; /* body default */
+    font-size: 1rem !important;
+    width: auto !important;
+    /* Override any conflicting styles */
+    all: unset !important;
+    /* Reapply only our desired styles */
+    position: relative !important;
+    display: inline-flex !important;
+    padding: 0.75rem 2rem !important;
+    background: transparent !important;
+    border: 1px solid hsl(350 45% 50%) !important;
+    color: hsl(350 45% 50%) !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    border-radius: 6px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    cursor: pointer !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 1rem !important;
+    width: auto !important;
+    text-decoration: none !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Hover effects for outline button */
+div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="https://t.me/"]:hover {
+    background: hsl(350 45% 50% / 0.1) !important;
+    box-shadow: 0 0 20px hsl(350 45% 50% / 0.3) !important;
+}
+
+/* Ensure icon styles */
+div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="#schemes"].btn-parasite i,
+div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="https://t.me/"] i {
+    width: 1rem !important; /* w-4 */
+    height: 1rem !important; /* h-4 */
+    color: currentColor !important; /* наследует от родителя */
+}
+
+
+/* ========================================= */
+/* V9 UPDATE: FRAUDULENT TEXT STYLES         */
+/* ========================================= */
+
+/* 1. Redacted Text Effect (Censored look that reveals on hover) */
+.text-redacted {
+    position: relative;
+    background: #000;
+    color: #000; /* Hide text initially */
+    padding: 0 4px;
+    border-radius: 2px;
+    cursor: help;
+    transition: all 0.4s ease;
+    user-select: none;
+}
+
+.text-redacted:hover {
+    background: transparent;
+    color: var(--color-primary); /* Reveal in Pink */
+    text-shadow: 0 0 8px var(--color-primary);
+}
+
+.text-redacted::after {
+    content: '[REDACTED]';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: #444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6em; /* Small label */
+    letter-spacing: 2px;
+    opacity: 1;
+    transition: opacity 0.4s;
+    pointer-events: none;
+}
+
+.text-redacted:hover::after {
+    opacity: 0;
+}
+
+/* 2. 'Hacked' / Digital Terminal Style for Subtitles */
+.section-subtitle {
+    font-family: 'Courier New', monospace !important;
+    letter-spacing: 1px;
+    color: var(--color-text-muted);
+    border-left: 3px solid var(--color-primary); /* Terminal Prompt style */
+    padding-left: 15px;
+    display: inline-block;
+    background: linear-gradient(90deg, rgba(176, 82, 106, 0.1) 0%, transparent 100%);
+}
+
+/* 3. 'Warning' Text Highlight (for strong EMPHASIS) */
+.text-warning {
+    color: #fff;
+    background: var(--color-primary);
+    padding: 0 6px;
+    box-shadow: 0 0 10px var(--color-primary);
+    font-weight: bold;
+    font-style: italic;
+    transform: skewX(-10deg);
+    display: inline-block;
+}
+
+/* 4. Glitchy Section Titles (Enhancing existing) */
+.section-title {
+    position: relative;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 20px; /* Space for subtitle */
+}
+
+.section-title::before {
+    content: attr(data-text); /* Needs formatting in HTML to work usually, or we just leave generic decorative */
+    position: absolute;
+    top: 0;
+    left: 2px;
+    width: 100%;
+    height: 100%;
+    background: var(--color-dark);
+    color: var(--color-text);
+    overflow: hidden;
+    clip-path: inset(0 0 0 0);
+    animation: glitch-anim-2 3s infinite linear alternate-reverse;
+    opacity: 0.7;
+    z-index: -1;
+}
+
+.section-title::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: -2px;
+    width: 100%;
+    height: 100%;
+    background: var(--color-dark);
+    color: var(--color-primary);
+    overflow: hidden;
+    clip-path: inset(0 0 0 0);
+    animation: glitch-anim 2.5s infinite linear alternate-reverse;
+    opacity: 0.7;
+    z-index: -2;
+}
+
+@keyframes glitch-anim {
+    0% { clip-path: inset(80% 0 0 0); }
+    20% { clip-path: inset(10% 0 60% 0); }
+    40% { clip-path: inset(40% 0 30% 0); }
+    60% { clip-path: inset(70% 0 10% 0); }
+    80% { clip-path: inset(20% 0 50% 0); }
+    100% { clip-path: inset(50% 0 20% 0); }
+}
+
+@keyframes glitch-anim-2 {
+    0% { clip-path: inset(10% 0 60% 0); }
+    20% { clip-path: inset(80% 0 0 0); }
+    40% { clip-path: inset(50% 0 20% 0); }
+    60% { clip-path: inset(20% 0 50% 0); }
+    80% { clip-path: inset(70% 0 10% 0); }
+    100% { clip-path: inset(40% 0 30% 0); }
+}
+
+
+/* ========================================= */
+/* V10 UPDATE: RESTORE & ENHANCE             */
+/* ========================================= */
+
+/* 1. Restore Main Title with Glitch (Needs to be uncommented in HTML) */
+.hero-title.glitch {
+    display: block !important;
+    font-size: 8rem;
+    line-height: 0.8;
+    margin-top: 2rem; /* Move the text down globally by 2rem */
+    margin-bottom: 20px;
+    position: relative;
+    color: #fff;
+    text-shadow: 4px 4px 0 var(--color-primary);
+}
+
+/* 2. Text Alignment & Cleaning */
+.hero-text.full-width {
+    text-align: center !important;
+    max-width: 1000px; /* Give it space */
+    margin: 0 auto;
+}
+
+/* Remove weird styles from description if any remain via class overrides */
+.hero-description {
+    font-family: 'Courier New', monospace !important; /* Cyberpunk terminal style */
+    font-size: 1.3rem !important;
+    line-height: 1.6 !important;
+    background: transparent !important; /* Remove any potential box background */
+    border: none !important;
+    backdrop-filter: none !important;
+    color: #e0e0e0 !important;
+    text-shadow: 2px 2px 4px #000; /* Enhance legibility instead of box */
+    margin-top: 20px !important;
+    letter-spacing: 1px; /* Add spacing for terminal feel */
+    font-weight: 500; /* Slightly bolder for better visibility */
+    position: relative;
+    padding: 10px 0; /* Add some vertical spacing */
+}
+
+/* Add subtle animation to the description text */
+.hero-description::after {
+    content: '|';
+    animation: blink 1s infinite;
+    margin-left: 5px;
+    color: var(--color-primary);
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* 3. Tentacle Enhancements */
+/* Make them BIGGER */
+.tentacle-img {
+    width: 40% !important; /* Increased from 25% */
+    max-width: 600px;
+}
+
+/* Foreground Tentacle Specifics */
+.tentacles-foreground {
+    z-index: 25 !important; /* Above TV/Scammer (z=10,20) but below text (z=50) */
+    opacity: 0.8 !important; /* More visible than 0.4 */
+    mix-blend-mode: normal !important; /* No overlay, just standard transparency */
+    bottom: -50px !important;
+    pointer-events: none;
+}
+
+.tentacles-foreground .tentacle-img {
+    opacity: 0.85; /* Semi-transparent like requested */
+    filter: drop-shadow(0 0 20px rgba(0,0,0,0.5));
+    transform: rotate(15deg) scale(1.2); /* Make it imposing */
+}
+
+/* 4. Fix 'White Background' under picture */
+/* This might be the .scammer-background or body background leaking? */
+.scammer-background {
+    background: transparent !important; /* Ensure no white bg */
+}
+
+/* Crop bottom portion of scammer image to remove text on white background */
+.scammer-background img {
+    height: 90% !important; /* Reduce height to crop bottom */
+    object-fit: cover;
+    object-position: center top; /* Focus on top portion */
+}
+
+/* If user meant the alt text on missing image, we fixed that earlier. */
+/* If user meant the hero description box, we removed it above. */
+
+/* 5. Button Positioning Check */
+.centered-buttons {
+    justify-content: center !important;
+    margin-top: 40px !important;
+}
+
+/* Article Hero Image Sizing */
+.article-hero-img {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    display: block;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Quill Editor Styles */
+#articleContent {
+    height: 200px;
+    margin-top: 10px;
+}
+
+.ql-toolbar {
+    border-color: var(--color-border) !important;
+    background-color: var(--color-card-bg) !important;
+    color: var(--color-text) !important;
+}
+
+.ql-container {
+    border-color: var(--color-border) !important;
+    background-color: #0a0a0a !important;
+    color: var(--color-text) !important;
+    border-radius: 0 0 2px 2px !important;
+}
+
+.ql-editor {
+    color: var(--color-text) !important;
+    background-color: #0a0a0a !important;
+}
+
+.ql-editor.ql-blank::before {
+    color: var(--color-text-muted) !important;
+}
+
+/* Old Text Formatting Toolbar - Now using Quill */
+/* Kept for reference but not used */
+.text-formatting-toolbar {
+    display: none; /* Hide old toolbar since we use Quill */
+}
+
+/* Article Card Image Sizing */
+.article-image {
+    height: 200px;
+    background-color: transparent;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+/* Info Card Link Styles */
+.info-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+}
+
+.info-card-link .info-icon,
+.info-card-link h3,
+.info-card-link p {
+    transition: all 0.3s ease;
+}
+
+.info-card-link:hover .info-icon {
+    color: var(--color-primary);
+    transform: scale(1.1);
+}
+
+.info-card-link:hover h3 {
+    color: var(--color-primary);
+}
+
+.info-card-link:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-primary);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Ensure proper sizing for images in article cards */
+.article-card .article-image {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+@media (max-width: 768px) {
+    .hero-title.glitch {
+        font-size: 4rem;
+    }
+}
+
+/* Adjust positioning for small screens to prevent overlap with navigation */
+@media (min-width: 310px) and (max-width: 455px) {
+    .hero-content {
+        padding-top: calc(100px + 2rem); /* Adjust padding to account for the global title positioning */
+    }
+}
+
+/* Additional adjustment for screens 360px to 640px */
+@media (min-width: 360px) and (max-width: 640px) {
+    .hero-title.glitch {
+        margin-top: 4rem; /* Move the text down even more for this screen range */
+    }
+    .hero-content {
+        padding-top: calc(100px + 4rem); /* Adjust padding to account for the increased title positioning */
+    }
+}
+
+/* Filter Subtitles Styling */
+.filter-subtitles-container {
+    margin: 15px 0;
+}
+
+.filter-subtitle {
+    display: none;
+    margin: 5px 0;
+    color: var(--color-text-muted);
+}
+
+.filter-subtitle.active {
+    display: block;
+}
+
+.filter-subtitle-text {
+    display: none;
+    margin: 8px 0;
+    color: var(--color-text);
+    font-style: italic;
+    text-align: center;
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.filter-subtitle-text[data-category="simulacra"] {
+    display: block;
+}
+
+.filter-quote {
+    position: relative;
+    display: none;
+    margin: 15px 0;
+    padding: 15px 20px 15px 40px; /* Added left padding to accommodate the quotation mark */
+    border-left: 3px solid var(--color-primary);
+    background-color: rgba(176, 82, 106, 0.1);
+    font-style: italic;
+    color: var(--color-text);
+    text-align: center;
+    max-width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: var(--font-heading);
+}
+
+.filter-quote::before {
+    content: "\201C"; /* Unicode left double quotation mark */
+    position: absolute;
+    left: 10px; /* Position the quotation mark to the left of the text */
+    top: 15px; /* Align with the top of the quote */
+    font-size: 2rem;
+    color: var(--color-primary);
+    font-family: var(--font-heading);
+    line-height: 1;
+}
+
+.filter-quote[data-category="simulacra"] {
+    display: block;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 20px auto 0 auto;
+    padding: 10px;
+    clear: both;
+    width: 100%;
+    text-align: center;
+}
+
+.pagination button {
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: var(--font-body);
+}
+
+.pagination button:hover {
+    background-color: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+}
+
+.pagination button.active {
+    background-color: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+}
+
+.pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Scroll to top button */
+.scroll-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.scroll-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.scroll-to-top:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+}
+
+.scroll-to-top i {
+    pointer-events: none;
+}
+
+/* Compact Schemes for Home Page */
+.compact-schemes {
+    margin-top: 30px;
+}
+
+.compact-schemes .scheme-card {
+    padding: 16px;
+}
+
+.compact-schemes .scheme-title {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.compact-schemes .scheme-description {
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+}
+
+.compact-schemes .psychology-item {
+    margin-bottom: 10px;
+    font-size: 0.8rem;
+}
+
+.compact-schemes .psychology-header {
+    font-size: 0.75rem;
+    margin-bottom: 2px;
+}
+
+.compact-schemes .psychology-desc {
+    font-size: 0.75rem;
+    line-height: 1.3;
+}
+
+.compact-schemes .scheme-category {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+}
+
+.compact-schemes .scheme-header {
+    margin-bottom: 12px;
+}
+
+.compact-schemes .scheme-psychology {
+    margin-bottom: 12px;
+    padding: 8px 0;
+}
+
+/* Compact Social Networks */
+.compact-social-networks .social-network-card {
+    padding: 16px;
+}
+
+.compact-social-networks .scheme-title {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.compact-social-networks .scheme-description {
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+}
+
+.compact-social-networks .trust-network,
+.compact-social-networks .manipulation-pattern {
+    font-size: 0.8rem;
+}
+
+.compact-social-networks .network-node,
+.compact-social-networks .pattern-text {
+    font-size: 0.75rem;
+}
+
+.compact-social-networks .scheme-category {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+}
+
+.compact-social-networks .scheme-header {
+    margin-bottom: 12px;
+}
+
+/* Compact Section Title */
+.section-title-compact {
+    font-size: clamp(1.5rem, 3vh, 2rem);
+    text-align: center;
+    margin-top: 3rem;
+    margin-bottom: 10px;
+    color: #fff;
+    font-family: var(--font-heading);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Section Header Container - for consistent spacing */
+.section-header {
+    margin-bottom: 30px;
+}
+
+.mb-16 { margin-bottom: 4rem; } /* 64px - changed to match other sections */
+
+/* Section Subtitle - unified styling */
+.section-subtitle {
+    text-align: center;
+    color: var(--color-text-muted);
+    margin-bottom: 10px; /* Consistent margin */
+    font-size: 1.1rem;
+    line-height: 1.4;
+}
+
+/* Special styling for quote subtitles in sections */
+.section-quote {
+    position: relative;
+    padding-left: 2rem; /* Increased padding to accommodate the quotation mark */
+    color: rgba(136, 136, 136, 0.8); /* text-muted-foreground/80 */
+    font-style: italic;
+    margin: 0.5rem 0 1.5rem 0; /* Reduced top margin */
+    gap: 0.5rem; /* gap-2 */
+    text-align: center; /* Center align for consistency */
+}
+
+/* Simulacra section styles */
+.relative { position: relative; }
+
+.py-24 { padding-top: 6rem; padding-bottom: 6rem; } /* 6rem = 96px */
+
+.overflow-hidden { overflow: hidden; }
+
+.bg-card { background-color: var(--color-card-bg); }
+
+.container { max-width: var(--container-width); margin: 0 auto; padding: 0 20px; }
+
+.mx-auto { margin-left: auto; margin-right: auto; }
+
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+
+.z-10 { z-index: 10; }
+
+
+.text-center { text-align: center; }
+
+.mb-16 { margin-bottom: 30px; } /* Changed to match section-header */
+
+.inline-block { display: inline-block; }
+
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+
+.py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+
+.rounded-full { border-radius: 9999px; }
+
+.bg-primary\/10 { background-color: rgba(176, 82, 106, 0.1); } /* var(--color-primary) with 10% opacity */
+
+.border { border: 1px solid; }
+
+.border-primary\/30 { border-color: rgba(176, 82, 106, 0.3); } /* var(--color-primary) with 30% opacity */
+
+.text-primary { color: var(--color-primary); }
+
+.text-sm { font-size: 0.875rem; }
+
+.uppercase { text-transform: uppercase; }
+
+.tracking-wider { letter-spacing: 0.05em; }
+.mb-4 { margin-bottom: 1rem; }
+
+.font-display { font-family: var(--font-heading); }
+
+.text-4xl { font-size: 2.25rem; }
+
+.text-foreground { color: var(--color-text); }
+
+.mb-4 { margin-bottom: 1rem; }
+
+
+.text-muted-foreground { color: var(--color-text-muted); }
+
+.max-w-2xl { max-width: 42rem; }
+
+.mx-auto { margin-left: auto; margin-right: auto; }
+.mb-6 { margin-bottom: 1.5rem; }
+
+
+.flex { display: flex; }
+
+.items-center { align-items: center; }
+
+.justify-center { justify-content: center; }
+.gap-2 { gap: 0.5rem; }
+
+.text-lg { font-size: 1.125rem; }
+
+.italic { font-style: italic; }
+
+.text-muted-foreground\/80 { color: rgba(136, 136, 136, 0.8); } /* var(--color-text-muted) with 80% opacity */
+
+.grid { display: grid; }
+
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+
+.lg\:grid-cols-3 { /* For larger screens */ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.gap-8 { gap: 2rem; } /* 32px */
+
+.p-8 { padding: 2rem; } /* 32px */
+
+.mb-6 { margin-bottom: 1.5rem; } /* 24px */
+
+.rounded-lg { border-radius: 0.5rem; } /* 8px */
+
+.group-hover\:bg-primary\/20 { /* When parent group is hovered */ background-color: rgba(176, 82, 106, 0.2); }
+
+.transition-colors { transition: background-color 0.3s ease, color 0.3s ease; }
+
+.w-6 { width: 1.5rem; } /* 24px */
+
+.h-6 { height: 1.5rem; } /* 24px */
+
+/* Improve icon centering in containers */
+.fa-instagram, .fa-youtube, .fa-telegram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.text-2xl { font-size: 1.5rem; } /* 24px */
+
+.group-hover\:text-primary { /* When parent group is hovered */ color: var(--color-primary); }
+
+.group-hover\:opacity-100 { /* When parent group is hovered */ opacity: 1; }
+
+.transition-opacity { transition: opacity 0.3s ease; }
+
+.opacity-50 { opacity: 0.5; }
+
+.p-4 { padding: 1rem; } /* 16px */
+
+.bg-green-500\/10 { background-color: rgba(34, 197, 94, 0.1); } /* Green with 10% opacity */
+
+.border-green-500\/20 { border-color: rgba(34, 197, 94, 0.2); } /* Green with 20% opacity */
+
+.bg-red-500\/10 { background-color: rgba(239, 68, 68, 0.1); } /* Red with 10% opacity */
+
+.border-red-500\/20 { border-color: rgba(239, 68, 68, 0.2); } /* Red with 20% opacity */
+
+.bg-gray-500\/10 { background-color: rgba(107, 114, 128, 0.1); } /* Gray with 10% opacity */
+
+.border-gray-500\/20 { border-color: rgba(107, 114, 128, 0.2); } /* Gray with 20% opacity */
+
+.myth-reality {
+    display: flex;
+    gap: 1rem; /* Add spacing between myth and reality boxes */
+    margin-bottom: 1rem;
+}
+
+.myth-reality > div {
+    flex: 1; /* Make both boxes equal width */
+}
+
+.text-xs { font-size: 0.75rem; } /* 12px */
+
+.mb-3 { margin-bottom: 0.75rem; } /* 12px */
+
+.space-y-2 > :not([hidden]) ~ :not([hidden]) { --space-y-reverse: 0; margin-top: calc(0.5rem * calc(1 - var(--space-y-reverse))); margin-bottom: calc(0.5rem * var(--space-y-reverse)); }
+
+.items-start { align-items: flex-start; }
+
+.gap-2 { gap: 0.5rem; } /* 8px */
+
+.text-sm { font-size: 0.875rem; } /* 14px */
+
+.mt-1 { margin-top: 0.25rem; } /* 4px */
+
+.w-5 { width: 1.25rem; } /* 20px */
+
+.h-5 { height: 1.25rem; } /* 20px */
+
+.text-primary\/60 { color: rgba(176, 82, 106, 0.6); } /* var(--color-primary) with 60% opacity */
+
+.text-gray-400 { color: #9ca3af; } /* Gray color for myth labels */
+
+.text-pink-500 { color: #ec4899; } /* Pink color for reality labels */
+
+.lowercase { text-transform: lowercase; } /* Make text lowercase */
+
+/* Responsive design */
+@media (min-width: 768px) { /* md screens */
+  .md\:text-5xl { font-size: 3rem; }
+}
+
+@media (min-width: 1024px) { /* lg screens */
+  .lg\:text-6xl { font-size: 3.75rem; }
+  .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* Card parasite styling */
+.card-parasite {
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-body); /* Ensure sans-serif font for all card content */
+}
+
+.card-parasite:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-primary);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Enhanced hover animations for social media icons in Simulacra section */
+.card-parasite .p-4.rounded-full {
+    transition: all 0.3s ease;
+}
+
+.card-parasite:hover .p-4.rounded-full {
+    transform: scale(1.05);
+    background-color: rgba(176, 82, 106, 0.3) !important; /* Slightly more prominent on hover */
+}
+
+/* Group hover effect */
+.group { transition: all 0.3s ease; }
+
+/* Halftone Overlay for Info Section */
+.info-section {
+    background-color: #0e0e0e;
+    padding: 80px 0;
+    position: relative;
+    z-index: 5;
+    /* Add halftone overlay */
+}
+
+.info-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.03;
+    background-image: radial-gradient(
+        circle,
+        hsl(0, 0%, 88%) 1px,
+        transparent 1px
+    );
+    background-size: 4px 4px;
+    z-index: 1;
+}
+
+.info-section > .container {
+    position: relative;
+    z-index: 2;
+}
+

@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PARASITE - Борьба с Мошенниками</title>
+    <meta name="description" content="Платформа по борьбе с мошенничеством. Защитите себя от мошеннических схем.">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Lucide Icons -->
+    <link rel="stylesheet" href="https://unpkg.com/lucide@latest/dist/lucide.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/button-styles.css">
+    
+    <!-- Quill Editor -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    
+    <!-- Dedicated button styles to override all other styles -->
+    <style>
+        :root {
+            /* Custom Parasite theme tokens */
+            --parasite-rose: 350 45% 50%;
+            --parasite-rose-muted: 350 35% 35%;
+            --parasite-rose-glow: 350 60% 60%;
+            --foreground: 0 0% 95%;
+            --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-glow: 0 0 40px hsl(350 45% 50% / 0.4);
+        }
+        
+        div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="#schemes"].btn-parasite {
+            position: relative !important;
+            overflow: hidden !important;
+            padding: 0.75rem 2rem !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.05em !important;
+            text-transform: uppercase !important;
+            background: linear-gradient(135deg, hsl(350 45% 50%), hsl(350 35% 35%)) !important;
+            color: hsl(0 0% 95%) !important;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            border: none !important;
+            outline: none !important;
+            -webkit-text-stroke: 0px !important;
+            text-shadow: none !important;
+            border-radius: 6px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 16px !important;
+            text-decoration: none !important;
+            cursor: pointer !important;
+            font-family: 'Inter', sans-serif !important;
+            font-size: 1rem !important;
+            width: auto !important;
+        }
+        
+        div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="https://t.me/s/yourscamproof"].btn-outline-parasite {
+            position: relative !important;
+            padding: 0.75rem 2rem !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.05em !important;
+            text-transform: uppercase !important;
+            background: transparent !important;
+            border: 1px solid hsl(350 45% 50%) !important;
+            color: hsl(350 45% 50%) !important;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            outline: none !important;
+            -webkit-text-stroke: 0px !important;
+            text-shadow: none !important;
+            border-radius: 6px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 16px !important;
+            text-decoration: none !important;
+            cursor: pointer !important;
+            font-family: 'Inter', sans-serif !important;
+            font-size: 1rem !important;
+            width: auto !important;
+        }
+        
+        /* Hover effects for primary button */
+        div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="#schemes"].btn-parasite:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: var(--shadow-glow) !important;
+        }
+        
+        div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="#schemes"].btn-parasite:hover::before {
+            opacity: 1 !important;
+        }
+        
+        /* Hover effects for outline button */
+        div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="https://t.me/s/yourscamproof"].btn-outline-parasite:hover {
+            background: hsl(var(--parasite-rose) / 0.1) !important;
+            box-shadow: 0 0 20px hsl(var(--parasite-rose) / 0.3) !important;
+        }
+        
+        /* Icon styles */
+        div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="#schemes"].btn-parasite i,
+        div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="https://t.me/s/yourscamproof"].btn-outline-parasite i {
+            width: 1rem !important;
+            height: 1rem !important;
+            color: currentColor !important;
+            margin-right: 0.5rem !important;
+        }
+        
+        /* Lucide Eye icon specific styling */
+        div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="#schemes"].btn-parasite i[data-lucide="eye"],
+        div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="#schemes"].btn-parasite svg {
+            margin-right: 0.75rem !important;
+        }
+        
+        /* Remove any pseudo-elements between buttons */
+        div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6::before,
+        div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6::after {
+            display: none !important;
+        }
+        
+        /* Button Halftone Overlay - Ribbed Pattern */
+        div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="#schemes"].btn-parasite::before,
+        div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="https://t.me/s/yourscamproof"].btn-outline-parasite::before {
+            content: '';
+            position: absolute !important;
+            inset: 0 !important;
+            pointer-events: none !important;
+            opacity: 0.1 !important;
+            background-image: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 1px,
+                hsl(0 0% 95%) 1px,
+                hsl(0 0% 95%) 2px
+            ) !important;
+            z-index: 1 !important;
+            border-radius: 6px !important;
+        }
+        
+        /* Logo Styling - Tentacles and Shield */
+        .logo-tentacles {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            width: 60px;
+            height: 70px;
+            margin-right: 10px;
+        }
+        
+        .logo-tentacles i {
+            color: hsl(350 45% 50%); /* parasite-rose color */
+            font-size: 1.2rem;
+        }
+        
+        .tentacle-left {
+            transform: rotate(-20deg);
+            font-size: 0.9rem;
+        }
+        
+        .tentacle-right {
+            transform: rotate(20deg);
+            font-size: 0.9rem;
+        }
+        
+        .shield-center {
+            font-size: 1.4rem;
+        }
+        
+        /* Logo Image Styling */
+        .logo-img {
+            width: 60px;
+            height: 70px;
+            margin-right: 10px;
+            filter: brightness(1.2) hue-rotate(10deg) saturate(1.2);
+            object-fit: contain;
+        }
+        
+        .enlarged-logo {
+            width: 90px;
+            height: 105px;
+            background: none !important;
+            margin-right: 10px;
+            filter: none;
+            object-fit: contain;
+        }
+        
+        /* Ensure proper positioning context for buttons */
+        div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="#schemes"].btn-parasite,
+        div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="https://t.me/s/yourscamproof"].btn-outline-parasite {
+            position: relative !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="#home" class="nav-brand">
+                <img src="img/logo.jpg" alt="Logo" class="logo-img enlarged-logo">
+            </a>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home" class="nav-link active">Главная</a></li>
+                <li><a href="#schemes" class="nav-link">Схемы</a></li>
+                <li><a href="#psychology" class="nav-link">Психология</a></li>
+                <li><a href="#gallery" class="nav-link">Галерея</a></li>
+                <li><a href="#contact" class="nav-link">Контакты</a></li>
+                <li><a href="#admin" class="nav-link admin-link"><i class="fas fa-user-shield"></i> Админ</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main id="mainContent">
+        <!-- Home Section (default visible) -->
+        <section id="home" class="page-section active">
+            <div class="hero-section">
+                <!-- Full Screen Scammer Background -->
+                <div class="scammer-background">
+                    <img src="img/scammer.png" alt="Silhouette">
+                </div>
+
+                <!-- Video Background with dark overlay -->
+                <div class="video-background">
+                    <video autoplay muted loop class="background-video">
+                        <source src="img/tentacles.mp4" type="video/mp4">
+                    </video>
+                    <div class="dark-overlay"></div>
+                </div>
+
+                <!-- Background Tentacles (Behind Scammer) - COMMENTED FOR VIDEO BACKGROUND -->
+                <!--
+                <div class="tentacles-container tentacles-background" id="tentaclesBackground">
+                    <img src="img/tentacle.png" class="tentacle-img tentacle-1" alt="Tentacle">
+                    <img src="img/tentacle.png" class="tentacle-img tentacle-3" alt="Tentacle">
+                </div>
+                -->
+
+                <!-- Foreground Tentacles (In front of Scammer, ghosting) -->
+                <div class="tentacles-container tentacles-foreground" id="tentaclesForeground">
+                    <img src="img/tentacle.png" class="tentacle-img tentacle-2" alt="Tentacle">
+                </div>
+
+                <!-- Halftone Overlay - REMOVED from section, applied directly to buttons -->
+
+                <!-- Hero Content -->
+                <div class="container hero-content">
+                    <div class="hero-grid">
+                        <div class="hero-text full-width">
+                            <!-- Restored Title with Glitch Effect -->
+                            <h1 class="hero-title glitch" data-text="PARASITE">PARASITE</h1>
+
+                            <!-- Clean Description -->
+                            <p class="hero-description" style="display: block; margin-top: 20px;">
+                                Защитите себя и своих близких от хитроумных уловок мошенников. Изучайте их тактики,
+                                распознавайте обман и противодействуйте ему — ведь в мире, где каждый играет свою роль,
+                                важно не стать жертвой.
+                            </p>
+
+                            <!-- Buttons directly below -->
+                            <div class="fade-in-up delay-400 flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
+                                <a href="#schemes" class="btn-parasite rounded-md w-full sm:w-auto">
+                                    <span class="relative z-10 flex items-center justify-center gap-2">
+                                        <i data-lucide="eye" class="w-4 h-4" style="width: 1rem; height: 1rem; color: currentColor;"></i> Изучить схемы
+                                    </span>
+                                </a>
+                                <a href="https://t.me/s/yourscamproof" target="_blank" class="btn-outline-parasite rounded-md w-full sm:w-auto">
+                                    <span class="flex items-center justify-center gap-4">
+                                        <i class="fas fa-shield-alt"></i> Пообщаться
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scroll Indicator (Real Scroll Link) - REMOVED -->
+            </div>
+
+            <!-- Info Section Restored -->
+            <div class="info-section">
+                <div class="container">
+                    <h2 class="section-title" data-text="Распознать паразита">Распознать паразита</h2>
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <a href="#schemes" class="info-card-link">
+                                <div class="info-icon">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                                <h3>Схемы</h3>
+                                <p>Статьи о мошеннических схемах и методах защиты</p>
+                            </a>
+                        </div>
+                        <div class="info-card">
+                            <a href="#psychology" class="info-card-link">
+                                <div class="info-icon">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <h3>Психология</h3>
+                                <p>Понимание психологических приёмов мошенников</p>
+                            </a>
+                        </div>
+                        <div class="info-card">
+                            <a href="#gallery" class="info-card-link">
+                                <div class="info-icon">
+                                    <i class="fas fa-eye"></i>
+                                </div>
+                                <h3>Визуальные сигналы</h3>
+                                <p>Галерея инструкций</p>
+                            </a>
+                        </div>
+                        <div class="info-card">
+                            <a href="#contact" class="info-card-link">
+                                <div class="info-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <h3>Общение без масок</h3>
+                                <p>Поддержка единомышленников и обмен опытом</p>
+                            </a>
+                        </div>
+                    </div>
+            </div>
+            
+            <!-- Architect Schemes moved to home page -->
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title-compact" data-text="Архитекторы иллюзий">АРХИТЕКТОРЫ ИЛЛЮЗИЙ</h2>
+                    <p class="section-subtitle">>> «АРХИТЕКТУРНЫЙ ПЛАН» АФЕРЫ: СХЕМА, ПСИХОЛОГИЯ, ДЫРЫ В СИСТЕМЕ</p>
+                </div>
+                <div class="schemes-grid compact-schemes">
+                    <article class="scheme-card" data-scheme-id="1">
+                        <div class="scheme-header">
+                            <span class="scheme-category">Финансы</span>
+                        </div>
+                        <h3 class="scheme-title">Инвестиционные пирамиды</h3>
+                        <p class="scheme-description">Классическая схема Понци: ранние инвесторы получают выплаты за счёт новых вкладчиков. Система рушится, когда поток новых денег иссякает.</p>
+                        <div class="scheme-psychology">
+                            <div class="psychology-item">
+                                <i class="fas fa-brain"></i>
+                                <div class="psychology-header">Психология жертвы</div>
+                                <div class="psychology-desc">Жадность и страх упустить возможность (FOMO)</div>
+                            </div>
+                            <div class="psychology-item">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <div class="psychology-header">Дыра в системе</div>
+                                <div class="psychology-desc">Отсутствие финансовой грамотности у населения</div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="scheme-card" data-scheme-id="2">
+                        <div class="scheme-header">
+                            <span class="scheme-category">Образование</span>
+                        </div>
+                        <h3 class="scheme-title">Псевдокоучинг</h3>
+                        <p class="scheme-description">Гуру успеха продают дорогие курсы без реальной ценности. Основной продукт — мечта о богатстве, а не навыки.</p>
+                        <div class="scheme-psychology">
+                            <div class="psychology-item">
+                                <i class="fas fa-brain"></i>
+                                <div class="psychology-header">Психология жертвы</div>
+                                <div class="psychology-desc">Желание быстрого успеха и социальное доказательство</div>
+                            </div>
+                            <div class="psychology-item">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <div class="psychology-header">Дыра в системе</div>
+                                <div class="psychology-desc">Нерегулируемый рынок образовательных услуг</div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="scheme-card" data-scheme-id="3">
+                        <div class="scheme-header">
+                            <span class="scheme-category">IT-мошенничество</span>
+                        </div>
+                        <h3 class="scheme-title">Криптовалютные схемы</h3>
+                        <p class="scheme-description">Pump & Dump, фейковые ICO, rug pull. Создатели проектов исчезают с деньгами инвесторов после накачки цены.</p>
+                        <div class="scheme-psychology">
+                            <div class="psychology-item">
+                                <i class="fas fa-brain"></i>
+                                <div class="psychology-header">Психология жертвы</div>
+                                <div class="psychology-desc">Технологический оптимизм и страх отстать от тренда</div>
+                            </div>
+                            <div class="psychology-item">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <div class="psychology-header">Дыра в системе</div>
+                                <div class="psychology-desc">Отсутствие регулирования криптовалютного рынка</div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="scheme-card" data-scheme-id="4">
+                        <div class="scheme-header">
+                            <span class="scheme-category">Предпринимательство</span>
+                        </div>
+                        <h3 class="scheme-title">«Бизнес под ключ» и фантомные стартапы</h3>
+                        <p class="scheme-description">
+                            Обещают готовый прибыльный бизнес или долю в «стартапе будущего» с минимальным участием. 
+                            Деньги берут за франшизы, паушальные взносы и пакеты услуг, а реального продукта, клиентов или технологий нет.
+                        </p>
+                        <div class="scheme-psychology">
+                            <div class="psychology-item">
+                                <i class="fas fa-brain"></i>
+                                <div class="psychology-header">Психология жертвы</div>
+                                <div class="psychology-desc">
+                                    Желание быстро стать предпринимателем без опыта, вера в истории успеха и страх упустить «раннюю стадию» перспективного проекта.
+                                </div>
+                            </div>
+                            <div class="psychology-item">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <div class="psychology-header">Дыра в системе</div>
+                                <div class="psychology-desc">
+                                    Сложность проверки реальной выручки и клиентов, отсутствие прозрачной отчётности и слабый контроль рынка франшиз и инвестпредложений.
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="scheme-card" data-scheme-id="5">
+                        <div class="scheme-header">
+                            <span class="scheme-category">Сетевой маркетинг</span>
+                        </div>
+                        <h3 class="scheme-title">MLM-пирамиды</h3>
+                        <p class="scheme-description">Легальные на вид компании, где реальный доход — от рекрутинга, а не от продаж продукта.</p>
+                        <div class="scheme-psychology">
+                            <div class="psychology-item">
+                                <i class="fas fa-brain"></i>
+                                <div class="psychology-header">Психология жертвы</div>
+                                <div class="psychology-desc">Давление ближнего окружения и обещание независимости</div>
+                            </div>
+                            <div class="psychology-item">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <div class="psychology-header">Дыра в системе</div>
+                                <div class="psychology-desc">Размытая грань между MLM и пирамидой</div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="scheme-card" data-scheme-id="6">
+                        <div class="scheme-header">
+                            <span class="scheme-category">Кибермошенничество</span>
+                        </div>
+                        <h3 class="scheme-title">Фишинг банков</h3>
+                        <p class="scheme-description">Поддельные сайты и письма от «банков» с просьбой подтвердить данные карты или войти в личный кабинет.</p>
+                        <div class="scheme-psychology">
+                            <div class="psychology-item">
+                                <i class="fas fa-brain"></i>
+                                <div class="psychology-header">Психология жертвы</div>
+                                <div class="psychology-desc">Страх потери денег и доверие к знакомому бренду</div>
+                            </div>
+                            <div class="psychology-item">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <div class="psychology-header">Дыра в системе</div>
+                                <div class="psychology-desc">Низкая цифровая грамотность</div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            
+            <!-- Social Networks of Parasitism Section -->
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title-compact" data-text="Социальные сети паразитизма">СОЦИАЛЬНЫЕ СЕТИ ПАРАЗИТИЗМА</h2>
+                    <p class="section-subtitle">>> КОГДА ДОВЕРИЕ СТАНОВИТСЯ УЯЗВИМОСТЬЮ</p>
+                </div>
+                
+                <div class="social-networks-grid compact-social-networks">
+                    <article class="social-network-card">
+                        <div class="scheme-header">
+                            <div class="scheme-category-type">
+                                <span class="scheme-category">Семейный</span>
+                            </div>
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="scheme-title">Семейный бизнес на доверии</h3>
+                        <p class="scheme-description">Родственники убеждают пожилых членов семьи переписать имущество «для сохранности». Классическая схема внутрисемейного паразитизма.</p>
+                        
+                        <div class="trust-network">
+                            <div class="network-label">Сеть доверия</div>
+                            <div class="network-connections">
+                                <span class="network-node">Племянник</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span class="network-node">Дядя</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span class="network-node">Нотариус</span>
+                            </div>
+                        </div>
+                        
+                        <div class="manipulation-pattern">
+                            <div class="pattern-label">Паттерн манипуляции</div>
+                            <div class="pattern-text">Доверие → Давление → Изоляция → Отчуждение</div>
+                        </div>
+                    </article>
+                    
+                    <article class="social-network-card">
+                        <div class="scheme-header">
+                            <div class="scheme-category-type">
+                                <span class="scheme-category">Дружеский</span>
+                            </div>
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3 class="scheme-title">Дружеский кредит</h3>
+                        <p class="scheme-description">«Друг» берёт деньги в долг на развитие бизнеса, используя эмоциональные связи. Возвращать не планирует изначально.</p>
+                        
+                        <div class="trust-network">
+                            <div class="network-label">Сеть доверия</div>
+                            <div class="network-connections">
+                                <span class="network-node">Заёмщик</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span class="network-node">Друг-жертва</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span class="network-node">Общие знакомые</span>
+                            </div>
+                        </div>
+                        
+                        <div class="manipulation-pattern">
+                            <div class="pattern-label">Паттерн манипуляции</div>
+                            <div class="pattern-text">Близость → Просьба → Отсрочки → Исчезновение</div>
+                        </div>
+                    </article>
+                    
+                    <article class="social-network-card">
+                        <div class="scheme-header">
+                            <div class="scheme-category-type">
+                                <span class="scheme-category">Корпоративный</span>
+                            </div>
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h3 class="scheme-title">Корпоративный подряд</h3>
+                        <p class="scheme-description">Группа сотрудников создаёт фиктивных подрядчиков и выводит деньги компании через завышенные контракты.</p>
+                        
+                        <div class="trust-network">
+                            <div class="network-label">Сеть доверия</div>
+                            <div class="network-connections">
+                                <span class="network-node">Менеджер закупок</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span class="network-node">Бухгалтер</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span class="network-node">Фирма-однодневка</span>
+                            </div>
+                        </div>
+                        
+                        <div class="manipulation-pattern">
+                            <div class="pattern-label">Паттерн манипуляции</div>
+                            <div class="pattern-text">Доступ → Сговор → Фиктивные счета → Вывод</div>
+                        </div>
+                    </article>
+                    
+                    <article class="social-network-card">
+                        <div class="scheme-header">
+                            <div class="scheme-category-type">
+                                <span class="scheme-category">Романтический</span>
+                            </div>
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3 class="scheme-title">Романтический захват</h3>
+                        <p class="scheme-description">Мошенник строит отношения с жертвой, получает доступ к финансам и исчезает после получения крупной суммы.</p>
+                        
+                        <div class="trust-network">
+                            <div class="network-label">Сеть доверия</div>
+                            <div class="network-connections">
+                                <span class="network-node">Мошенник</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span class="network-node">Жертва</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span class="network-node">Соучастник-«друг»</span>
+                            </div>
+                        </div>
+                        
+                        <div class="manipulation-pattern">
+                            <div class="pattern-label">Паттерн манипуляции</div>
+                            <div class="pattern-text">Обаяние → Влюблённость → Кризис → Просьба денег</div>
+                        </div>
+                    </article>
+                    
+                    <article class="social-network-card">
+                        <div class="scheme-header">
+                            <div class="scheme-category-type">
+                                <span class="scheme-category">Социальный</span>
+                            </div>
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="scheme-title">Социальный активизм под проценты</h3>
+                        <p class="scheme-description">«Знакомый» запускает якобы благотворительный сбор или социальный проект («помочь детям/животным/военным») и использует репутацию в сообществе, чтобы собирать переводы на свои личные счета. Реальная помощь минимальна или отсутствует — деньги уходят на личные нужды.</p>
+                        
+                        <div class="trust-network">
+                            <div class="network-label">Сеть доверия</div>
+                            <div class="network-connections">
+                                <span class="network-node">Лидер сообщества</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span class="network-node">Члены чата/группы</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span class="network-node">Псевдоблаготворительный счёт</span>
+                            </div>
+                        </div>
+                        
+                        <div class="manipulation-pattern">
+                            <div class="pattern-label">Паттерн манипуляции</div>
+                            <div class="pattern-text">Ценности → Вина → Публичное давление → Присвоение</div>
+                        </div>
+                    </article>
+                    
+                    <article class="social-network-card">
+                        <div class="scheme-header">
+                            <div class="scheme-category-type">
+                                <span class="scheme-category">Онлайн‑экспертный</span>
+                            </div>
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="scheme-title">Эксперт по «личностному росту» внутри тусовки</h3>
+                        <p class="scheme-description">Харизматичный участник профессионального или творческого сообщества начинает позиционировать себя как наставника: продаёт «личные консультации» и закрытые мастер‑группы, активно апеллируя к общему кругу и «своим». Под видом помощи и нетворкинга выкачивает деньги и ресурсы, не давая обещанных результатов.</p>
+                        
+                        <div class="trust-network">
+                            <div class="network-label">Сеть доверия</div>
+                            <div class="network-connections">
+                                <span class="network-node">Лидер-«эксперт»</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span class="network-node">Участник-жертва</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span class="network-node">Остальное сообщество (рекомендации, отзывы)</span>
+                            </div>
+                        </div>
+                        
+                        <div class="manipulation-pattern">
+                            <div class="pattern-label">Паттерн манипуляции</div>
+                            <div class="pattern-text">Компетентность → Обожествление → Зависимость → Монетизация доверия</div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            
+            <!-- Simulacra Section -->
+            <div class="container">
+                    <div class="section-header">
+                        <h2 class="section-title-compact" data-text="Симулякры успеха">СИМУЛЯКРЫ УСПЕХА</h2>
+                    <p class="section-subtitle">Как создаются образы и мифы успеха для привлечения жертв</p>
+                    <blockquote class="section-quote">
+                        <span class="quote-text">«Богатым людям не нужен план. У них всё получается.»</span>
+                    </blockquote>
+                </div>
+                    
+                <div class="simulacra-grid">
+                    <article class="card-parasite p-8 group">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="p-4 rounded-full bg-primary/20 group-hover:bg-primary/30 transition-colors flex items-center justify-center">
+                                <i class="fab fa-instagram w-24 h-24 text-primary"></i>
+                            </div>
+                            <i class="fas fa-sparkles w-5 h-5 text-primary opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                        </div>
+                        
+                        <h3 class="font-display text-2xl text-foreground mb-6 group-hover:text-primary transition-colors">Инстаграм-миллионер</h3>
+                        
+                        <div class="myth-reality flex gap-4">
+                            <div class="flex-1 p-4 rounded-lg bg-gray-500/10 border border-gray-500/20">
+                                <div class="myth-label text-gray-400">миф (что продают)</div>
+                                <div class="myth-text lowercase">«заработал миллион за месяц на криптовалюте»</div>
+                            </div>
+                            <div class="flex-1 p-4 rounded-lg bg-red-500/10 border border-red-500/20">
+                                <div class="reality-label" style="color: #b0526a;">реальность</div>
+                                <div class="reality-text lowercase">арендованные машины, чужие виллы для фотосессий, накрученные подписчики</div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-xs text-muted-foreground uppercase tracking-wider mb-3">
+                            <div class="space-y-2">
+                                <div class="flex items-start gap-2 text-sm text-muted-foreground">
+                                    <span class="text-primary mt-1">•</span>
+                                    <span>Только успехи, никаких провалов</span>
+                                </div>
+                                <div class="flex items-start gap-2 text-sm text-muted-foreground">
+                                    <span class="text-primary mt-1">•</span>
+                                    <span>Продаёт курс о том, как он заработал</span>
+                                </div>
+                                <div class="flex items-start gap-2 text-sm text-muted-foreground">
+                                    <span class="text-primary mt-1">•</span>
+                                    <span>Нет проверяемой истории</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="card-parasite p-8 group">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="p-4 rounded-full bg-primary/20 group-hover:bg-primary/30 transition-colors flex items-center justify-center">
+                                <i class="fab fa-youtube w-24 h-24 text-primary"></i>
+                            </div>
+                            <i class="fas fa-sparkles w-5 h-5 text-primary opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                        </div>
+                        
+                        <h3 class="font-display text-2xl text-foreground mb-6 group-hover:text-primary transition-colors">Бизнес-коуч</h3>
+                        
+                        <div class="myth-reality flex gap-4">
+                            <div class="flex-1 p-4 rounded-lg bg-gray-500/10 border border-gray-500/20">
+                                <div class="myth-label text-gray-400">миф (что продают)</div>
+                                <div class="myth-text lowercase">«я построил 5 компаний с нуля»</div>
+                            </div>
+                            <div class="flex-1 p-4 rounded-lg bg-red-500/10 border border-red-500/20">
+                                <div class="reality-label" style="color: #b0526a;">реальность</div>
+                                <div class="reality-text lowercase">единственный реальный бизнес — продажа курсов о построении бизнеса</div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-xs text-muted-foreground uppercase tracking-wider mb-3">
+                            <div class="space-y-2">
+                                <div class="flex items-start gap-2 text-sm text-muted-foreground">
+                                    <span class="text-primary mt-1">•</span>
+                                    <span>Размытые описания прошлых проектов</span>
+                                </div>
+                                <div class="flex items-start gap-2 text-sm text-muted-foreground">
+                                    <span class="text-primary mt-1">•</span>
+                                    <span>Упор на «мышление», не на навыки</span>
+                                </div>
+                                <div class="flex items-start gap-2 text-sm text-muted-foreground">
+                                    <span class="text-primary mt-1">•</span>
+                                    <span>Гарантии результата</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="card-parasite p-8 group">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="p-4 rounded-full bg-primary/20 group-hover:bg-primary/30 transition-colors flex items-center justify-center">
+                                <i class="fab fa-telegram w-24 h-24 text-primary"></i>
+                            </div>
+                            <i class="fas fa-sparkles w-5 h-5 text-primary opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                        </div>
+                        
+                        <h3 class="font-display text-2xl text-foreground mb-6 group-hover:text-primary transition-colors">Гуру самопомощи</h3>
+                        
+                        <div class="myth-reality flex gap-4">
+                            <div class="flex-1 p-4 rounded-lg bg-gray-500/10 border border-gray-500/20">
+                                <div class="myth-label text-gray-400">миф (что продают)</div>
+                                <div class="myth-text lowercase">«мой метод изменит твою жизнь за 21 день»</div>
+                            </div>
+                            <div class="flex-1 p-4 rounded-lg bg-red-500/10 border border-red-500/20">
+                                <div class="reality-label" style="color: #b0526a;">реальность</div>
+                                <div class="reality-text lowercase">переработанные книги по психологии 80-х, упакованные в модную обёртку</div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-xs text-muted-foreground uppercase tracking-wider mb-3">
+                            <div class="space-y-2">
+                                <div class="flex items-start gap-2 text-sm text-muted-foreground">
+                                    <span class="text-primary mt-1">•</span>
+                                    <span>Простые решения сложных проблем</span>
+                                </div>
+                                <div class="flex items-start gap-2 text-sm text-muted-foreground">
+                                    <span class="text-primary mt-1">•</span>
+                                    <span>Культ личности вокруг автора</span>
+                                </div>
+                                <div class="flex items-start gap-2 text-sm text-muted-foreground">
+                                    <span class="text-primary mt-1">•</span>
+                                    <span>Закрытое сообщество</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+        <!-- Fraud Schemes Section -->
+        <section id="schemes" class="page-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title" data-text="Мошеннические схемы">Мошеннические схемы</h2>
+                    <p class="section-subtitle">КАРТА СОЦИАЛЬНОГО ПАРАЗИТИЗМА</p>
+                </div>
+
+                <div class="filter-tabs">
+                    <button class="filter-btn active" data-filter="architects">Архитекторы иллюзий</button>
+                    <button class="filter-btn" data-filter="social_networks">Социальные сети паразитизма</button>
+                    <button class="filter-btn" data-filter="simulacra">Симулякры успеха</button>
+                    <button class="filter-btn" data-filter="deception_zones">Зоны обмана</button>
+                    <button class="filter-btn" data-filter="ethical_wardrobe">Этический чердак</button>
+                </div>
+                <div class="filter-subtitles-container">
+                    <p class="filter-subtitle active" data-category="architects">&gt;&gt; ТЕ, КТО ПРОЕКТИРУЕТ ОБМАН</p>
+                    <p class="filter-subtitle" data-category="social_networks">&gt;&gt; КОГДА ДОВЕРИЕ СТАНОВИТСЯ УЯЗВИМОСТЬЮ</p>
+                    <p class="filter-subtitle" data-category="simulacra">&gt;&gt; КРАСИВЫЕ ФАСАДЫ И ПУСТЫЕ ОБЕЩАНИЯ</p>
+                    <div class="simulacra-subtitle" data-category="simulacra">
+                        <p class="filter-subtitle-text">Как создаются образы и мифы успеха для привлечения жертв</p>
+                        <blockquote class="filter-quote">Богатым людям не нужен план. У них всё получается.</blockquote>
+                    </div>
+                    <p class="filter-subtitle" data-category="deception_zones">&gt;&gt; КОРОТКИЕ ФОРМЫ. БЫСТРЫЕ ЛОВУШКИ.</p>
+                    <p class="filter-subtitle" data-category="ethical_wardrobe">&gt;&gt; ГДЕ ПРОХОДИТ ГРАНИЦА МЕЖДУ ВЫЖИВАНИЕМ И ПАРАЗИТИЗМОМ</p>
+                </div>
+
+                <div id="architectsSchemes" class="schemes-grid" style="display: none;">
+                    <!-- This section now only shows admin-added articles -->
+                </div>
+                
+                <div id="socialNetworksSchemes" class="social-networks-grid" style="display: none;">
+                    <!-- This section now only shows admin-added articles -->
+                </div>
+
+                <div id="simulacraSchemes" class="simulacra-grid" style="display: none;">
+                    <!-- This section now only shows admin-added articles -->
+                </div>
+                
+                <div id="articlesGrid" class="articles-grid">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Загрузка статей...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Psychology Section -->
+        <section id="psychology" class="page-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title" data-text="Психология мошенничества">Психология мошенничества</h2>
+                    <p class="section-subtitle">>> АНАЛИЗ МЕТОДОВ СОЦИАЛЬНОЙ ИНЖЕНЕРИИ</p>
+                </div>
+
+                <div id="psychologyGrid" class="articles-grid">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Загрузка статей...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section id="gallery" class="page-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title" data-text="Галерея защиты">Галерея защиты</h2>
+                    <p class="section-subtitle">>> АРХИВ ВИЗУАЛЬНЫХ ДОКАЗАТЕЛЬСТВ</p>
+                </div>
+
+                <div class="filter-tabs">
+                    <button class="gallery-filter-btn active" data-filter="all">Все</button>
+                    <button class="gallery-filter-btn" data-filter="phishing">Фишинг</button>
+                    <button class="gallery-filter-btn" data-filter="phone_scams">Телефонные схемы</button>
+                    <button class="gallery-filter-btn" data-filter="online_fraud">Онлайн мошенничество</button>
+                    <button class="gallery-filter-btn" data-filter="identity_theft">Кража личности</button>
+                </div>
+
+                <div id="galleryGrid" class="gallery-grid">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Загрузка галереи...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="page-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title" data-text="Присоединяйтесь к нам">Присоединяйтесь к нам</h2>
+                    <p class="section-subtitle">>> УСТАНОВЛЕНИЕ ЗАЩИЩЕННОГО СОЕДИНЕНИЯ...</p>
+                </div>
+
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <h3>Telegram сообщество</h3>
+                        <p>Присоединяйтесь к нашему Telegram-каналу для:</p>
+                        <ul class="contact-list">
+                            <li>Получения актуальных предупреждений</li>
+                            <li>Обмена опытом с другими участниками</li>
+                            <li>Консультаций по защите</li>
+                            <li>Доступа к эксклюзивным материалам</li>
+                        </ul>
+                        <a href="https://t.me/" class="telegram-btn" id="telegramBtn" target="_blank">
+                            <i class="fab fa-telegram"></i>
+                            Присоединиться к Telegram
+                        </a>
+                    </div>
+
+                    <div class="contact-form-container">
+                        <h3>Свяжитесь с нами</h3>
+                        <form id="contactForm" class="contact-form">
+                            <div class="form-group">
+                                <label for="name">Ваше имя</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="telegram">Telegram username</label>
+                                <input type="text" id="telegram" name="telegram" placeholder="@username">
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Сообщение</label>
+                                <textarea id="message" name="message" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Отправить
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Section -->
+        <section id="admin" class="page-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-user-shield"></i> Панель администратора
+                    </h2>
+                    <p class="section-subtitle">Управление контентом сайта</p>
+                </div>
+                
+                <!-- Admin Login Form -->
+                <div id="adminLoginForm" class="admin-login-form">
+                    <h3>Вход администратора</h3>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="adminEmail">Email</label>
+                            <input type="email" id="adminEmail" name="email" required placeholder="admin@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="adminPassword">Пароль</label>
+                            <input type="password" id="adminPassword" name="password" required placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt"></i> Войти
+                        </button>
+                    </form>
+                </div>
+                
+                <div id="adminContent" class="admin-content" style="display: none;">
+                    <div class="admin-tabs">
+                        <button class="admin-tab-btn active" data-tab="articles">
+                            <i class="fas fa-newspaper"></i> Статьи
+                        </button>
+                        <button class="admin-tab-btn" data-tab="gallery">
+                            <i class="fas fa-images"></i> Галерея
+                        </button>
+                    </div>
+
+                <!-- Articles Management -->
+                <div id="adminArticles" class="admin-panel active">
+                    <div class="admin-actions">
+                        <button class="btn btn-primary" id="newArticleBtn">
+                            <i class="fas fa-plus"></i> Новая статья
+                        </button>
+                    </div>
+
+                    <div id="articlesList" class="admin-list">
+                        <!-- Articles list will be loaded here -->
+                    </div>
+
+                    <!-- Article Editor Modal -->
+                    <div id="articleModal" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 id="articleModalTitle">Новая статья</h3>
+                                <button class="modal-close" id="closeArticleModal">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <form id="articleForm" class="admin-form">
+                                <input type="hidden" id="articleId" name="id">
+
+                                <div class="form-group">
+                                    <label for="articleTitle">Заголовок *</label>
+                                    <input type="text" id="articleTitle" name="title" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="articleCategory">Категория *</label>
+                                    <select id="articleCategory" name="category" required>
+                                        <option value="architects">Архитекторы иллюзий</option>
+                                        <option value="social_networks">Социальные сети паразитизма</option>
+                                        <option value="simulacra">Симулякры успеха</option>
+                                        <option value="deception_zones">Зоны обмана</option>
+                                        <option value="ethical_wardrobe">Этический чердак</option>
+                                        <option value="psychology">Психология</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" id="subcategoryGroup" style="display: none;">
+                                    <label for="articleSubcategory">Подкатегория</label>
+                                    <select id="articleSubcategory" name="subcategory">
+                                        <option value="">Выберите подкатегорию</option>
+                                        <option value="finances">Финансы</option>
+                                        <option value="education">Образование</option>
+                                        <option value="entrepreneurship">Предпринимательство</option>
+                                        <option value="network_marketing">Сетевой маркетинг</option>
+                                        <option value="cyber_fraud">Кибермошенничество</option>
+                                        <option value="it_fraud">IT-мошенничество</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="articleExcerpt">Краткое описание *</label>
+                                    <textarea id="articleExcerpt" name="excerpt" rows="3" required></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="articleContent">Содержание *</label>
+                                    <div id="articleContentToolbar">
+                                        <span class="ql-formats">
+                                            <select class="ql-header">
+                                                <option value="1">Заголовок 1</option>
+                                                <option value="2">Заголовок 2</option>
+                                                <option value="3">Заголовок 3</option>
+                                                <option value="">Обычный</option>
+                                            </select>
+                                        </span>
+                                        <span class="ql-formats">
+                                            <button class="ql-bold" title="Жирный"></button>
+                                            <button class="ql-italic" title="Курсив"></button>
+                                            <button class="ql-underline" title="Подчеркнутый"></button>
+                                            <button class="ql-strike" title="Зачеркнутый"></button>
+                                        </span>
+                                        <span class="ql-formats">
+                                            <select class="ql-color"></select>
+                                            <select class="ql-background"></select>
+                                        </span>
+                                        <span class="ql-formats">
+                                            <button class="ql-list" value="ordered" title="Нумерованный список"></button>
+                                            <button class="ql-list" value="bullet" title="Маркированный список"></button>
+                                        </span>
+                                        <span class="ql-formats">
+                                            <button class="ql-link" title="Ссылка"></button>
+                                            <button class="ql-image" title="Изображение"></button>
+                                            <button class="ql-video" title="Видео"></button>
+                                        </span>
+                                        <span class="ql-formats">
+                                            <button class="ql-clean" title="Очистить форматирование"></button>
+                                        </span>
+                                    </div>
+                                    <div id="articleContent" name="content" required
+                                        placeholder="Введите содержание статьи"></div>
+                                </div>
+
+                                <!-- Changed: Upload file capability -->
+                                <div class="form-group">
+                                    <label for="articleImageFile">Изображение (Загрузить файл)</label>
+                                    <input type="file" id="articleImageFile" name="image_file" accept="image/*">
+                                </div>
+                                <div class="form-group">
+                                    <label for="articleImage">Или URL изображения</label>
+                                    <input type="url" id="articleImage" name="image_url"
+                                        placeholder="https://example.com/image.jpg">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="articleAuthor">Автор</label>
+                                    <input type="text" id="articleAuthor" name="author" value="Администратор">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="articleTags">Теги (через запятую)</label>
+                                    <input type="text" id="articleTags" name="tags"
+                                        placeholder="фишинг, защита, безопасность">
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> Сохранить
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" id="cancelArticleBtn">
+                                        Отмена
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Management -->
+                <div id="adminGallery" class="admin-panel">
+                    <div class="admin-actions">
+                        <button class="btn btn-primary" id="newGalleryBtn">
+                            <i class="fas fa-plus"></i> Добавить изображение
+                        </button>
+                    </div>
+
+                    <div id="galleryList" class="admin-list">
+                        <!-- Gallery items list will be loaded here -->
+                    </div>
+
+                    <!-- Gallery Item Editor Modal -->
+                    <div id="galleryModal" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 id="galleryModalTitle">Новое изображение</h3>
+                                <button class="modal-close" id="closeGalleryModal">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <form id="galleryForm" class="admin-form">
+                                <input type="hidden" id="galleryId" name="id">
+
+                                <div class="form-group">
+                                    <label for="galleryTitle">Название *</label>
+                                    <input type="text" id="galleryTitle" name="title" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="galleryDescription">Описание</label>
+                                    <textarea id="galleryDescription" name="description" rows="3"></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="galleryImageFile">Изображение (Загрузить файл)</label>
+                                    <input type="file" id="galleryImageFile" name="image_file" accept="image/*">
+                                </div>
+                                <div class="form-group">
+                                    <label for="galleryImageUrl">Или URL изображения</label>
+                                    <input type="url" id="galleryImageUrl" name="image_url">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="galleryCategory">Категория *</label>
+                                    <select id="galleryCategory" name="category" required>
+                                        <option value="phishing">Фишинг</option>
+                                        <option value="phone_scams">Телефонные схемы</option>
+                                        <option value="online_fraud">Онлайн мошенничество</option>
+                                        <option value="identity_theft">Кража личности</option>
+                                        <option value="general">Общее</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="galleryOrder">Порядок отображения</label>
+                                    <input type="number" id="galleryOrder" name="order" value="0">
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> Сохранить
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" id="cancelGalleryBtn">
+                                        Отмена
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Article Reading Modal -->
+        <div id="readArticleModal" class="modal">
+            <div class="modal-content article-read-content">
+                <button class="modal-close" id="closeReadModal">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div id="readArticleBody"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Lightbox for Gallery -->
+    <div id="lightbox" class="lightbox">
+        <button class="lightbox-close" id="lightboxClose">
+            <i class="fas fa-times"></i>
+        </button>
+        <button class="lightbox-prev" id="lightboxPrev">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="lightbox-next" id="lightboxNext">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        <div class="lightbox-content">
+            <img id="lightboxImage" src="" alt="">
+            <div class="lightbox-caption">
+                <h3 id="lightboxTitle"></h3>
+                <p id="lightboxDescription"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-quote">
+                    <p class="section-quote">
+                        <span class="quote-text">"Все линии, которые мы пересекаем, на самом деле просто линии."</span>
+                    </p>
+                </div>
+                
+                <div class="footer-brand">
+                    <div class="glitch-wrapper">
+                        <h3 class="footer-title glitch">
+                            <span class="glitch__text">ПАРАЗИТЫ</span>
+                            <span class="glitch__layer--cyan" aria-hidden="true">ПАРАЗИТЫ</span>
+                            <span class="glitch__layer--magenta" aria-hidden="true">ПАРАЗИТЫ</span>
+                        </h3>
+                        <p class="footer-description">
+                            Социально-психологический проект о грани между обманом и адаптацией, социальной борьбой и паразитизмом. Знание — ваша лучшая защита.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="footer-sections">
+                    <h4 class="footer-sections-title">ЭТАЖИ ДОМА</h4>
+                    <div class="footer-links">
+                        <a href="#home" class="footer-link">Главная</a>
+                        <a href="#schemes" class="footer-link">Схемы</a>
+                        <a href="#psychology" class="footer-link">Психология</a>
+                        <a href="#gallery" class="footer-link">Галерея</a>
+                        <a href="#contact" class="footer-link">Контакты</a>
+                    </div>
+                </div>
+                
+                <p class="footer-copyright">
+                    2025 - Паразиты. Социально-психологический проект.<br>
+                    ⚠ Только в образовательных целях.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/articles.js"></script>
+    <script src="js/gallery.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/main.js"></script>
+    
+    <!-- Scroll to top button -->
+    <button class="scroll-to-top" id="scrollToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <!-- Lucide Icons JS -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
