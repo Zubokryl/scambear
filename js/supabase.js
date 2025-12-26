@@ -440,46 +440,46 @@ async function saveGalleryItem(item, imageFile = null) {
     throw new Error('Supabase client not initialized');
   }
   
+  // Check if user is an admin before any database operation
+  const isAdmin = await getCurrentUserAdminStatus();
+  if (!isAdmin) {
+    throw new Error('Admin authentication required for gallery operations');
+  }
+  
   // If there's an image file, upload it first
   let imageUrl = item.image_url;
   if (imageFile) {
     imageUrl = await uploadFile(imageFile);
   }
   
+  // Create clean item object without description field to avoid schema errors
+  const cleanItem = {
+    title: item.title,
+    category: item.category,
+    display_order: item.display_order,
+    image_url: imageUrl
+  };
+  
   if (item.id) {
-    // Check if user is an admin before allowing update
-    const isAdmin = await getCurrentUserAdminStatus();
-    if (!isAdmin) {
-      throw new Error('Admin authentication required for updating gallery items');
-    }
-    
+    // Update existing item
     const { data, error } = await window.supabase
       .from('images')
-      .update({
-        title: item.title,
-        description: item.description,
-        category: item.category,
-        display_order: item.display_order,
-        image_url: imageUrl
-      })
+      .update(cleanItem)
       .eq('id', item.id)
     if (error) {
       console.error('Error updating gallery item:', error);
+      console.error('RLS Policy Error - Check Supabase RLS configuration for the images table');
       throw error;
     }
     return data
   } else {
+    // Insert new item
     const { data, error } = await window.supabase
       .from('images')
-      .insert([{
-        title: item.title,
-        description: item.description,
-        category: item.category,
-        display_order: item.display_order,
-        image_url: imageUrl
-      }])
+      .insert([cleanItem])
     if (error) {
       console.error('Error creating gallery item:', error);
+      console.error('RLS Policy Error - Check Supabase RLS configuration for the images table');
       throw error;
     }
     return data

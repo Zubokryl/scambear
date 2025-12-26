@@ -1553,7 +1553,7 @@ ul {
 .footer {
     background-color: #050505;
     padding: 30px 0 15px;
-    margin-top: 50px;
+    margin-top: 25px;
     border-top: 1px solid #222;
 }
 
@@ -3092,6 +3092,48 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
     }
 }
 
+/* Additional adjustment for screens with height 480px (like 320x480) */
+@media (min-width: 300px) and (max-width: 374px) and (max-height: 500px) {
+    .hero-title.glitch {
+        margin-top: 20rem; /* Move the text down significantly more for short height screens (increased further) */
+    }
+    .hero-content {
+        padding-top: calc(100px + 20rem); /* Adjust padding to account for the increased title positioning */
+    }
+    /* Adjust scammer image to prevent overlap with glitch text */
+    .scammer-background img {
+        height: 30%;
+        object-position: center 0%; /* Move the focus point to the very top to show top portion */
+    }
+    /* Ensure proper spacing for text on image */
+    .hero-description {
+        font-size: 0.4rem; /* Even smaller font for compactness */
+        margin-top: 1px;
+        line-height: 1.1; /* Even tighter line spacing */
+    }
+}
+
+/* Additional adjustment for iPhone SE size (320px) - other heights */
+@media (min-width: 300px) and (max-width: 374px) and (min-height: 501px) {
+    .hero-title.glitch {
+        margin-top: 13rem; /* Move the text down even more for iPhone SE (increased by 3rem) */
+    }
+    .hero-content {
+        padding-top: calc(100px + 13rem); /* Adjust padding to account for the increased title positioning */
+    }
+    /* Adjust scammer image to prevent overlap with glitch text */
+    .scammer-background img {
+        height: 55%;
+        object-position: center 15%; /* Move the focus point higher to show top portion */
+    }
+    /* Ensure proper spacing for text on image */
+    .hero-description {
+        font-size: 0.7rem; /* Smaller font for compactness */
+        margin-top: 3px;
+        line-height: 1.1; /* Tighter line spacing */
+    }
+}
+
 /* Additional adjustment for screens 360px to 640px */
 @media (min-width: 360px) and (max-width: 640px) {
     .hero-title.glitch {
@@ -3169,7 +3211,7 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
     justify-content: center;
     align-items: center;
     gap: 10px;
-    margin: 20px auto 0 auto;
+    margin: 10px auto 0 auto;
     padding: 10px;
     clear: both;
     width: 100%;

@@ -510,9 +510,8 @@ class AdminPanel {
         const galleryData = {
             id: null, // Always new mostly, simple logic
             title: formElements.get('title'),
-            description: formElements.get('description'),
             category: formElements.get('category'),
-            order: +formElements.get('order')
+            display_order: +formElements.get('order')
         };
 
         // Get image file if provided
