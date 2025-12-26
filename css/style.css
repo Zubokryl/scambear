@@ -3325,7 +3325,7 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
 
 /* Compact Section Title */
 .section-title-compact {
-    font-size: clamp(1.5rem, 3vh, 2rem);
+    font-size: clamp(1.2rem, 3vh, 2rem);
     text-align: center;
     margin-top: 3rem;
     margin-bottom: 10px;
@@ -3333,6 +3333,32 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
     font-family: var(--font-heading);
     letter-spacing: 1px;
     text-transform: uppercase;
+}
+
+/* Additional responsive adjustments for compact section titles on very small screens */
+@media (max-width: 480px) {
+    .section-title-compact {
+        font-size: clamp(1rem, 3vh, 1.8rem);
+    }
+}
+
+@media (max-width: 360px) {
+    .section-title-compact {
+        font-size: clamp(0.9rem, 3vh, 1.6rem);
+        word-break: break-word;
+    }
+}
+
+@media (max-width: 320px) {
+    .section-title-compact {
+        font-size: clamp(0.8rem, 3vh, 1.4rem);
+    }
+}
+
+@media (max-width: 300px) {
+    .section-title-compact {
+        font-size: clamp(0.7rem, 3vh, 1.2rem);
+    }
 }
 
 /* Section Header Container - for consistent spacing */
