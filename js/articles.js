@@ -4,7 +4,10 @@
  */
 
 class ArticlesManager {
-    constructor() {
+    constructor(apiClient) {
+        if (!apiClient) throw new Error('API client must be provided');
+        this.api = apiClient;
+        
         this.grid = document.getElementById('articlesGrid');
         this.psychologyGrid = document.getElementById('psychologyGrid');
         this.filterBtns = document.querySelectorAll('.filter-btn');
@@ -33,9 +36,12 @@ class ArticlesManager {
                 
         // Pagination variables
         this.currentPage = 1;
-        this.itemsPerPage = 2; // Show 2 items per page for visibility
+        this.itemsPerPage = 10; // Show 10 items per page with pagination
         this.currentArticles = [];
         this.currentCategory = 'all';
+        
+        // Loading state to prevent duplicate requests
+        this.isLoading = false;
 
         this.init();
         
@@ -52,7 +58,10 @@ class ArticlesManager {
         this.architectsSchemes = document.getElementById('architectsSchemes');
         this.socialNetworksSchemes = document.getElementById('socialNetworksSchemes');
         this.simulacraSchemes = document.getElementById('simulacraSchemes');
-        this.loadArticles('all');
+        
+        // Don't load articles immediately - navigation.js will handle initial load
+        // this.loadArticles('all');
+        
         // Removed automatic loading of psychology to avoid navigation conflicts
         // this.loadPsychology();
 
@@ -163,7 +172,14 @@ class ArticlesManager {
     }
 
     async loadArticles(category, page = 1) {
-        if (!this.grid) return;
+        // Prevent multiple simultaneous loads
+        if (this.isLoading) return;
+        this.isLoading = true;
+        
+        if (!this.grid) {
+            this.isLoading = false;
+            return;
+        }
         
         this.currentCategory = category;
         this.currentPage = page;
@@ -174,21 +190,28 @@ class ArticlesManager {
             // For the architects category, we need to load articles from all subcategories
             let articles;
             if (category === 'architects') {
-                const allArticles = await api.getArticles({ category: 'all' });
+                const allArticles = await this.api.getArticles({ category: 'all' });
                 // Filter to include only articles with category starting with 'architects'
                 articles = allArticles.filter(article => 
                     article.category === 'architects' || 
                     article.category.startsWith('architects-')
                 );
             } else {
-                articles = await api.getArticles({ category });
+                articles = await this.api.getArticles({ category });
             }
             
-            this.currentArticles = articles;
-            this.renderGrid(this.grid, articles, page);
+            // Remove duplicates by ID to ensure uniqueness
+            const uniqueArticles = Array.from(
+                new Map(articles.map(a => [a.id, a])).values()
+            );
+            
+            this.currentArticles = uniqueArticles;
+            this.renderGrid(this.grid, uniqueArticles, page);
         } catch (err) {
             console.error(err);
             this.grid.innerHTML = '<p class="error">Ошибка загрузки статей</p>';
+        } finally {
+            this.isLoading = false;
         }
     }
 
@@ -200,7 +223,7 @@ class ArticlesManager {
 
         try {
             // Explicitly fetch psychology
-            const articles = await api.getArticles({ category: 'psychology' });
+            const articles = await this.api.getArticles({ category: 'psychology' });
             this.renderGrid(this.psychologyGrid, articles, page);
             
             // Update URL for psychology section
@@ -235,8 +258,17 @@ class ArticlesManager {
 
         const articlesHtml = articlesToShow.map(article => `
             <div class="article-card" onclick="articlesManager.openArticle('${article.id}')">
-                <div class="article-image" style="background-image: url('${article.image_url || 'https://via.placeholder.com/400x200?text=Anti-Fraud'}')">
+                ${article.image_url ? `
+                <div class="article-image" style="background-image: url('${article.image_url}')">
                     <span class="article-category">${this.getCategoryName(article.category)}</span>
+                    <div class="admin-controls" style="position: absolute; top: 10px; right: 10px; display: none;">
+                        <button class="btn-icon" onclick="event.stopPropagation(); adminPanel.openArticleModalForEdit('${article.id}');" title="Редактировать">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-icon delete" onclick="event.stopPropagation(); adminPanel.deleteArticle('${article.id}');" title="Удалить">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="article-content">
                     <h3 class="article-title">${article.title}</h3>
@@ -245,9 +277,33 @@ class ArticlesManager {
                         <span><i class="fas fa-eye"></i> ${article.views}</span>
                         <span>${new Date(article.created_at).toLocaleDateString()}</span>
                     </div>
-                </div>
+                </div>` : `
+                <div class="article-no-image">
+                    <span class="article-category">${this.getCategoryName(article.category)}</span>
+                    <div class="admin-controls" style="position: absolute; top: 10px; right: 10px; display: none;">
+                        <button class="btn-icon" onclick="event.stopPropagation(); adminPanel.openArticleModalForEdit('${article.id}');" title="Редактировать">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-icon delete" onclick="event.stopPropagation(); adminPanel.deleteArticle('${article.id}');" title="Удалить">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="article-no-image-content">
+                        <h3 class="article-title">${article.title}</h3>
+                        <p class="article-excerpt">${article.excerpt}</p>
+                        <div class="article-meta">
+                            <span><i class="fas fa-eye"></i> ${article.views}</span>
+                            <span>${new Date(article.created_at).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                </div>`}
             </div>
         `).join('');
+        
+        // Add admin controls script
+        setTimeout(() => {
+            this.addAdminControls();
+        }, 100);
         
         if (isArchitectsSection || isSocialNetworksSection || isSimulacraSection) {
             // For architects, social networks, or simulacra section, update the articles area only
@@ -357,9 +413,25 @@ class ArticlesManager {
         const newUrl = `${window.location.pathname}#${slug}`;
         window.history.pushState({}, '', newUrl);
     }
+    
+    async addAdminControls() {
+        // Check if user is an admin
+        try {
+            const isAdmin = await this.api.isAdminAuthenticated();
+            if (isAdmin) {
+                // Show admin controls
+                const adminControls = document.querySelectorAll('.admin-controls');
+                adminControls.forEach(control => {
+                    control.style.display = 'block';
+                });
+            }
+        } catch (error) {
+            console.error('Error checking admin status:', error);
+        }
+    }
 
     async openArticle(id) {
-        const article = await api.getArticleById(id);
+        const article = await this.api.getArticleById(id);
         if (!article) return;
 
         // Process tags for display
@@ -394,4 +466,5 @@ class ArticlesManager {
     }
 }
 
-const articlesManager = new ArticlesManager();
+// ArticlesManager is initialized in main.js with dependency injection
+// const articlesManager = new ArticlesManager(window.api);

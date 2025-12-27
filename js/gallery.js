@@ -4,7 +4,10 @@
  */
 
 class GalleryManager {
-    constructor() {
+    constructor(apiClient) {
+        if (!apiClient) throw new Error('API client must be provided');
+        this.api = apiClient;
+        
         this.grid = document.getElementById('galleryGrid');
         this.filterBtns = document.querySelectorAll('.gallery-filter-btn');
 
@@ -20,7 +23,8 @@ class GalleryManager {
         this.currentItems = [];
         this.currentIndex = 0;
         this.currentPage = 1;
-        this.itemsPerPage = 2; // Show 2 items per page for visibility
+        this.itemsPerPage = 10; // Show 10 items per page with pagination
+        this.isRefreshing = false; // Flag to prevent multiple simultaneous refreshes
         
         // Define category slugs for URL routing
         this.categorySlugs = {
@@ -118,22 +122,29 @@ class GalleryManager {
         });
     }
 
-    async loadGallery(category, page = 1) {
+    async loadGallery(category) {
         if (!this.grid) return;
         
+        // Prevent multiple simultaneous refreshes
+        if (this.isRefreshing) return;
+        
+        this.isRefreshing = true;
         this.currentCategory = category;
-        this.currentPage = page;
+        this.currentPage = 1;  // Reset to first page when loading a new category
 
         this.grid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i><p>Загрузка...</p></div>';
 
         try {
-            this.currentItems = await api.getGallery({ category });
-            this.renderGrid(page);
+            this.currentItems = await this.api.getGallery({ category });
+            this.renderGrid(1);  // Render first page
             
             // Update URL for gallery section
             this.updateUrl(category);
         } catch (err) {
             console.error(err);
+        } finally {
+            // Reset the refresh flag
+            this.isRefreshing = false;
         }
     }
 
@@ -152,6 +163,14 @@ class GalleryManager {
         this.grid.innerHTML = itemsToShow.map((item, index) => `
             <div class="gallery-item" onclick="galleryManager.openLightbox(${startIndex + index})">
                 <img src="${item.image_url || 'https://via.placeholder.com/400x200?text=Gallery+Image'}" alt="${item.title}" loading="lazy">
+                <div class="admin-controls" style="position: absolute; top: 10px; right: 10px; display: none; z-index: 10;">
+                    <button class="btn-icon" onclick="event.stopPropagation(); adminPanel.openGalleryModalForEdit('${item.id}');" title="Редактировать" style="background: rgba(0,0,0,0.7); border: 1px solid #fff;">
+                        <i class="fas fa-edit" style="color: white;"></i>
+                    </button>
+                    <button class="btn-icon delete" onclick="event.stopPropagation(); adminPanel.deleteGalleryItem('${item.id}');" title="Удалить" style="background: rgba(0,0,0,0.7); border: 1px solid #fff;">
+                        <i class="fas fa-trash" style="color: white;"></i>
+                    </button>
+                </div>
                 <div class="gallery-overlay">
                     <h3>${item.title}</h3>
                     <p>${this.getCategoryName(item.category)}</p>
@@ -159,8 +178,13 @@ class GalleryManager {
             </div>
         `).join('');
         
+        // Add admin controls script
+        setTimeout(() => {
+            this.addAdminControls();
+        }, 100);
+        
         // Add pagination controls
-        if (totalPages >= 1) { // Show pagination for testing visibility
+        if (totalPages > 1) {
             const paginationHtml = this.createPaginationHtml(page, totalPages);
             this.grid.innerHTML += paginationHtml;
         }
@@ -201,7 +225,7 @@ class GalleryManager {
         const item = this.currentItems[this.currentIndex];
         this.lightboxImg.src = item.image_url || '';
         this.lightboxTitle.innerText = item.title;
-        this.lightboxDesc.innerText = item.description || '';
+        this.lightboxDesc.innerText = item.description || item.desc || ''; // Use description if available, fallback to empty string
     }
     
     createPaginationHtml(currentPage, totalPages) {
@@ -243,16 +267,48 @@ class GalleryManager {
     }
     
     goToPage(category, page) {
-        this.loadGallery(category, page);
-        // Scroll to top of gallery section
-        const container = this.grid;
-        if (container) {
-            // Use setTimeout to ensure content is rendered before scrolling
-            setTimeout(() => {
-                container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
+        this.currentPage = page;  // Store current page
+        this.currentCategory = category;  // Update current category
+        
+        if (!this.grid) return;
+        
+        // Prevent multiple simultaneous refreshes
+        if (this.isRefreshing) return;
+        
+        this.isRefreshing = true;
+
+        this.grid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i><p>Загрузка...</p></div>';
+
+        try {
+            // Re-render with the specific page
+            this.renderGrid(page);
+            
+            // Update URL for gallery section
+            this.updateUrl(category);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            // Reset the refresh flag
+            this.isRefreshing = false;
+        }
+    }
+    
+    async addAdminControls() {
+        // Check if user is an admin
+        try {
+            const isAdmin = await this.api.isAdminAuthenticated();
+            if (isAdmin) {
+                // Show admin controls
+                const adminControls = document.querySelectorAll('.admin-controls');
+                adminControls.forEach(control => {
+                    control.style.display = 'block';
+                });
+            }
+        } catch (error) {
+            console.error('Error checking admin status:', error);
         }
     }
 }
 
-const galleryManager = new GalleryManager();
+// GalleryManager is initialized in main.js with dependency injection
+// const galleryManager = new GalleryManager(window.api);

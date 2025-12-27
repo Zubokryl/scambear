@@ -4,10 +4,14 @@
  */
 
 class AdminPanel {
-    constructor() {
+    constructor(apiClient) {
+        if (!apiClient) throw new Error('API client must be provided');
+        this.api = apiClient;
+        
+        // Tabs
         this.tabs = document.querySelectorAll('.admin-tab-btn');
         this.panels = document.querySelectorAll('.admin-panel');
-        
+
         // Login UI
         this.loginForm = document.getElementById('loginForm');
         this.adminLoginForm = document.getElementById('adminLoginForm');
@@ -29,6 +33,8 @@ class AdminPanel {
         this.closeGalleryModal = document.getElementById('closeGalleryModal');
         this.cancelGalleryBtn = document.getElementById('cancelGalleryBtn');
 
+        this.isSubmitting = false;
+
         this.init();
     }
 
@@ -41,10 +47,10 @@ class AdminPanel {
             });
         }
 
-        // Check if already logged in as admin
+        // Check auth status
         this.checkInitialAuthStatus();
 
-        // Initialize text formatting toolbar
+        // Initialize Quill toolbar
         this.initTextFormattingToolbar();
 
         // Tabs
@@ -54,490 +60,399 @@ class AdminPanel {
                 this.panels.forEach(p => p.classList.remove('active'));
 
                 e.target.classList.add('active');
-                const target = document.getElementById(e.target.dataset.tab === 'articles' ? 'adminArticles' : 'adminGallery');
-                target.classList.add('active');
+                const targetId = e.target.dataset.tab === 'articles' ? 'adminArticles' : 'adminGallery';
+                const target = document.getElementById(targetId);
+                if (target) target.classList.add('active');
             });
         });
-    }
-    
-    async checkInitialAuthStatus() {
-        try {
-            const isAdmin = await api.isAdminAuthenticated();
-            if (isAdmin) {
-                this.showAdminContent();
-                this.loadArticlesList();
-                this.loadGalleryList();
-            } else {
-                // Ensure login form is visible if not logged in
-                if (this.adminLoginForm) {
-                    this.adminLoginForm.style.display = 'block';
-                }
-                if (this.adminContent) {
-                    this.adminContent.style.display = 'none';
-                }
-            }
-        } catch (error) {
-            console.error('Error checking initial auth status:', error);
-            // Ensure login form is visible on error
-            if (this.adminLoginForm) {
-                this.adminLoginForm.style.display = 'block';
-            }
-            if (this.adminContent) {
-                this.adminContent.style.display = 'none';
-            }
-        }
 
-        // --- Article Events ---
-        this.newArticleBtn.addEventListener('click', () => this.openArticleModal());
-        this.closeArticleModal.addEventListener('click', () => this.closeModal(this.articleModal));
-        this.cancelArticleBtn.addEventListener('click', () => this.closeModal(this.articleModal));
+        // Article buttons
+        if (this.newArticleBtn) this.newArticleBtn.addEventListener('click', () => this.openArticleModal());
+        if (this.closeArticleModal) this.closeArticleModal.addEventListener('click', () => this.closeModal(this.articleModal));
+        if (this.cancelArticleBtn) this.cancelArticleBtn.addEventListener('click', () => this.closeModal(this.articleModal));
 
-        // Add event listener for category change to show/hide subcategory
-        const articleCategorySelect = document.getElementById('articleCategory');
-        const subcategoryGroup = document.getElementById('subcategoryGroup');
-        
-        articleCategorySelect.addEventListener('change', (e) => {
-            if (e.target.value === 'architects') {
-                subcategoryGroup.style.display = 'block';
-            } else {
-                subcategoryGroup.style.display = 'none';
-                // Reset subcategory when not in architects category
-                document.getElementById('articleSubcategory').value = '';
-            }
-        });
-        
-        this.articleForm.addEventListener('submit', async (e) => {
+        // Article form submit
+        if (this.articleForm) this.articleForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             await this.handleArticleSubmit();
         });
 
-        // --- Gallery Events ---
-        this.newGalleryBtn.addEventListener('click', () => this.openGalleryModal());
-        this.closeGalleryModal.addEventListener('click', () => this.closeModal(this.galleryModal));
-        this.cancelGalleryBtn.addEventListener('click', () => this.closeModal(this.galleryModal));
+        // Gallery buttons
+        if (this.newGalleryBtn) this.newGalleryBtn.addEventListener('click', () => this.openGalleryModal());
+        if (this.closeGalleryModal) this.closeGalleryModal.addEventListener('click', () => this.closeModal(this.galleryModal));
+        if (this.cancelGalleryBtn) this.cancelGalleryBtn.addEventListener('click', () => this.closeModal(this.galleryModal));
 
-        this.galleryForm.addEventListener('submit', async (e) => {
+        // Gallery form submit
+        if (this.galleryForm) this.galleryForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             await this.handleGallerySubmit();
         });
+
+        // Article category change
+        const articleCategorySelect = document.getElementById('articleCategory');
+        const subcategoryGroup = document.getElementById('subcategoryGroup');
+        if (articleCategorySelect && subcategoryGroup) {
+            articleCategorySelect.addEventListener('change', (e) => {
+                if (e.target.value === 'architects') {
+                    subcategoryGroup.style.display = 'block';
+                } else {
+                    subcategoryGroup.style.display = 'none';
+                    const subcategoryInput = document.getElementById('articleSubcategory');
+                    if (subcategoryInput) subcategoryInput.value = '';
+                }
+            });
+        }
     }
 
     closeModal(modal) {
-        modal.classList.remove('active');
+        if (modal) modal.classList.remove('active');
     }
 
     async handleLogin() {
-        const email = document.getElementById('adminEmail').value;
-        const password = document.getElementById('adminPassword').value;
-        
-        // Basic validation
+        const emailInput = document.getElementById('adminEmail');
+        const passwordInput = document.getElementById('adminPassword');
+
+        const email = emailInput ? emailInput.value : '';
+        const password = passwordInput ? passwordInput.value : '';
+
         if (!email || !password) {
             alert('Пожалуйста, введите email и пароль');
             return;
         }
-        
-
 
         try {
-            await window.loginAdmin(email, password);
-            this.resetLoginAttempts();
+            await this.api.loginAdmin(email, password);
             this.showAdminContent();
             this.loadArticlesList();
             this.loadGalleryList();
         } catch (error) {
             console.error('Login failed:', error);
-
             alert('Ошибка входа. Проверьте учетные данные.');
         }
     }
-    
-    // Rate limiting removed
-    isLoginRateLimited() {
-        return false;
-    }
-    
-    recordFailedLogin() {
-        // Rate limiting removed
-    }
-    
-    resetLoginAttempts() {
-        // Rate limiting removed
-    }
 
     showAdminContent() {
-        if (this.adminLoginForm) {
-            this.adminLoginForm.style.display = 'none';
-        }
-        if (this.adminContent) {
-            this.adminContent.style.display = 'block';
-        }
-        
-        // Add logout button if it doesn't exist
+        if (this.adminLoginForm) this.adminLoginForm.style.display = 'none';
+        if (this.adminContent) this.adminContent.style.display = 'block';
         this.addLogoutButton();
     }
-    
+
     addLogoutButton() {
-        // Check if logout button already exists
         if (document.getElementById('adminLogoutBtn')) return;
-        
         const adminActions = document.querySelector('.admin-actions');
-        if (adminActions) {
-            const logoutBtn = document.createElement('button');
-            logoutBtn.id = 'adminLogoutBtn';
-            logoutBtn.className = 'btn btn-secondary';
-            logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Выйти';
-            logoutBtn.onclick = () => this.handleLogout();
-            
-            // Insert at the beginning of admin actions
-            adminActions.insertBefore(logoutBtn, adminActions.firstChild);
+        if (!adminActions) return;
+
+        const logoutBtn = document.createElement('button');
+        logoutBtn.id = 'adminLogoutBtn';
+        logoutBtn.className = 'btn btn-secondary';
+        logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Выйти';
+        logoutBtn.onclick = () => this.handleLogout();
+
+        adminActions.insertBefore(logoutBtn, adminActions.firstChild);
+    }
+
+    async handleLogout() {
+        if (!confirm('Вы уверены, что хотите выйти?')) return;
+        try {
+            await this.api.requireAdmin(); // Just to validate
+            if (this.loginForm) this.loginForm.reset();
+            if (this.adminContent) this.adminContent.style.display = 'none';
+            if (this.adminLoginForm) this.adminLoginForm.style.display = 'block';
+        } catch (error) {
+            console.error('Logout error:', error);
         }
     }
-    
+
     initTextFormattingToolbar() {
-        // Initialize Quill editor if it's not already initialized
         if (window.Quill && document.getElementById('articleContent') && !this.quill) {
             this.quill = new Quill('#articleContent', {
-                modules: {
-                    toolbar: '#articleContentToolbar'
-                },
+                modules: { toolbar: '#articleContentToolbar' },
                 theme: 'snow',
                 placeholder: 'Введите содержание статьи...'
             });
         }
     }
-    
-    async handleLogout() {
-        if (confirm('Вы уверены, что хотите выйти?')) {
-            try {
-                // Logout from Supabase
-                if (window.supabase && window.supabase.auth) {
-                    await window.logoutAdmin();
-                }
-                
-                // Reset login attempts
-                this.resetLoginAttempts();
-                
-                // Show login form and hide admin content
-                if (this.adminLoginForm) {
-                    this.adminLoginForm.style.display = 'block';
-                }
-                if (this.adminContent) {
-                    this.adminContent.style.display = 'none';
-                }
-                
-                // Clear the login form
-                if (this.loginForm) {
-                    this.loginForm.reset();
-                }
-            } catch (error) {
-                console.error('Logout error:', error);
-            }
+
+    async requireAdmin() {
+        const isAdmin = await this.api.isAdminAuthenticated();
+        if (!isAdmin) {
+            alert('Вы должны войти как администратор для выполнения этого действия.');
+            throw new Error('Not admin');
         }
     }
 
-    // --- Articles Logic ---
-
+    // --- Articles ---
     async loadArticlesList() {
-        // Check if user is logged in and is an admin
-        const isAdmin = await api.isAdminAuthenticated();
-        if (!isAdmin) {
-            console.warn('Admin not logged in, cannot load articles');
-            this.articlesList.innerHTML = '<p class="empty-state">Для просмотра статей необходимо авторизоваться.</p>';
+        try {
+            await this.requireAdmin();
+        } catch (error) {
+            if (this.articlesList) {
+                this.articlesList.innerHTML = '<p class="empty-state">Для просмотра статей необходимо авторизоваться.</p>';
+            }
             return;
         }
-        
-        const articles = await api.getArticles({ category: 'all' });
-
-        this.articlesList.innerHTML = articles.map(a => `
-            <div class="admin-item">
-                <div class="admin-item-info">
-                    <h4>${a.title}</h4>
-                    <span style="color:#666; font-size:0.9rem">${a.category}</span>
-                </div>
-                <div class="admin-item-controls">
-                    <button class="btn-icon" onclick="adminPanel.editArticle('${a.id}')">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn-icon delete" onclick="adminPanel.deleteArticle('${a.id}')">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </div>
-        `).join('');
+        if (this.articlesList) {
+            this.articlesList.innerHTML = '<p class="empty-state">Редактирование и удаление статей осуществляется непосредственно на странице статьи.</p>';
+        }
     }
 
     openArticleModal(article = null) {
+        if (!this.articleForm) return;
         this.articleForm.reset();
-        document.getElementById('articleId').value = '';
-        document.getElementById('articleModalTitle').innerText = 'Новая статья';
+        const articleModalTitle = document.getElementById('articleModalTitle');
+        if (articleModalTitle) articleModalTitle.innerText = article ? 'Редактировать статью' : 'Новая статья';
 
-        // Initialize Quill if not done yet
         this.initTextFormattingToolbar();
 
         if (article) {
-            document.getElementById('articleModalTitle').innerText = 'Редактировать статью';
-            document.getElementById('articleId').value = article.id;
-            document.getElementById('articleTitle').value = article.title;
-            
-            // Check if article category is an architects subcategory
-            let mainCategory = article.category;
+            document.getElementById('articleId').value = article.id || '';
+            document.getElementById('articleTitle').value = article.title || '';
+            let category = article.category || '';
             let subcategory = '';
-            
-            if (article.category.startsWith('architects-')) {
-                mainCategory = 'architects';
-                subcategory = article.category.substring(10); // Remove 'architects-' prefix
+            if (category.startsWith('architects-')) {
+                subcategory = category.replace('architects-', '');
+                category = 'architects';
             }
-            
-            document.getElementById('articleCategory').value = mainCategory;
-            
-            // Show subcategory dropdown if main category is architects
+            const categorySelect = document.getElementById('articleCategory');
+            const subcategoryInput = document.getElementById('articleSubcategory');
             const subcategoryGroup = document.getElementById('subcategoryGroup');
-            if (mainCategory === 'architects') {
-                subcategoryGroup.style.display = 'block';
-                document.getElementById('articleSubcategory').value = subcategory;
-            } else {
-                subcategoryGroup.style.display = 'none';
-                document.getElementById('articleSubcategory').value = '';
-            }
-            
-            document.getElementById('articleExcerpt').value = article.excerpt;
-            
-            // Set content in Quill editor if it exists
-            if (this.quill) {
-                this.quill.setText(''); // Clear existing content
-                this.quill.root.innerHTML = article.content; // Set the HTML content
-            } else {
-                document.getElementById('articleContent').value = article.content;
-            }
-            
+            if (categorySelect) categorySelect.value = category;
+            if (subcategoryGroup) subcategoryGroup.style.display = category === 'architects' ? 'block' : 'none';
+            if (subcategoryInput) subcategoryInput.value = subcategory;
+
+            document.getElementById('articleExcerpt').value = article.excerpt || '';
+            document.getElementById('articleAuthor').value = article.author || '';
+            document.getElementById('articleTags').value = article.tags || '';
             document.getElementById('articleImage').value = article.image_url || '';
-            document.getElementById('articleAuthor').value = article.author;
-            document.getElementById('articleTags').value = article.tags;
-        } else {
-            // For new article, make sure Quill is initialized and cleared
-            if (this.quill) {
-                this.quill.setText('');
-            }
+
+            if (this.quill) this.quill.root.innerHTML = article.content || '';
+        } else if (this.quill) {
+            this.quill.setText('');
         }
 
-        this.articleModal.classList.add('active');
+        if (this.articleModal) this.articleModal.classList.add('active');
     }
 
-    async editArticle(id) {
+    async handleArticleSubmit() {
+        if (!this.articleForm) return;
+        if (this.isSubmitting) return;
+        this.isSubmitting = true;
+
         try {
-            console.log('Attempting to edit article with ID:', id);
-            // Check if user is logged in and is an admin
-            const isAdmin = await api.isAdminAuthenticated();
-            console.log('Is admin for edit?', isAdmin);
-            if (!isAdmin) {
-                alert('Вы должны войти как администратор для выполнения этого действия.');
-                return;
-            }
-            
-            const article = await api.getArticleById(id);
-            console.log('Fetched article:', article);
-            if (article) {
-                this.openArticleModal(article);
-            } else {
-                alert('Статья не найдена');
-            }
+            await this.requireAdmin();
+
+            const formData = new FormData(this.articleForm);
+            let category = formData.get('category');
+            const subcategory = formData.get('subcategory');
+            if (category === 'architects' && subcategory) category = `architects-${subcategory}`;
+
+            const articleData = {
+                id: formData.get('id') || null,
+                title: this.sanitizeInput(formData.get('title')),
+                category,
+                excerpt: this.sanitizeInput(formData.get('excerpt')),
+                content: this.sanitizeInput(this.quill ? this.quill.root.innerHTML : formData.get('content')),
+                author: this.sanitizeInput(formData.get('author')),
+                tags: this.sanitizeInput(formData.get('tags'))
+            };
+
+            const imageFileInput = document.getElementById('articleImageFile');
+            const imageFile = imageFileInput && imageFileInput.files.length > 0 ? imageFileInput.files[0] : null;
+
+            await this.api.saveArticle(articleData, imageFile);
+            this.closeModal(this.articleModal);
+            this.loadArticlesList();
+            if (window.articlesManager) window.articlesManager.loadArticles('all');
+
         } catch (error) {
-            console.error('Error fetching article for edit:', error);
-            alert('Ошибка при загрузке статьи: ' + error.message);
+            console.error('Error saving article:', error);
+            alert('Ошибка при сохранении статьи: ' + error.message);
+        } finally {
+            this.isSubmitting = false;
         }
     }
 
     async deleteArticle(id) {
+        if (!id) return;
+        if (this.isSubmitting) return;
+        this.isSubmitting = true;
+
         try {
-            console.log('Attempting to delete article with ID:', id);
-            // Check if user is logged in and is an admin
-            const isAdmin = await api.isAdminAuthenticated();
-            console.log('Is admin for delete?', isAdmin);
-            if (!isAdmin) {
-                alert('Вы должны войти как администратор для выполнения этого действия.');
-                return;
-            }
-            
-            if (confirm('Вы уверены, что хотите удалить эту статью?')) {
-                console.log('Calling API deleteArticle with ID:', id);
-                console.log('API object exists:', !!api);
-                console.log('API deleteArticle function exists:', typeof api.deleteArticle);
-                if (typeof api.deleteArticle !== 'function') {
-                    console.error('api.deleteArticle is not a function!');
-                    console.log('Available API methods:', Object.keys(api));
-                    return;
-                }
-                await api.deleteArticle(id);
-                console.log('Article deleted successfully, reloading lists...');
+            await this.requireAdmin();
+            if (confirm('Удалить статью?')) {
+                await this.api.deleteArticle(id);
                 this.loadArticlesList();
-                // Refresh main grid if present
                 if (window.articlesManager) window.articlesManager.loadArticles('all');
-                console.log('Lists reloaded after deletion');
             }
         } catch (error) {
             console.error('Error deleting article:', error);
             alert('Ошибка при удалении статьи: ' + error.message);
+        } finally {
+            this.isSubmitting = false;
         }
     }
 
-    async handleArticleSubmit() {
-        // Check if user is logged in and is an admin
-        const isAdmin = await api.isAdminAuthenticated();
-        if (!isAdmin) {
-            alert('Вы должны войти как администратор для выполнения этого действия.');
-            return;
-        }
-        
-        const formElements = new FormData(this.articleForm);
-        const fileInput = document.getElementById('articleImageFile');
-        
-        // Get content from Quill editor if it exists, otherwise from textarea
-        let content = '';
-        if (this.quill) {
-            content = this.quill.root.innerHTML;
-        } else {
-            content = document.getElementById('articleContent').value;
-        }
-        
-        let category = formElements.get('category');
-        
-        // If category is 'architects' and a subcategory is selected, use the subcategory as additional info
-        if (category === 'architects') {
-            const subcategory = formElements.get('subcategory');
-            if (subcategory) {
-                // Store the subcategory as a category_suffix or similar field
-                category = `architects-${subcategory}`;
-            }
-        }
-        
-        const articleData = {
-            id: formElements.get('id') || null,
-            title: formElements.get('title'),
-            category: category,
-            excerpt: formElements.get('excerpt'),
-            content: content, // Use content from Quill
-            author: formElements.get('author'),
-            tags: formElements.get('tags')
-        };
-
-        // Get image file if provided
-        const imageFile = fileInput.files.length > 0 ? fileInput.files[0] : null;
-        
-        console.log('Image file selected:', imageFile);
-        
-        // Preview image if needed
-        if (imageFile) {
-            try {
-                await api.processImagePreview(imageFile);
-            } catch (e) {
-                console.warn('Could not process image preview:', e);
-            }
-        }
-
-        try {
-            console.log('About to save article with image file:', imageFile);
-            await api.saveArticle(articleData, imageFile);
-            this.closeModal(this.articleModal);
-            this.loadArticlesList();
-            if (window.articlesManager) window.articlesManager.loadArticles('all');
-            // Optionally show success message
-            console.log('Article saved successfully');
-        } catch (error) {
-            console.error('Error saving article:', error);
-            alert('Ошибка при сохранении статьи: ' + error.message);
-        }
-    }
-
-    // --- Gallery Logic ---
-
+    // --- Gallery ---
     async loadGalleryList() {
-        // Check if user is logged in and is an admin
-        const isAdmin = await api.isAdminAuthenticated();
-        if (!isAdmin) {
-            console.warn('Admin not logged in, cannot load gallery');
-            this.galleryList.innerHTML = '<p class="empty-state">Для просмотра галереи необходимо авторизоваться.</p>';
+        try {
+            await this.requireAdmin();
+        } catch (error) {
+            if (this.galleryList) {
+                this.galleryList.innerHTML = '<p class="empty-state">Для просмотра галереи необходимо авторизоваться.</p>';
+            }
             return;
         }
-        
-        const items = await api.getGallery({ category: 'all' });
-
-        this.galleryList.innerHTML = items.map(i => `
-            <div class="admin-item">
-                <div class="admin-item-info">
-                    <img src="${i.image_url || 'https://via.placeholder.com/50x30?text=No+Image'}" style="width: 50px; height: 30px; object-fit: cover; vertical-align: middle; margin-right: 10px;">
-                    <span style="font-weight:600">${i.title}</span>
-                </div>
-                <div class="admin-item-controls">
-                    <button class="btn-icon delete" onclick="adminPanel.deleteGalleryItem('${i.id}')">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </div>
-        `).join('');
+        if (this.galleryList) {
+            this.galleryList.innerHTML = '<p class="empty-state">Редактирование и удаление изображений осуществляется непосредственно на странице галереи.</p>';
+        }
     }
 
-    openGalleryModal() {
-        this.galleryForm.reset();
-        this.galleryModal.classList.add('active');
-    }
+    openGalleryModal(galleryItem = null) {
+        if (this.galleryForm) this.galleryForm.reset();
+        const galleryModalTitle = document.getElementById('galleryModalTitle');
+        if (galleryModalTitle) galleryModalTitle.innerText = galleryItem ? 'Редактировать изображение' : 'Новое изображение';
 
-    async deleteGalleryItem(id) {
-        // Check if user is logged in and is an admin
-        const isAdmin = await api.isAdminAuthenticated();
-        if (!isAdmin) {
-            alert('Вы должны войти как администратор для выполнения этого действия.');
-            return;
+        if (galleryItem) {
+            document.getElementById('galleryId').value = galleryItem.id || '';
+            document.getElementById('galleryTitle').value = galleryItem.title || '';
+            document.getElementById('galleryImageUrl').value = galleryItem.image_url || '';
+            document.getElementById('galleryCategory').value = galleryItem.category || 'general';
+            document.getElementById('galleryOrder').value = galleryItem.display_order || 0;
         }
-        
-        if (confirm('Удалить изображение?')) {
-            await api.deleteGalleryItem(id);
-            this.loadGalleryList();
-            if (window.galleryManager) window.galleryManager.loadGallery('all');
-        }
+
+        if (this.galleryModal) this.galleryModal.classList.add('active');
     }
 
     async handleGallerySubmit() {
-        // Check if user is logged in and is an admin
-        const isAdmin = await api.isAdminAuthenticated();
-        if (!isAdmin) {
-            alert('Вы должны войти как администратор для выполнения этого действия.');
-            return;
-        }
-        
-        const formElements = new FormData(this.galleryForm);
-        const fileInput = document.getElementById('galleryImageFile');
-        
-        const galleryData = {
-            id: null, // Always new mostly, simple logic
-            title: formElements.get('title'),
-            category: formElements.get('category'),
-            display_order: +formElements.get('order')
-        };
-
-        // Get image file if provided
-        const imageFile = fileInput.files.length > 0 ? fileInput.files[0] : null;
-        
-        // Preview image if needed
-        if (imageFile) {
-            try {
-                await api.processImagePreview(imageFile);
-            } catch (e) {
-                console.warn('Could not process image preview:', e);
-            }
-        }
+        if (!this.galleryForm || this.isSubmitting) return;
+        this.isSubmitting = true;
 
         try {
-            await api.saveGalleryItem(galleryData, imageFile);
+            await this.requireAdmin();
+
+            const formData = new FormData(this.galleryForm);
+            const galleryData = {
+                id: formData.get('id') || null,
+                title: this.sanitizeInput(formData.get('title')),
+                category: this.sanitizeInput(formData.get('category')),
+                display_order: +formData.get('order') || 0
+            };
+
+            const imageFileInput = document.getElementById('galleryImageFile');
+            const imageFile = imageFileInput && imageFileInput.files.length > 0 ? imageFileInput.files[0] : null;
+
+            await this.api.saveGalleryItem(galleryData, imageFile);
             this.closeModal(this.galleryModal);
             this.loadGalleryList();
             if (window.galleryManager) window.galleryManager.loadGallery('all');
-            // Optionally show success message
-            console.log('Gallery item saved successfully');
         } catch (error) {
             console.error('Error saving gallery item:', error);
             alert('Ошибка при сохранении изображения: ' + error.message);
+        } finally {
+            this.isSubmitting = false;
         }
+    }
+
+    async deleteGalleryItem(id) {
+        if (!id || this.isSubmitting) return;
+        this.isSubmitting = true;
+
+        try {
+            await this.requireAdmin();
+            if (confirm('Удалить изображение?')) {
+                await this.api.deleteGalleryItem(id);
+                this.loadGalleryList();
+                if (window.galleryManager) window.galleryManager.loadGallery('all');
+            }
+        } catch (error) {
+            console.error('Error deleting gallery item:', error);
+            alert('Ошибка при удалении изображения: ' + error.message);
+        } finally {
+            this.isSubmitting = false;
+        }
+    }
+
+    async checkInitialAuthStatus() {
+        try {
+            const isAdmin = await this.api.isAdminAuthenticated();
+            if (isAdmin) {
+                this.showAdminContent();
+                this.loadArticlesList();
+                this.loadGalleryList();
+            } else {
+                if (this.adminLoginForm) this.adminLoginForm.style.display = 'block';
+                if (this.adminContent) this.adminContent.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error checking initial auth status:', error);
+            if (this.adminLoginForm) this.adminLoginForm.style.display = 'block';
+            if (this.adminContent) this.adminContent.style.display = 'none';
+        }
+    }
+    
+    // Methods to support inline editing from articles and gallery views
+    async openArticleModalForEdit(id) {
+        try {
+            await this.requireAdmin();
+            const article = await this.api.getArticleById(id);
+            if (article) {
+                this.openArticleModal(article);
+            }
+        } catch (error) {
+            console.error('Error opening article modal for edit:', error);
+        }
+    }
+    
+    async openGalleryModalForEdit(id) {
+        try {
+            await this.requireAdmin();
+            const galleryItem = await this.api.getGalleryItemById(id);
+            if (galleryItem) {
+                this.openGalleryModal(galleryItem);
+            }
+        } catch (error) {
+            console.error('Error opening gallery modal for edit:', error);
+        }
+    }
+    
+    sanitizeInput(input) {
+        if (!input || typeof input !== 'string') return '';
+        
+        // Remove dangerous characters and patterns while preserving allowed HTML for content
+        let sanitized = input;
+        
+        // For content fields, allow some HTML but sanitize dangerous elements
+        if (input.includes('<')) {
+            // Remove dangerous HTML tags and attributes
+            sanitized = sanitized
+                .replace(/<script[^>]*>.*?<\/script>/gi, '')
+                .replace(/<iframe[^>]*>.*?<\/iframe>/gi, '')
+                .replace(/<object[^>]*>.*?<\/object>/gi, '')
+                .replace(/<embed[^>]*>.*?<\/embed>/gi, '')
+                .replace(/<link[^>]*>/gi, '')
+                .replace(/<meta[^>]*>/gi, '')
+                .replace(/javascript:/gi, '')
+                .replace(/vbscript:/gi, '')
+                .replace(/onload=/gi, 'on_load=')
+                .replace(/onerror=/gi, 'on_error=')
+                .replace(/onmouseover=/gi, 'on_mouseover=')
+                .replace(/onmouseout=/gi, 'on_mouseout=');
+        } else {
+            // For non-HTML fields, remove all HTML tags
+            sanitized = sanitized
+                .replace(/<[^>]*>/g, '')
+                .replace(/javascript:/gi, '')
+                .replace(/vbscript:/gi, '')
+                .replace(/onload=/gi, 'on_load=')
+                .replace(/onerror=/gi, 'on_error=');
+        }
+        
+        // Remove control characters
+        sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+        
+        return sanitized.trim();
     }
 }
 
-const adminPanel = new AdminPanel();
+// AdminPanel is initialized in main.js with dependency injection
+// const adminPanel = new AdminPanel(window.api);

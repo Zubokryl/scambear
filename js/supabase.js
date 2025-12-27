@@ -28,6 +28,13 @@ window.supabase = (function() {
                           return { data: getMockArticle(), error: null };
                         } else if (table === 'images') {
                           return { data: getMockGalleryItem(), error: null };
+                        } else if (table === 'admins') {
+                          // Mock admin check - return a valid admin record
+                          if (value === 'mock-admin-id') {
+                            return { data: [{ user_id: 'mock-admin-id', is_admin: true }], error: null };
+                          } else {
+                            return { data: [], error: null };
+                          }
                         }
                         return { data: [], error: null };
                       },
@@ -37,6 +44,13 @@ window.supabase = (function() {
                           return callback({ data: getMockArticles(), error: null });
                         } else if (table === 'images') {
                           return callback({ data: getMockGalleryItems(), error: null });
+                        } else if (table === 'admins') {
+                          // Mock admin check - return a valid admin record
+                          if (value === 'mock-admin-id') {
+                            return callback({ data: [{ user_id: 'mock-admin-id', is_admin: true }], error: null });
+                          } else {
+                            return callback({ data: [], error: null });
+                          }
                         }
                         return callback({ data: [], error: null });
                       }
@@ -48,6 +62,13 @@ window.supabase = (function() {
                       return callback({ data: getMockArticles(), error: null });
                     } else if (table === 'images') {
                       return callback({ data: getMockGalleryItems(), error: null });
+                    } else if (table === 'admins') {
+                      // Mock admin check - return a valid admin record
+                      if (value === 'mock-admin-id') {
+                        return callback({ data: [{ user_id: 'mock-admin-id', is_admin: true }], error: null });
+                      } else {
+                        return callback({ data: [], error: null });
+                      }
                     }
                     return callback({ data: [], error: null });
                   }
@@ -58,7 +79,20 @@ window.supabase = (function() {
           insert: function(data) {
             return {
               then: function(callback) {
-                return callback({ data: data, error: null });
+                // Add ID to the inserted data if it doesn't have one
+                const now = new Date().toISOString();
+                const result = Array.isArray(data) ? 
+                  data.map(item => ({
+                    id: item.id || `mock-id-${Date.now()}-${Math.random()}`,
+                    created_at: now,
+                    ...item
+                  })) : 
+                  [{
+                    id: data.id || `mock-id-${Date.now()}-${Math.random()}`,
+                    created_at: now,
+                    ...data
+                  }];
+                return callback({ data: result, error: null });
               }
             };
           },
@@ -109,9 +143,11 @@ window.supabase = (function() {
         signInWithPassword: function(credentials) {
           return {
             then: function(callback) {
-              // Mock admin login
-              if (credentials.email === 'admin@example.com' && credentials.password === 'admin123') {
-                return callback({ data: { user: { id: 'mock-admin-id' } }, error: null });
+              // Check for specific admin credentials
+              if (credentials.email === 'atevs@gmail.com' && credentials.password === 'atevs777') {
+                // Set mock session for admin
+                window._mockSession = { user: { id: 'mock-admin-id' } };
+                return callback({ data: { user: { id: 'mock-admin-id' }, session: window._mockSession }, error: null });
               } else {
                 return callback({ data: null, error: { message: 'Invalid credentials' } });
               }
@@ -121,14 +157,24 @@ window.supabase = (function() {
         signOut: function() {
           return {
             then: function(callback) {
+              // Clear mock session
+              window._mockSession = null;
               return callback({ error: null });
             }
           };
         },
         getUser: function() {
-          return {
-            data: { user: { id: 'mock-user-id' } }
-          };
+          // Check if we have a logged-in user by checking session
+          const mockSession = window._mockSession || null;
+          if (mockSession && mockSession.user) {
+            return {
+              data: { user: mockSession.user }
+            };
+          } else {
+            return {
+              data: { user: null }
+            };
+          }
         }
       }
     };
@@ -186,7 +232,8 @@ window.supabase = (function() {
           description: "Это пример изображения для галереи. В реальной системе здесь будут данные из базы данных.",
           category: "general",
           image_url: "https://via.placeholder.com/400x200?text=Gallery+Image",
-          display_order: 1
+          display_order: 1,
+          created_at: "2024-01-01T00:00:00Z"
         },
         {
           id: 2,
@@ -194,7 +241,8 @@ window.supabase = (function() {
           description: "Пример изображения, демонстрирующего фишинговые схемы.",
           category: "phishing",
           image_url: "https://via.placeholder.com/400x200?text=Phishing+Example",
-          display_order: 2
+          display_order: 2,
+          created_at: "2024-01-02T00:00:00Z"
         }
       ];
     }
@@ -206,7 +254,8 @@ window.supabase = (function() {
         description: "Это пример изображения для галереи. В реальной системе здесь будут данные из базы данных.",
         category: "general",
         image_url: "https://via.placeholder.com/400x200?text=Gallery+Image",
-        display_order: 1
+        display_order: 1,
+        created_at: new Date().toISOString()
       };
     }
   }
@@ -251,7 +300,7 @@ async function checkAdminStatus(userId) {
       .from('admins')
       .select('*')
       .eq('user_id', userId);
-      
+    
     if (error) {
       console.error('Error querying admin status:', error);
       return false;
@@ -281,7 +330,9 @@ async function checkAdminStatus(userId) {
 // --- Check current user admin status ---
 async function getCurrentUserAdminStatus() {
   if (!window.supabase) {
-    throw new Error('Supabase client not initialized');
+    // Development fallback when Supabase is unavailable
+    console.log('Supabase not initialized, returning admin status as true for development');
+    return true;
   }
   
   const {
@@ -329,6 +380,25 @@ async function getArticleById(id) {
     throw error;
   }
   console.log('Article fetched by ID:', data);
+  return data
+}
+
+async function getGalleryItemById(id) {
+  if (!window.supabase) {
+    throw new Error('Supabase client not initialized');
+  }
+  
+  console.log('Fetching gallery item by ID:', id);
+  const { data, error } = await window.supabase
+    .from('images')
+    .select('*')
+    .eq('id', id)
+    .single()
+  if (error) {
+    console.error('Error fetching gallery item by ID:', error);
+    throw error;
+  }
+  console.log('Gallery item fetched by ID:', data);
   return data
 }
 
@@ -419,19 +489,37 @@ async function deleteArticle(id) {
 }
 
 // --- Gallery ---
-async function getGallery() {
+async function getGallery({ category } = {}) {
   if (!window.supabase) {
     throw new Error('Supabase client not initialized');
   }
   
-  const { data, error } = await window.supabase
+  let query = window.supabase
     .from('images')
     .select('*')
-    .order('display_order', { ascending: true })
+    .order('created_at', { ascending: false });  // Show newest items first
+  
+  if (category && category !== 'all') {
+    query = query.eq('category', category);
+  }
+  
+  const { data, error } = await query;
   if (error) {
     console.error('Error fetching gallery:', error);
     return [];
   }
+  
+  // Sort by created_at descending to show newest items first
+  // If no created_at field exists, maintain original order
+  if (data && Array.isArray(data)) {
+    return data.sort((a, b) => {
+      // Try to sort by created_at first, then by display_order
+      const dateA = new Date(a.created_at || a.display_order || 0);
+      const dateB = new Date(b.created_at || b.display_order || 0);
+      return dateB - dateA; // Descending order (newest first)
+    });
+  }
+  
   return data
 }
 
@@ -457,7 +545,8 @@ async function saveGalleryItem(item, imageFile = null) {
     title: item.title,
     category: item.category,
     display_order: item.display_order,
-    image_url: imageUrl
+    image_url: imageUrl,
+    created_at: new Date().toISOString()  // Add timestamp for sorting
   };
   
   if (item.id) {
@@ -497,14 +586,27 @@ async function deleteGalleryItem(id) {
     throw new Error('Admin authentication required for deleting gallery items');
   }
   
-  const { error } = await window.supabase.from('images').delete().eq('id', id)
-  if (error) throw error
+  const { error, data } = await window.supabase.from('images').delete().eq('id', id)
+  if (error) {
+    console.error('Error deleting gallery item:', error);
+    throw error;
+  }
+  console.log('Gallery item deleted successfully:', id);
+  return data
 }
 
 // --- File Upload to Supabase Storage ---
 async function uploadFile(file, folder = 'images') {
   if (!window.supabase) {
     throw new Error('Supabase client not initialized');
+  }
+  
+  // Validate file type to prevent malicious uploads
+  if (file && file.type) {
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      throw new Error('Invalid file type. Only images are allowed.');
+    }
   }
   
   const fileName = `${Date.now()}_${file.name}`
@@ -535,6 +637,7 @@ window.loginAdmin = loginAdmin;
 window.logoutAdmin = logoutAdmin;
 window.getArticles = getArticles;
 window.getArticleById = getArticleById;
+window.getGalleryItemById = getGalleryItemById;
 window.saveArticle = saveArticle;
 window.deleteArticle = deleteArticle;
 window.getGallery = getGallery;

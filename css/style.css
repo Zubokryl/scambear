@@ -96,6 +96,32 @@ ul {
 }
 
 /* Utility Classes */
+.text-parasite-pink {
+    color: hsl(350 45% 50%); /* Parasite pink color */
+}
+
+.telegram-icon-large {
+    font-size: 3rem; /* 3x larger than default */
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.parasite-bullets li {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 10px;
+}
+
+.parasite-bullets li::before {
+    content: '•';
+    color: hsl(350 45% 50%); /* Parasite pink color */
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
 .container {
     max-width: var(--container-width);
     margin: 0 auto;
@@ -577,10 +603,11 @@ ul {
 }
 
 .section-title {
-    font-size: clamp(1.2rem, 4vh, 3rem);
+    font-size: clamp(2.4rem, 8vh, 6rem); /* Twice as large */
     text-align: center;
     margin-bottom: 10px;
     color: #fff;
+    font-weight: bold;
 }
 
 /* Additional responsive adjustments for very small screens */
@@ -689,6 +716,7 @@ ul {
     cursor: pointer;
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 .article-card:hover {
@@ -704,6 +732,41 @@ ul {
     position: relative;
 }
 
+/* Article Card without image */
+.article-no-image {
+    height: 200px;
+    background-color: var(--color-card-bg);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 40px 20px 20px 20px; /* Increase top padding to accommodate category badge */
+    background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+    flex: 1;
+}
+
+.article-no-image-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.article-no-image .article-title {
+    color: white;
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+    line-height: 1.3;
+}
+
+.article-no-image .article-excerpt {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin: 0 0 15px 0;
+    line-height: 1.4;
+    flex: 1;
+}
+
 .article-category {
     position: absolute;
     top: 10px;
@@ -716,11 +779,34 @@ ul {
     letter-spacing: 1px;
 }
 
+.article-no-image .article-category {
+    top: 5px;
+    left: 5px;
+}
+
 .article-content {
     padding: 20px;
     flex: 1;
     display: flex;
     flex-direction: column;
+}
+
+.article-content h3.article-title {
+    margin-bottom: 10px;
+}
+
+.article-content p.article-excerpt {
+    margin-bottom: 15px;
+    flex: 1;
+}
+
+/* Article content for no-image cards */
+.article-no-image + .article-content {
+    padding-top: 0;
+}
+
+.article-no-image .article-meta {
+    margin-top: auto;
 }
 
 .article-title {
@@ -783,9 +869,9 @@ ul {
 /* Simulacra Card */
 .simulacra-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 30px;
-    margin-bottom: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Slightly smaller min width */
+    gap: 15px; /* Reduced gap between cards */
+    margin-bottom: 20px; /* Reduced margin */
 }
 
 .simulacra-card {    
@@ -797,7 +883,7 @@ ul {
     cursor: pointer;
     display: flex;
     flex-direction: column;
-    padding: 24px;
+    padding: 16px; /* Reduced padding for more compact look */
 }
 
 .simulacra-card:hover {
@@ -1020,11 +1106,12 @@ ul {
 }
 
 .scheme-title {
-    font-size: 1.4rem;
+    font-size: 1.1rem; /* Smaller font size */
     margin-bottom: 12px;
     color: var(--color-text);
     line-height: 1.3;
     transition: color 0.3s ease; /* smooth color transition on hover */
+    font-weight: normal; /* Thinner weight */
 }
 
 .scheme-card:hover .scheme-title,
@@ -1085,7 +1172,6 @@ ul {
     position: relative;
     border-radius: var(--border-radius);
     overflow: hidden;
-    aspect-ratio: 16/9;
     cursor: pointer;
     border: 1px solid var(--color-border);
 }
@@ -1093,7 +1179,7 @@ ul {
 .gallery-item img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     transition: transform 0.5s ease;
     background-color: transparent;
 }
@@ -1291,6 +1377,15 @@ ul {
 #readArticleModal .modal-content {
     max-height: 85vh; /* Limit height to allow scrolling */
     overflow-y: auto; /* Enable scrolling for long articles */
+    /* Custom pink scrollbar */
+    scrollbar-color: var(--color-primary) #2a2a2a; /* thumb and track color */
+    /* Ensure proper text wrapping */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    text-align: justify;
+    line-height: 1.6;
 }
 
 #readArticleModal .modal-content img {
@@ -1300,11 +1395,36 @@ ul {
     margin: 20px auto;
 }
 
+/* Custom pink scrollbar for Webkit browsers */
+#readArticleModal .modal-content::-webkit-scrollbar {
+    width: 12px;
+}
+
+#readArticleModal .modal-content::-webkit-scrollbar-track {
+    background: #2a2a2a;
+    border-radius: 6px;
+}
+
+#readArticleModal .modal-content::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+    border-radius: 6px;
+}
+
+#readArticleModal .modal-content::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary-hover);
+}
+
 /* Improve readability for article content */
 .article-text {
     line-height: 1.8; /* Better line spacing for readability */
     font-size: 1.1rem; /* Slightly larger font */
     color: var(--color-text);
+    /* Ensure proper text wrapping */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    text-align: justify;
 }
 
 /* Article tags */
@@ -1549,6 +1669,42 @@ ul {
     border-color: #ff4444;
 }
 
+/* Admin Controls */
+.admin-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    display: flex;
+    gap: 5px;
+}
+
+.admin-controls .btn-icon {
+    background: rgba(0,0,0,0.7) !important;
+    border: 1px solid #fff !important;
+    width: 30px !important;
+    height: 30px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.admin-controls .btn-icon i {
+    color: white !important;
+    font-size: 0.8rem !important;
+    margin: 0 !important;
+}
+
+.admin-controls .btn-icon:hover {
+    background: rgba(176, 82, 106, 0.9) !important;
+    border-color: var(--color-primary) !important;
+}
+
+.admin-controls .btn-icon.delete:hover {
+    background: rgba(255, 68, 68, 0.9) !important;
+    border-color: #ff4444 !important;
+}
+
 /* Footer */
 .footer {
     background-color: #050505;
@@ -1569,8 +1725,10 @@ ul {
     font-size: 2rem;
     color: var(--color-primary);
     display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 10px;
+    text-align: center;
 }
 
 .footer-social {
@@ -2602,6 +2760,7 @@ a.btn-outline-parasite:hover {
     background: linear-gradient(145deg, hsl(var(--card)), hsl(var(--parasite-darker)));
     border: 1px solid hsl(var(--border));
     transition: var(--transition-smooth);
+    padding: 16px; /* Reduced padding for more compact look */
 }
 
 .card-parasite:hover {
@@ -2638,12 +2797,18 @@ a[href="#schemes"].ribbed-btn {
     width: auto !important;
 }
 
+/* 
+COMMENTED OUT TO PREVENT ACCIDENTAL CHANGES - MAIN PAGE BUTTON STYLES
+
+/* 
+COMMENTED OUT TO PREVENT ACCIDENTAL CHANGES - MAIN PAGE BUTTON STYLES
+
 /* Dedicated styles for 'Изучить схемы' button - completely isolated */
 div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="#schemes"].btn-parasite {
     position: relative !important;
     overflow: hidden !important;
     padding: 0.75rem 2rem !important; /* py-3 px-8 */
-    font-weight: 600 !important; /* font-semibold */
+    font-weight: 600 !important; /* Font-semibold */
     letter-spacing: 0.05em !important; /* tracking-wider */
     text-transform: uppercase !important;
     background: linear-gradient(135deg, hsl(350 45% 50%), hsl(350 35% 35%)) !important;
@@ -2681,28 +2846,15 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
     width: auto !important;
     text-decoration: none !important;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    -webkit-text-stroke: 0px !important;
+    text-shadow: none !important;
 }
 
-/* Pseudo-element for hover glow effect */
-div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="#schemes"].btn-parasite::before {
-    content: '' !important;
-    position: absolute !important;
-    inset: 0 !important;
-    background: linear-gradient(135deg, hsl(350 60% 60%), hsl(350 45% 50%)) !important; /* parasite-rose-glow and parasite-rose */
-    opacity: 0 !important;
-    transition: opacity 0.3s ease !important;
-    z-index: 1 !important;
-}
+END OF COMMENTED BUTTON STYLES */
 
-/* Hover effects for primary button */
-div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="#schemes"].btn-parasite:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 0 40px hsl(350 45% 50% / 0.4) !important; /* shadow-glow */
-}
+END OF COMMENTED BUTTON STYLES */
 
-div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="#schemes"].btn-parasite:hover::before {
-    opacity: 1 !important;
-}
+
 
 /* Dedicated styles for 'Пообщаться' button - completely isolated */
 div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.gap-4.pt-6 a[href="https://t.me/"] {
@@ -3116,20 +3268,20 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
 /* Additional adjustment for iPhone SE size (320px) - other heights */
 @media (min-width: 300px) and (max-width: 374px) and (min-height: 501px) {
     .hero-title.glitch {
-        margin-top: 13rem; /* Move the text down even more for iPhone SE (increased by 3rem) */
+        margin-top: 15rem; /* Move the text down even more for iPhone SE (increased by 2rem more) */
     }
     .hero-content {
-        padding-top: calc(100px + 13rem); /* Adjust padding to account for the increased title positioning */
+        padding-top: calc(100px + 15rem); /* Adjust padding to account for the increased title positioning */
     }
     /* Adjust scammer image to prevent overlap with glitch text */
     .scammer-background img {
-        height: 55%;
-        object-position: center 15%; /* Move the focus point higher to show top portion */
+        height: 50%;
+        object-position: center 10%; /* Move the focus point higher to show top portion */
     }
     /* Ensure proper spacing for text on image */
     .hero-description {
         font-size: 0.7rem; /* Smaller font for compactness */
-        margin-top: 3px;
+        margin-top: 2px;
         line-height: 1.1; /* Tighter line spacing */
     }
 }
@@ -3367,7 +3519,7 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
 
 /* Compact Section Title */
 .section-title-compact {
-    font-size: clamp(1.2rem, 3vh, 2rem);
+    font-size: clamp(1.8rem, 4vh, 3rem); /* Larger than before but smaller than main title */
     text-align: center;
     margin-top: 3rem;
     margin-bottom: 10px;
@@ -3515,7 +3667,21 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
 
 .p-8 { padding: 2rem; } /* 32px */
 
+/* More compact padding for Simulacra section cards */
+.card-parasite.p-8 {
+    padding: 1rem; /* 16px instead of 32px for more compact look */
+}
+
 .mb-6 { margin-bottom: 1.5rem; } /* 24px */
+
+/* More compact margins for Simulacra section cards */
+.card-parasite .flex.items-center.justify-between.mb-6 {
+    margin-bottom: 0.75rem; /* 12px instead of 24px */
+}
+
+.card-parasite h3.mb-6 {
+    margin-bottom: 0.75rem; /* 12px instead of 24px */
+}
 
 .rounded-lg { border-radius: 0.5rem; } /* 8px */
 
@@ -3537,6 +3703,11 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
 }
 
 .text-2xl { font-size: 1.5rem; } /* 24px */
+
+/* Smaller text for Simulacra section cards for better readability in compact layout */
+.card-parasite .text-2xl {
+    font-size: 1.25rem; /* 20px instead of 24px */
+}
 
 .group-hover\:text-primary { /* When parent group is hovered */ color: var(--color-primary); }
 
@@ -3666,4 +3837,6 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
     position: relative;
     z-index: 2;
 }
+
+
 
