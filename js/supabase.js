@@ -5,12 +5,26 @@ const SUPABASE_ANON_KEY = 'sb_publishable_m4NRbbm6m4TpSpZCfdp4nA_kQCOnVjy'
 
 // Initialize Supabase client
 window.supabase = (function() {
-  // Check if Supabase CDN is loaded
+  // Always use real Supabase client to avoid app.current_admin_id issues
   if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-    return window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Create the client without any problematic settings
+    const { createClient } = window.supabase;
+    return createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      // Ensure no custom parameters that might cause issues
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+      },
+      global: {
+        // No custom headers that might set app.current_admin_id
+        headers: {
+          'X-Client': 'parasite-project'
+        }
+      }
+    });
   } else {
     console.error('Supabase CDN not loaded properly');
-    console.warn('Using mock data fallback for all API calls');
     
     // Create a mock client for development/testing purposes
     return {

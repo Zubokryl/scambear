@@ -379,6 +379,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
             
+            // Check if user is an admin before allowing deletion
+            let isAdmin = false;
+            if (window.api && typeof window.api.isAdminAuthenticated === 'function') {
+                isAdmin = await window.api.isAdminAuthenticated();
+            } else {
+                isAdmin = await getCurrentUserAdminStatus();
+            }
+            if (!isAdmin) {
+                alert('Требуется аутентификация администратора для удаления комментариев');
+                return;
+            }
+            
             const { error } = await window.supabase
                 .from('comments')
                 .delete()
@@ -403,15 +415,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function checkAdminStatus() {
         try {
             // Check if admin is authenticated
+            let isAdmin = false;
             if (window.api && typeof window.api.isAdminAuthenticated === 'function') {
-                const isAdmin = await window.api.isAdminAuthenticated();
-                if (isAdmin) {
-                    // Add admin class to body to show delete buttons
-                    document.body.classList.add('admin');
-                    
-                    // Add event listener for delete buttons once
-                    document.addEventListener('click', handleDeleteCommentClick, true);
-                }
+                isAdmin = await window.api.isAdminAuthenticated();
+            } else {
+                isAdmin = await getCurrentUserAdminStatus();
+            }
+            if (isAdmin) {
+                // Add admin class to body to show delete buttons
+                document.body.classList.add('admin');
+                
+                // Add event listener for delete buttons once
+                document.addEventListener('click', handleDeleteCommentClick, true);
             }
         } catch (error) {
             console.error('Error checking admin status:', error);
