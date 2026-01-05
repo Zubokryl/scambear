@@ -139,6 +139,55 @@ ul {
     margin-bottom: 8px;
 }
 
+/* Article content styling */
+.article-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.article-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+#articleBody {
+    line-height: 1.8;
+    font-size: 1.1rem;
+    color: var(--color-text);
+    margin: 20px 0;
+}
+
+#articleBody p {
+    margin-bottom: 1.5em;
+}
+
+#articleBody h1,
+#articleBody h2,
+#articleBody h3,
+#articleBody h4 {
+    color: var(--color-primary);
+    margin-top: 1.5em;
+    margin-bottom: 0.8em;
+}
+
+#articleBody img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1.5em auto;
+}
+
+.article-hero-img-small {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 20px auto;
+    display: block;
+}
+
 /* Comments section styling */
 .comments-section {
     margin-top: 40px;

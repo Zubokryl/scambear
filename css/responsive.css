@@ -751,6 +751,138 @@
   }
 }
 
+/* Responsive styles for article reading mode */
+@media (max-width: 768px) {
+  .article-header {
+    padding: 0 15px;
+  }
+  
+  .article-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .article-content {
+    padding: 15px;
+  }
+  
+  .article-hero-img-small {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    object-fit: cover;
+  }
+  
+  .article-tags {
+    margin-top: 20px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    gap: 8px;
+  }
+  
+  .tag {
+    padding: 4px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .comments-section {
+    margin-top: 30px;
+    padding-top: 20px;
+  }
+  
+  .comments-title {
+    font-size: 1.5rem;
+  }
+  
+  .add-comment-form input,
+  .add-comment-form textarea {
+    padding: 10px;
+  }
+  
+  .comment-item {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  
+  .comment-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .comment-actions {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .article-header h1 {
+    font-size: 1.6rem;
+  }
+  
+  .article-header {
+    padding: 0 10px;
+  }
+  
+  .article-content {
+    padding: 10px;
+  }
+  
+  .article-tags {
+    margin-top: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    gap: 6px;
+  }
+  
+  .tag {
+    padding: 3px 8px;
+    font-size: 0.75rem;
+  }
+  
+  .comments-section {
+    margin-top: 25px;
+    padding-top: 15px;
+  }
+  
+  .comments-title {
+    font-size: 1.4rem;
+  }
+  
+  .add-comment-form input,
+  .add-comment-form textarea {
+    padding: 8px;
+  }
+  
+  .comment-item {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  .article-header h1 {
+    font-size: 1.4rem;
+  }
+  
+  .article-tags {
+    gap: 5px;
+  }
+  
+  .tag {
+    padding: 2px 6px;
+    font-size: 0.7rem;
+  }
+  
+  .comments-title {
+    font-size: 1.3rem;
+  }
+  
+  .comment-item {
+    padding: 8px;
+    margin-bottom: 8px;
+  }
+}
+
 /* Consolidate duplicate media queries */
 @media (max-width: 360px) {
   .section-title {

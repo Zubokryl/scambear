@@ -412,6 +412,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     // Add event listener for delete buttons
                     document.addEventListener('click', function(e) {
                         if (e.target.classList.contains('delete-comment-btn')) {
+                            e.preventDefault();
                             const commentId = e.target.getAttribute('data-comment-id');
                             if (commentId) {
                                 deleteComment(commentId);
