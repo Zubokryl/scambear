@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         "publisher": {
             "@type": "Organization",
             "name": "PARASITE",
-            "logo": { "@type": "ImageObject", "url": "./img/logo.jpg" }
+            "logo": { "@type": "ImageObject", "url": "/img/logo.jpg" }
         },
         "mainEntityOfPage": { "@type": "WebPage", "@id": canonicalUrl }
     }, null, 2);
@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const backBtn = document.getElementById('backToCategory');
     if (backBtn) {
-        let backUrl = './schemes.html';
+        let backUrl = '/schemes.html';
         
         if (ref) {
             // If ref parameter exists, extract category
@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (window.articlesManager && window.articlesManager.categorySlugs && window.articlesManager.categorySlugs[category]) {
                     slug = window.articlesManager.categorySlugs[category];
                 }
-                backUrl = `./schemes.html#${slug}`;
+                backUrl = `/schemes.html#${slug}`;
             }
         }
         

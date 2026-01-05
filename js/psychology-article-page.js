@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         "publisher": {
             "@type": "Organization",
             "name": "PARASITE",
-            "logo": { "@type": "ImageObject", "url": "./img/logo.jpg" }
+            "logo": { "@type": "ImageObject", "url": "/img/logo.jpg" }
         },
         "mainEntityOfPage": { "@type": "WebPage", "@id": window.location.href }
     }, null, 2);
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (backBtn) {
         backBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            window.location.href = './psychology.html';
+            window.location.href = '/psychology.html';
         });
     }
     

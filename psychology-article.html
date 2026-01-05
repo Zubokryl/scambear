@@ -46,10 +46,10 @@
     <link rel="stylesheet" href="https://unpkg.com/lucide@latest/dist/lucide.css">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="css/button-styles.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/animations.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <link rel="stylesheet" href="/css/button-styles.css">
     
     <!-- Preload critical resources -->
     <link rel="preload" href="css/style.min.css" as="style">
@@ -60,18 +60,18 @@
     <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
 
     <!-- Styles with extracted inline styles -->
-    <link rel="stylesheet" href="css/style.min.css">
-    <link rel="stylesheet" href="css/responsive.min.css">
-    <link rel="stylesheet" href="css/button-styles.min.css">
-    <link rel="stylesheet" href="css/inline-styles.min.css">
+    <link rel="stylesheet" href="/css/style.min.css">
+    <link rel="stylesheet" href="/css/responsive.min.css">
+    <link rel="stylesheet" href="/css/button-styles.min.css">
+    <link rel="stylesheet" href="/css/inline-styles.min.css">
 </head>
 
 <body>
     <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="container">
-            <a href="./index.html" class="nav-brand">
-                <img src="img/logo.jpg" loading="lazy" alt="Logo" class="logo-img enlarged-logo">
+            <a href="/index.html" class="nav-brand">
+                <img src="/img/logo.jpg" loading="lazy" alt="Logo" class="logo-img enlarged-logo">
             </a>
             <button class="nav-toggle" id="navToggle">
                 <span></span>
@@ -79,13 +79,13 @@
                 <span></span>
             </button>
             <ul class="nav-menu" id="navMenu">
-                <li><a href="./index.html" class="nav-link">Главная</a></li>
-                <li><a href="./schemes.html" class="nav-link" onclick="window.articlesManager?.clearHash(); return true;">Схемы</a></li>
-                <li><a href="./psychology.html" class="nav-link">Психология</a></li>
-                <li><a href="./tests.html" class="nav-link">Тесты</a></li>
-                <li><a href="./gallery.html" class="nav-link">Галерея</a></li>
-                <li><a href="./contact.html" class="nav-link">Контакты</a></li>
-                <li><a href="./admin.html" class="nav-link admin-link"><i class="fas fa-user-shield"></i> Админ</a></li>
+                <li><a href="/index.html" class="nav-link">Главная</a></li>
+                <li><a href="/schemes.html" class="nav-link" onclick="window.articlesManager?.clearHash(); return true;">Схемы</a></li>
+                <li><a href="/psychology.html" class="nav-link">Психология</a></li>
+                <li><a href="/tests.html" class="nav-link">Тесты</a></li>
+                <li><a href="/gallery.html" class="nav-link">Галерея</a></li>
+                <li><a href="/contact.html" class="nav-link">Контакты</a></li>
+                <li><a href="/admin.html" class="nav-link admin-link"><i class="fas fa-user-shield"></i> Админ</a></li>
             </ul>
         </div>
     </nav>
@@ -96,7 +96,7 @@
         <nav aria-label="breadcrumb" class="breadcrumb-nav">
             <div class="container">
                 <ol class="breadcrumb">
-                    <li><a href="./psychology.html">Психология</a></li>
+                    <li><a href="/psychology.html">Психология</a></li>
                     <li id="breadcrumbTitle" aria-current="page">Загрузка...</li>
                 </ol>
             </div>
@@ -136,7 +136,7 @@
 
             <!-- Back button -->
             <div class="article-actions">
-                <a href="./psychology.html" id="backToCategory" class="btn-parasite back-to-category-btn"><i class="fas fa-arrow-left"></i> Назад</a>
+                <a href="/psychology.html" id="backToCategory" class="btn-parasite back-to-category-btn"><i class="fas fa-arrow-left"></i> Назад</a>
             </div>
         </div>
     </main>
@@ -174,11 +174,11 @@
                 <div class="footer-sections">
                     <h4 class="footer-sections-title">ЭТАЖИ ДОМА</h4>
                     <div class="footer-links">
-                        <a href="./index.html" class="footer-link">Главная</a>
-                        <a href="./schemes.html" class="footer-link" onclick="window.articlesManager?.clearHash(); return true;">Схемы</a>
-                        <a href="./psychology.html" class="footer-link">Психология</a>
-                        <a href="./gallery.html" class="footer-link">Галерея</a>
-                        <a href="./contact.html" class="footer-link">Контакты</a>
+                        <a href="/index.html" class="footer-link">Главная</a>
+                        <a href="/schemes.html" class="footer-link" onclick="window.articlesManager?.clearHash(); return true;">Схемы</a>
+                        <a href="/psychology.html" class="footer-link">Психология</a>
+                        <a href="/gallery.html" class="footer-link">Галерея</a>
+                        <a href="/contact.html" class="footer-link">Контакты</a>
                     </div>
                 </div>
                 
@@ -193,19 +193,19 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script src="js/supabase.js"></script>
-    <script src="js/api-core.js"></script>
-    <script src="js/tests-api.js"></script>
-    <script src="js/api-utils.js"></script>
-    <script src="js/api-index.js"></script>
-    <script src="js/navigation.js"></script>
-    <script src="js/animations.js"></script>
-    <script src="js/articles.utils.js"></script>
-    <script src="js/articles.js"></script>
-    <script src="js/gallery.js"></script>
-    <script src="js/admin.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/psychology-article-page.js"></script>
+    <script src="/js/supabase.js"></script>
+    <script src="/js/api-core.js"></script>
+    <script src="/js/tests-api.js"></script>
+    <script src="/js/api-utils.js"></script>
+    <script src="/js/api-index.js"></script>
+    <script src="/js/navigation.js"></script>
+    <script src="/js/animations.js"></script>
+    <script src="/js/articles.utils.js"></script>
+    <script src="/js/articles.js"></script>
+    <script src="/js/gallery.js"></script>
+    <script src="/js/admin.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/psychology-article-page.js"></script>
     
     <!-- Scroll to top button -->
     <button class="scroll-to-top" id="scrollToTop">
