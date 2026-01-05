@@ -32,6 +32,8 @@ class AdminPanel {
         this.newGalleryBtn = document.getElementById('newGalleryBtn');
         this.closeGalleryModal = document.getElementById('closeGalleryModal');
         this.cancelGalleryBtn = document.getElementById('cancelGalleryBtn');
+        
+        
 
         this.isSubmitting = false;
 
@@ -60,7 +62,13 @@ class AdminPanel {
                 this.panels.forEach(p => p.classList.remove('active'));
 
                 e.target.classList.add('active');
-                const targetId = e.target.dataset.tab === 'articles' ? 'adminArticles' : 'adminGallery';
+                let targetId;
+                if (e.target.dataset.tab === 'articles') {
+                    targetId = 'adminArticles';
+                } else if (e.target.dataset.tab === 'gallery') {
+                    targetId = 'adminGallery';
+
+                }
                 const target = document.getElementById(targetId);
                 if (target) target.classList.add('active');
             });
@@ -87,6 +95,8 @@ class AdminPanel {
             e.preventDefault();
             await this.handleGallerySubmit();
         });
+        
+
 
         // Article category change
         const articleCategorySelect = document.getElementById('articleCategory');
@@ -371,7 +381,11 @@ class AdminPanel {
             this.isSubmitting = false;
         }
     }
+    
 
+
+
+    
     async checkInitialAuthStatus() {
         try {
             const isAdmin = await this.api.isAdminAuthenticated();

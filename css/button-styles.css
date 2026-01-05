@@ -11,7 +11,7 @@
     background: linear-gradient(135deg, hsl(350 45% 50%), hsl(350 35% 35%)) !important;
     color: hsl(0 0% 95%) !important; /* foreground */
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    border: none !important;
+    border: 1px solid hsl(350 45% 50%) !important;
     border-radius: 6px !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -24,22 +24,32 @@
     width: auto !important;
 }
 
-.btn-parasite-primary::before { /* свечение при hover */
+.btn-parasite-primary::before { /* halftone pattern */
     content: '' !important;
     position: absolute !important;
     inset: 0 !important;
-    background: linear-gradient(135deg, hsl(350 60% 60%), hsl(350 45% 50%)) !important;
-    opacity: 0 !important;
-    transition: opacity 0.3s ease !important;
+    pointer-events: none !important;
+    opacity: 0.15 !important;
+    background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 1px,
+        hsl(0 0% 95%) 1px,
+        hsl(0 0% 95%) 2px
+    ) !important;
+    z-index: 1 !important;
+    border-radius: 6px !important;
 }
 
 .btn-parasite-primary:hover::before { 
-    opacity: 1 !important; 
+    opacity: 0.3 !important; 
 }
 
 .btn-parasite-primary:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 0 40px hsl(350 45% 50% / 0.4) !important;
+    color: hsl(0 0% 95%) !important;
+    border-color: hsl(0 0% 95%) !important;
 }
 
 /* Outline Button */
@@ -68,6 +78,8 @@
 .btn-parasite-outline:hover {
     background: hsl(350 45% 50% / 0.1) !important;
     box-shadow: 0 0 20px hsl(350 45% 50% / 0.3) !important;
+    color: hsl(0 0% 95%) !important;
+    border-color: hsl(0 0% 95%) !important;
 }
 
 /* Icon styles for both buttons */

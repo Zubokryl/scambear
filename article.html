@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 🔧 ДИНАМИЧЕСКИЕ (заполняются JS) -->
+    <title id="pageTitle">Статья о мошенничестве | PARASITE</title>
+    <meta id="pageDescription" name="description" content="">
+    
+    <!-- 🚀 Open Graph (заполняются JS) -->
+    <meta property="og:title" id="ogTitle" content="">
+    <meta property="og:description" id="ogDescription" content="">
+    <meta property="og:image" id="ogImage" content="./img/og-default.jpg">
+    <meta property="og:url" id="ogUrl" content="">
+    <meta property="og:type" content="article">
+    
+    <!-- 📱 Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" id="twitterTitle" content="">
+    
+    <!-- 🔗 Canonical -->
+    <link rel="canonical" id="canonicalLink" href="">
+    
+    <!-- 📋 Schema.org (заполняется JS) -->
+    <script type="application/ld+json" id="schemaArticle">{}</script>
+    <script type="application/ld+json" id="schemaFAQ">{}</script>
+    <script type="application/ld+json" id="schemaBreadcrumb">{}</script>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4RP6L4CVG7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-4RP6L4CVG7');
+    </script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Lucide Icons -->
+    <link rel="stylesheet" href="https://unpkg.com/lucide@latest/dist/lucide.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/button-styles.css">
+    
+
+    
+
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="css/style.min.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" as="style">
+
+    <!-- Fonts with font-display: swap for better performance -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.onload=null;this.media='all';">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
+
+    <!-- Styles with extracted inline styles -->
+    <link rel="stylesheet" href="css/style.min.css">
+    <link rel="stylesheet" href="css/responsive.min.css">
+    <link rel="stylesheet" href="css/button-styles.min.css">
+    <link rel="stylesheet" href="css/inline-styles.min.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="./index.html" class="nav-brand">
+                <img src="img/logo.jpg" loading="lazy" alt="Logo" class="logo-img enlarged-logo">
+            </a>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="./index.html" class="nav-link">Главная</a></li>
+                <li><a href="./schemes.html" class="nav-link" onclick="window.articlesManager?.clearHash(); return true;">Схемы</a></li>
+                <li><a href="./psychology.html" class="nav-link">Психология</a></li>
+                <li><a href="./tests.html" class="nav-link">Тесты</a></li>
+                <li><a href="./gallery.html" class="nav-link">Галерея</a></li>
+                <li><a href="./contact.html" class="nav-link">Контакты</a></li>
+                <li><a href="./admin.html" class="nav-link admin-link"><i class="fas fa-user-shield"></i> Админ</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main id="mainContent">
+        <!-- Breadcrumb (SEO + UX) -->
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+            <div class="container">
+                <ol class="breadcrumb">
+                    <li><a href="./schemes.html">Все схемы</a></li>
+                    <li id="breadcrumbTitle" aria-current="page">Загрузка...</li>
+                </ol>
+            </div>
+        </nav>
+
+        <div class="container">
+            <!-- Article (убери статический h1) -->
+            <article id="articleRoot" itemscope itemtype="https://schema.org/Article">
+                <div class="article-wrapper">
+                    <div id="articleContent" class="article-content">
+                    <div class="loading-spinner" id="articleLoadingSpinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Загрузка статьи...</p>
+                    </div>
+                    
+                    <!-- Контент заполняется article-page.js -->
+                    <header class="article-header">
+                        <h1 id="articleTitle" itemprop="headline"></h1>
+                        <div class="article-meta">
+                            <time id="articleDate" itemprop="datePublished"></time>
+                            <span id="articleCategory" itemprop="articleSection"></span>
+                        </div>
+                    </header>
+                    
+                    <img id="articleImage" itemprop="image" class="article-hero-img-small" alt="" style="display:none">
+                    <div id="articleBody" itemprop="articleBody"></div>
+                    <div id="articleTags" class="article-tags"></div>
+                    </div>
+                </div>
+            </article>
+            <noscript>
+                <div class="no-js-article">
+                    <h1>JavaScript отключен</h1>
+                    <p>Включите JavaScript для чтения статей о мошенничестве.</p>
+                </div>
+            </noscript>
+
+            <!-- Back button -->
+            <div class="article-actions">
+                <a href="./schemes.html" id="backToCategory" class="btn-parasite back-to-category-btn"><i class="fas fa-arrow-left"></i> Назад</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Gallery Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <span id="lightboxClose" class="lightbox-close">&times;</span>
+        <img id="lightboxImage" class="lightbox-content" alt="">
+        <div id="lightboxTitle" class="lightbox-title"></div>
+        <div id="lightboxDescription" class="lightbox-description"></div>
+        <a id="lightboxPrev" class="lightbox-nav lightbox-prev">&#10094;</a>
+        <a id="lightboxNext" class="lightbox-nav lightbox-next">&#10095;</a>
+    </div>
+
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-quote">
+                    <p class="section-quote">
+                        <span class="quote-text">Все линии, которые мы пересекаем, на самом деле просто линии.</span>
+                    </p>
+                </div>
+                
+                <div class="footer-brand">
+                    <div class="simple-footer-title">
+                        <h3 class="footer-title">ПАРАЗИТЫ</h3>
+                        <p class="footer-description">
+                            Социально-психологический проект о грани между обманом и адаптацией, социальной борьбой и паразитизмом. Знание — ваша лучшая защита.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="footer-sections">
+                    <h4 class="footer-sections-title">ЭТАЖИ ДОМА</h4>
+                    <div class="footer-links">
+                        <a href="./index.html" class="footer-link">Главная</a>
+                        <a href="./schemes.html" class="footer-link" onclick="window.articlesManager?.clearHash(); return true;">Схемы</a>
+                        <a href="./psychology.html" class="footer-link">Психология</a>
+                        <a href="./gallery.html" class="footer-link">Галерея</a>
+                        <a href="./contact.html" class="footer-link">Контакты</a>
+                    </div>
+                </div>
+                
+                <p class="footer-copyright">
+                    2025 - Паразиты. Социально-психологический проект.<br>
+                    ⚠ Только в образовательных целях.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="js/supabase.js"></script>
+    <script src="js/api-core.js"></script>
+    <script src="js/tests-api.js"></script>
+    <script src="js/api-utils.js"></script>
+    <script src="js/api-index.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/articles.utils.js"></script>
+    <script src="js/articles.js"></script>
+    <script src="js/gallery.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/article-page.js"></script>
+    
+    <!-- Scroll to top button -->
+    <button class="scroll-to-top" id="scrollToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <!-- Lucide Icons JS -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+    
+
+</body>
+</html>

@@ -96,30 +96,40 @@ class GalleryManager {
 
 
         // Filters
-        this.filterBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                this.filterBtns.forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-                this.loadGallery(e.target.dataset.filter);
+        if (this.filterBtns && this.filterBtns.length > 0) {
+            this.filterBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    this.filterBtns.forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    this.loadGallery(e.target.dataset.filter);
+                });
             });
-        });
+        }
 
         // Lightbox Controls
-        this.closeBtn.addEventListener('click', () => this.closeLightbox());
-        this.prevBtn.addEventListener('click', () => this.navigate(-1));
-        this.nextBtn.addEventListener('click', () => this.navigate(1));
+        if (this.closeBtn) {
+            this.closeBtn.addEventListener('click', () => this.closeLightbox());
+        }
+        if (this.prevBtn) {
+            this.prevBtn.addEventListener('click', () => this.navigate(-1));
+        }
+        if (this.nextBtn) {
+            this.nextBtn.addEventListener('click', () => this.navigate(1));
+        }
 
         // Keyboard Nav
         document.addEventListener('keydown', (e) => {
-            if (!this.lightbox.classList.contains('active')) return;
+            if (!this.lightbox || !this.lightbox.classList.contains('active')) return;
             if (e.key === 'Escape') this.closeLightbox();
             if (e.key === 'ArrowLeft') this.navigate(-1);
             if (e.key === 'ArrowRight') this.navigate(1);
         });
 
-        this.lightbox.addEventListener('click', (e) => {
-            if (e.target === this.lightbox) this.closeLightbox();
-        });
+        if (this.lightbox) {
+            this.lightbox.addEventListener('click', (e) => {
+                if (e.target === this.lightbox) this.closeLightbox();
+            });
+        }
     }
 
     async loadGallery(category) {
@@ -154,15 +164,26 @@ class GalleryManager {
             return;
         }
         
-        // Calculate pagination
+        // Filter out items that don't have valid image URLs
+        const validItems = this.currentItems.filter(item => item.image_url && item.image_url.trim() !== '');
+        
+        if (validItems.length === 0) {
+            // If all items are invalid (no image URLs), show empty state
+            this.grid.innerHTML = '<p class="empty-state">Изображения не найдены<br>Попробуйте изменить параметры поиска или зайти позже.</p>';
+            return;
+        }
+        
+        // Calculate pagination based on valid items only
         const startIndex = (page - 1) * this.itemsPerPage;
         const endIndex = startIndex + this.itemsPerPage;
-        const itemsToShow = this.currentItems.slice(startIndex, endIndex);
-        const totalPages = Math.ceil(this.currentItems.length / this.itemsPerPage);
-
+        const itemsToShow = validItems.slice(startIndex, endIndex);
+        const totalPages = Math.ceil(validItems.length / this.itemsPerPage);
+        
         this.grid.innerHTML = itemsToShow.map((item, index) => `
-            <div class="gallery-item" onclick="galleryManager.openLightbox(${startIndex + index})">
-                <img src="${item.image_url || 'https://via.placeholder.com/400x200?text=Gallery+Image'}" alt="${item.title}" loading="lazy">
+            <figure class="gallery-item" itemscope itemtype="https://schema.org/ImageObject" onclick="galleryManager.openLightboxWithValidItems(${startIndex + index})">
+                <img itemprop="contentUrl image" src="${item.image_url}" 
+                     alt="${item.title} — ${this.getCategoryName(item.category)}. ${item.description ? item.description.substring(0,50) : 'Пример мошенничества'}" 
+                     loading="lazy">
                 <div class="admin-controls" style="position: absolute; top: 10px; right: 10px; display: none; z-index: 10;">
                     <button class="btn-icon" onclick="event.stopPropagation(); adminPanel.openGalleryModalForEdit('${item.id}');" title="Редактировать" style="background: rgba(0,0,0,0.7); border: 1px solid #fff;">
                         <i class="fas fa-edit" style="color: white;"></i>
@@ -171,17 +192,15 @@ class GalleryManager {
                         <i class="fas fa-trash" style="color: white;"></i>
                     </button>
                 </div>
-                <div class="gallery-overlay">
-                    <h3>${item.title}</h3>
-                    <p>${this.getCategoryName(item.category)}</p>
-                </div>
-            </div>
+                <figcaption itemprop="name description">
+                    <h3 itemprop="headline">${item.title}</h3>
+                    <p itemprop="caption">${this.getCategoryName(item.category)}</p>
+                </figcaption>
+            </figure>
         `).join('');
         
         // Add admin controls script
-        setTimeout(() => {
-            this.addAdminControls();
-        }, 100);
+        this.addAdminControls();
         
         // Add pagination controls
         if (totalPages > 1) {
@@ -208,6 +227,16 @@ class GalleryManager {
         this.lightbox.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
+    
+    openLightboxWithValidItems(index) {
+        // Get the actual item from the valid items array
+        const validItems = this.currentItems.filter(item => item.image_url && item.image_url.trim() !== '');
+        if (validItems[index]) {
+            // Find the index of this item in the original array
+            const originalIndex = this.currentItems.findIndex(item => item.id === validItems[index].id);
+            this.openLightbox(originalIndex);
+        }
+    }
 
     closeLightbox() {
         this.lightbox.classList.remove('active');
@@ -215,15 +244,40 @@ class GalleryManager {
     }
 
     navigate(dir) {
-        this.currentIndex += dir;
-        if (this.currentIndex < 0) this.currentIndex = this.currentItems.length - 1;
-        if (this.currentIndex >= this.currentItems.length) this.currentIndex = 0;
+        // Get valid items for navigation
+        const validItems = this.currentItems.filter(item => item.image_url && item.image_url.trim() !== '');
+        
+        // Find the current item's index in the valid items array
+        const currentItem = this.currentItems[this.currentIndex];
+        let currentValidIndex = validItems.findIndex(item => item.id === currentItem.id);
+        
+        // If current item is not in valid items, start from first valid item
+        if (currentValidIndex === -1) {
+            currentValidIndex = 0;
+        }
+        
+        // Navigate in the valid items array
+        currentValidIndex += dir;
+        if (currentValidIndex < 0) currentValidIndex = validItems.length - 1;
+        if (currentValidIndex >= validItems.length) currentValidIndex = 0;
+        
+        // Find the index of this valid item in the original array
+        this.currentIndex = this.currentItems.findIndex(item => item.id === validItems[currentValidIndex].id);
+        
         this.updateLightboxContent();
     }
 
     updateLightboxContent() {
         const item = this.currentItems[this.currentIndex];
-        this.lightboxImg.src = item.image_url || '';
+        
+        // Only update if the item has a valid image URL
+        if (item.image_url && item.image_url.trim() !== '') {
+            this.lightboxImg.src = item.image_url;
+            this.lightboxImg.style.display = 'block';
+        } else {
+            this.lightboxImg.style.display = 'none';
+        }
+        
         this.lightboxTitle.innerText = item.title;
         this.lightboxDesc.innerText = item.description || item.desc || ''; // Use description if available, fallback to empty string
     }

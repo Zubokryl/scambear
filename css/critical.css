@@ -1,0 +1,6 @@
+html{font-family:'Inter',sans-serif}
+.hero-title{font-family:'Bebas Neue';font-size:clamp(3rem,8vw,10rem)}
+.navbar{position:fixed;top:0;width:100%;z-index:1000}
+body { margin: 0; padding: 0; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+.page-section { padding: 100px 0; }

@@ -237,11 +237,23 @@ class ScrollToTopHandler {
     init() {
         if (this.scrollToTopBtn) {
             // Show/hide button based on scroll position
-            window.addEventListener('scroll', () => {
-                if (window.pageYOffset > 300) {
+            // Using requestAnimationFrame to batch DOM operations and prevent layout thrashing
+            let ticking = false;
+            
+            const updateScrollButton = () => {
+                const scrollY = window.pageYOffset;
+                if (scrollY > 300) {
                     this.scrollToTopBtn.classList.add('visible');
                 } else {
                     this.scrollToTopBtn.classList.remove('visible');
+                }
+                ticking = false;
+            };
+            
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    requestAnimationFrame(updateScrollButton);
+                    ticking = true;
                 }
             });
             
@@ -264,48 +276,181 @@ window.addEventListener('error', (e) => {
     }
 }, true);
 
+// Search Handler
+class SearchHandler {
+    constructor() {
+        this.searchInput = document.getElementById('searchInput');
+        this.searchButton = document.getElementById('searchButton');
+        this.articlesGrid = document.getElementById('articlesGrid');
+        
+        this.init();
+    }
+    
+    init() {
+        if (this.searchInput && this.searchButton) {
+            // Search on button click
+            this.searchButton.addEventListener('click', () => {
+                this.performSearch();
+            });
+            
+            // Search on Enter key
+            this.searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.performSearch();
+                }
+            });
+            
+            // Add debounce for search
+            let searchTimeout;
+            this.searchInput.addEventListener('input', () => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => this.performSearch(), 300);
+            });
+        }
+    }
+    
+    async performSearch() {
+        const query = this.searchInput.value.trim();
+        
+        if (!query) {
+            // If query is empty, reload default content
+            if (typeof window.articlesManager !== 'undefined') {
+                const currentPath = window.location.pathname.split('/').pop().toLowerCase();
+                if (currentPath.includes('schemes')) {
+                    if (typeof window.articlesManager.loadArticlesWithoutUrlUpdate === 'function') {
+                        window.articlesManager.loadArticlesWithoutUrlUpdate('all');
+                    } else {
+                        window.articlesManager.loadArticles('all');
+                    }
+                } else {
+                    window.articlesManager.loadArticles('all');
+                }
+            }
+            return;
+        }
+        
+        if (typeof window.articlesManager !== 'undefined') {
+            // Show loading state
+            if (this.articlesGrid) {
+                this.articlesGrid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i><p>Поиск...</p></div>';
+            }
+            
+            try {
+                // Perform search
+                const results = await window.articlesManager.searchArticles(query);
+                
+                // Display results
+                if (results && results.length > 0) {
+                    window.articlesManager.renderSearchResults(this.articlesGrid, results);
+                } else {
+                    // Show no results message
+                    if (this.articlesGrid) {
+                        this.articlesGrid.innerHTML = '<p class="search-no-results">Статьи не найдены по запросу "' + query + '"<br>Попробуйте изменить параметры поиска.</p>';
+                    }
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                if (this.articlesGrid) {
+                    this.articlesGrid.innerHTML = '<p class="error">Ошибка поиска статей</p>';
+                }
+            }
+        }
+    }
+}
+
 
 // Initialize the application with proper dependency injection
 async function initializeApp() {
-    // Create API client instance
     const api = window.api || createApiClient();
     
-    // Initialize managers with dependency injection
-    window.articlesManager = new ArticlesManager(api);
-    window.galleryManager = new GalleryManager(api);
-    window.adminPanel = new AdminPanel(api);
+    // ✅ ИНИЦИАЛИЗАЦИЯ ТОЛЬКО НА НУЖНЫХ СТРАНИЦАХ!
+    if (document.getElementById('articlesGrid') || document.getElementById('psychologyGrid')) {
+        window.articlesManager = new ArticlesManager(api);
+    }
+    if (document.getElementById('galleryGrid')) {
+        window.galleryManager = new GalleryManager(api);
+    }
+    if (document.getElementById('testsGrid')) {
+        window.testsManager = new TestsManager(api);
+    }
+    // Initialize admin panel on all pages so admin functions are available (edit/delete from article pages)
+    if (typeof AdminPanel !== 'undefined') {
+        window.adminPanel = new AdminPanel(api);
+    } else {
+        console.warn('AdminPanel not available, admin functionality will be disabled');
+        window.adminPanel = null;
+    }
     
-    // Initialize UI components
     new ContactFormHandler();
     new FilterHandler();
     new ScrollToTopHandler();
+    new SearchHandler();
     
-    // Initialize URL routing for articles if the articles manager exists
-    // NOTE: This is handled by navigation.js now to avoid conflicts
-    // if (typeof articlesManager !== 'undefined' && articlesManager.handleInitialUrl) {
-    //     articlesManager.handleInitialUrl();
-    // }
+    // Load content based on current page
+    const currentPath = window.location.pathname.split('/').pop().toLowerCase();
+    
+    const managers = {
+        articlesManager: window.articlesManager,
+        galleryManager: window.galleryManager,
+        adminPanel: window.adminPanel
+    };
+    
+    if (currentPath.includes('schemes')) {
+        // For schemes page, load articles but only if no hash is present
+        // If there's no hash, load architects articles; otherwise let URL hash handling manage it
+        if (!window.location.hash) {
+            if (managers.articlesManager && typeof managers.articlesManager.loadArticles === 'function') {
+                // Use the method that doesn't update URL to avoid adding hash initially
+                if (typeof managers.articlesManager.loadArticlesWithoutUrlUpdate === 'function') {
+                    managers.articlesManager.loadArticlesWithoutUrlUpdate('architects');
+                } else {
+                    managers.articlesManager.loadArticles('architects');
+                }
+            }
+        }
+    } else if (currentPath.includes('index')) {
+        if (managers.articlesManager && typeof managers.articlesManager.loadArticles === 'function') {
+            managers.articlesManager.loadArticles('all');
+        }
+    } else if (currentPath.includes('psychology')) {
+        if (managers.articlesManager && typeof managers.articlesManager.loadPsychology === 'function') {
+            managers.articlesManager.loadPsychology();
+        }
+    } else if (currentPath.includes('gallery')) {
+        if (managers.galleryManager && typeof managers.galleryManager.loadGallery === 'function') {
+            managers.galleryManager.loadGallery('all');
+        }
+    } else if (currentPath.includes('tests')) {
+        if (window.testsManager && typeof window.testsManager.loadTests === 'function') {
+            window.testsManager.loadTests();
+        }
+    } else if (currentPath.includes('admin')) {
+        if (managers.adminPanel && typeof managers.adminPanel.checkInitialAuthStatus === 'function') {
+            managers.adminPanel.checkInitialAuthStatus();
+        }
+    }
 }
 
 // Init application when DOM is loaded and API is ready
 document.addEventListener('DOMContentLoaded', async () => {
-    // Wait for window.api to be available (it should be from api.js)
-    // Try immediately, then try again after a short delay if needed
-    const attemptInitialization = () => {
+    // Wait for window.api to be available
+    const checkApiReady = async () => {
+        let attempts = 0;
+        const maxAttempts = 50; // 5 seconds max wait time
+        
+        while (attempts < maxAttempts && !window.api) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            attempts++;
+        }
+        
         if (window.api) {
             initializeApp();
         } else {
-            console.warn('API client not ready yet, waiting...');
-            // Try again after a short delay
-            setTimeout(() => {
-                if (window.api) {
-                    initializeApp();
-                } else {
-                    console.error('API client still not available after delay');
-                }
-            }, 100);
+            console.error('API client not available after waiting');
+            // Initialize with fallback API
+            initializeApp();
         }
     };
     
-    attemptInitialization();
+    await checkApiReady();
 });

@@ -18,6 +18,27 @@
     --color-border: #333333;
     --color-accent-violet: #6b5c73;
 
+    /* CSS Variables for hybrid test compatibility */
+    --background: 10 10% 10%; /* hsl(10, 10%, 10%) - dark background */
+    --foreground: 0 0% 98%; /* hsl(0, 0%, 98%) - light text */
+    --primary: 346 74% 47%; /* hsl(346, 74%, 47%) - pink */
+    --primary-foreground: 0 0% 98%; /* hsl(0, 0%, 98%) - light text on primary */
+    --secondary: 340 74% 47%; /* hsl(340, 74%, 47%) - secondary pink */
+    --secondary-foreground: 0 0% 98%; /* hsl(0, 0%, 98%) - light text on secondary */
+    --muted: 240 4% 46%; /* hsl(240, 4%, 46%) - muted color */
+    --muted-foreground: 240 5% 64%; /* hsl(240, 5%, 64%) - muted foreground */
+    --border: 240 3.7% 15.9%; /* hsl(240, 3.7%, 15.9%) - border color */
+    --purple-500: 270 50% 50%; /* hsl(270, 50%, 50%) - purple */
+    --violet-500: 262 55% 50%; /* hsl(262, 55%, 50%) - violet */
+    --orange-500: 28 80% 50%; /* hsl(28, 80%, 50%) - orange */
+    --red-500: 0 70% 50%; /* hsl(0, 70%, 50%) - red */
+    --cyan-500: 180 100% 50%; /* hsl(180, 100%, 50%) - cyan */
+    --blue-500: 220 70% 50%; /* hsl(220, 70%, 50%) - blue */
+    --pink-400: 340 60% 60%; /* hsl(340, 60%, 60%) - pink */
+    --amber-400: 45 100% 60%; /* hsl(45, 100%, 60%) - amber */
+    --emerald-400: 160 80% 40%; /* hsl(160, 80%, 40%) - emerald */
+    --red-400: 0 85% 60%; /* hsl(0, 85%, 60%) - red */
+
     /* Fonts */
     --font-heading: 'Bebas Neue', sans-serif;
     --font-body: 'Inter', sans-serif;
@@ -35,12 +56,20 @@
     box-sizing: border-box;
 }
 
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     font-family: var(--font-body);
     background-color: var(--color-dark);
     color: var(--color-text);
     line-height: 1.6;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Typography */
@@ -59,7 +88,7 @@ h6 {
 /* Quote styling */
 .section-quote {
     position: relative;
-    padding-left: 2.5rem; /* Increased padding to accommodate the quotation mark */
+    padding-left: 2.5rem; /* Adjusted padding to accommodate CSS quotation mark */
     color: rgba(136, 136, 136, 0.8); /* text-muted-foreground/80 */
     font-style: italic;
     margin: 0.5rem 0 1.5rem 0; /* Reduced top margin */
@@ -69,8 +98,8 @@ h6 {
 .section-quote::before {
     content: "\201C"; /* Unicode left double quotation mark */
     position: absolute;
-    left: -1rem; /* Moved even closer to the text */
-    top: 0; /* Aligned with the top of the text */
+    left: 0; /* Position at the very start */
+    top: 0;
     font-size: 2.5rem;
     color: var(--color-primary);
     font-family: var(--font-heading);
@@ -128,6 +157,12 @@ ul {
     padding: 0 20px;
 }
 
+#mainContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
 .btn {
     display: inline-flex;
     align-items: center;
@@ -178,6 +213,12 @@ ul {
     backdrop-filter: blur(10px);
     z-index: 1000;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background-color 0.3s ease;
+}
+
+.navbar.scrolled {
+    background: rgba(10, 10, 10, 0.98) !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5) !important;
 }
 
 .navbar .container {
@@ -717,11 +758,25 @@ ul {
     display: flex;
     flex-direction: column;
     height: 100%;
+    position: relative;
 }
 
 .article-card:hover {
     transform: translateY(-5px);
     border-color: var(--color-primary);
+}
+
+.article-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.article-link:hover {
+    text-decoration: none;
+    color: inherit;
 }
 
 .article-image {
@@ -750,6 +805,7 @@ ul {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    position: relative;
 }
 
 .article-no-image .article-title {
@@ -786,6 +842,13 @@ ul {
 
 .article-content {
     padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* Allow it to shrink if needed */
+}
+
+.article-wrapper {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -1134,8 +1197,8 @@ ul {
 }
 
 .psychology-item {
-    display: flex;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: auto 1fr;
     gap: 8px;
     margin-bottom: 12px;
     font-size: 0.85rem;
@@ -1147,8 +1210,10 @@ ul {
 
 .psychology-item i {
     color: var(--color-primary);
-    margin-top: 3px;
     font-size: 0.9rem;
+    align-self: start;
+    grid-row: 1;
+    grid-column: 1;
 }
 
 .psychology-header {
@@ -1159,12 +1224,18 @@ ul {
     font-size: 0.8rem;
     letter-spacing: 1px;
     margin-bottom: 4px;
+    grid-row: 1;
+    grid-column: 2;
 }
 
 .psychology-desc {
     color: var(--color-text-muted);
     font-size: 0.85rem;
     line-height: 1.4;
+    grid-row: 2;
+    grid-column: 2;
+    margin-top: 0;
+    margin-left: 0;
 }
 
 /* Gallery Styles */
@@ -1427,6 +1498,20 @@ ul {
     text-align: justify;
 }
 
+/* Article body content - ensure proper text wrapping */
+#articleBody {
+    line-height: 1.8; /* Better line spacing for readability */
+    font-size: 1.1rem; /* Slightly larger font */
+    color: var(--color-text);
+    /* Ensure proper text wrapping */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    text-align: justify;
+    margin-top: 20px;
+}
+
 /* Article tags */
 .article-tags {
     margin-top: 30px;
@@ -1679,6 +1764,15 @@ ul {
     gap: 5px;
 }
 
+.article-card {
+    position: relative;
+}
+
+.article-content {
+    position: relative;
+    z-index: 1;
+}
+
 .admin-controls .btn-icon {
     background: rgba(0,0,0,0.7) !important;
     border: 1px solid #fff !important;
@@ -1785,7 +1879,7 @@ ul {
     color: rgba(255, 255, 255, 0.7); /* Subtle white with transparency */
     text-shadow: 2px 0 0 rgba(255, 255, 255, 0.5);
     z-index: 1;
-    animation: glitch-cyan 2s infinite;
+    animation: glitch-cyan 2s infinite linear alternate-reverse;
     clip-path: inset(0 0 0 0);
 }
 
@@ -1798,7 +1892,7 @@ ul {
     color: rgba(255, 255, 255, 0.7); /* Subtle white with transparency */
     text-shadow: -2px 0 0 rgba(255, 255, 255, 0.5);
     z-index: 3;
-    animation: glitch-magenta 2.5s infinite;
+    animation: glitch-magenta 2s infinite linear alternate-reverse;
     clip-path: inset(0 0 0 0);
 }
 
@@ -2158,6 +2252,11 @@ ul {
     max-width: 900px;
     margin: 0 auto;
     /* Ensure high legibility */
+}
+
+/* Apply text shadow only to direct text children, not to buttons */
+.hero-text.full-width > h1,
+.hero-text.full-width > p {
     text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
 
@@ -2275,20 +2374,19 @@ ul {
     width: 100%;
 }
 
-/* Glitch Hover Effect for Buttons */
+/* Glitch Hover Effect for Buttons - Restored with less intensity */
 .glitch-hover:hover {
-    animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
-    color: red; /* Text turns red on glitch */
-    border-color: red;
+    animation: glitch-skew 0.5s ease-in-out;
+    color: var(--color-primary); 
+    border-color: var(--color-primary);
 }
 
 @keyframes glitch-skew {
-    0% { transform: skew(0deg); }
-    20% { transform: skew(-10deg); }
-    40% { transform: skew(10deg); }
-    60% { transform: skew(-5deg); }
-    80% { transform: skew(5deg); }
-    100% { transform: skew(0deg); }
+    0% { transform: translateX(0) skew(0deg); }
+    25% { transform: translateX(-2px) skew(-1deg); }
+    50% { transform: translateX(2px) skew(1deg); }
+    75% { transform: translateX(-1px) skew(-0.5deg); }
+    100% { transform: translateX(0) skew(0deg); }
 }
 
 /* Real Scroll Indicator */
@@ -2576,7 +2674,7 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
     background: linear-gradient(135deg, hsl(var(--parasite-rose)), hsl(var(--parasite-rose-muted))) !important;
     color: hsl(var(--foreground)) !important;
     transition: var(--transition-smooth) !important;
-    border: none !important;
+    border: 1px solid hsl(var(--parasite-rose)) !important;
     border-radius: 6px !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -2599,7 +2697,7 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
     background: linear-gradient(135deg, hsl(var(--parasite-rose)), hsl(var(--parasite-rose-muted))) !important;
     color: hsl(var(--foreground)) !important;
     transition: var(--transition-smooth) !important;
-    border: none !important;
+    border: 1px solid hsl(var(--parasite-rose)) !important;
     border-radius: 6px !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -2622,7 +2720,7 @@ a[href="#schemes"].btn-parasite {
     background: linear-gradient(135deg, hsl(var(--parasite-rose)), hsl(var(--parasite-rose-muted))) !important;
     color: hsl(var(--foreground)) !important;
     transition: var(--transition-smooth) !important;
-    border: none !important;
+    border: 1px solid hsl(var(--parasite-rose)) !important;
     border-radius: 6px !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -2649,7 +2747,7 @@ a.btn.btn-parasite {
     gap: 8px !important;
     font-family: var(--font-body) !important;
     font-size: 1rem !important;
-    border: none !important;
+    border: 1px solid hsl(var(--parasite-rose)) !important;
     transition: var(--transition-smooth) !important;
 }
 
@@ -2657,7 +2755,7 @@ a.btn.btn-parasite {
 a.ribbed-btn.btn-parasite {
     background: linear-gradient(135deg, hsl(var(--parasite-rose)), hsl(var(--parasite-rose-muted))) !important;
     color: hsl(var(--foreground)) !important;
-    border: none !important;
+    border: 1px solid hsl(var(--parasite-rose)) !important;
     text-transform: uppercase !important;
     letter-spacing: 0.025em !important;
     font-weight: 600 !important;
@@ -2672,10 +2770,17 @@ a.ribbed-btn.btn-parasite {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, hsl(var(--parasite-rose-glow)), hsl(var(--parasite-rose)));
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    pointer-events: none;
+    opacity: 0.15;
+    background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 1px,
+        hsl(0 0% 95%) 1px,
+        hsl(0 0% 95%) 2px
+    );
     z-index: 1;
+    border-radius: 6px;
 }
 
 /* Ensure content text/icon is above the pseudo-element */
@@ -2688,15 +2793,19 @@ a.ribbed-btn.btn-parasite {
 .btn-parasite:hover {
     transform: translateY(-2px) !important;
     box-shadow: var(--shadow-glow) !important;
+    color: hsl(var(--foreground)) !important;
+    border-color: hsl(var(--foreground)) !important;
 }
 
 a.btn-parasite:hover {
     transform: translateY(-2px) !important;
     box-shadow: var(--shadow-glow) !important;
+    color: hsl(var(--foreground)) !important;
+    border-color: hsl(var(--foreground)) !important;
 }
 
 .btn-parasite:hover::before {
-    opacity: 1;
+    opacity: 0.3;
 }
 
 /* Outline Button - Using exact Tailwind styles from reference */
@@ -2784,7 +2893,7 @@ a[href="#schemes"].ribbed-btn {
     background: linear-gradient(135deg, hsl(var(--parasite-rose)), hsl(var(--parasite-rose-muted))) !important;
     color: hsl(var(--foreground)) !important;
     transition: var(--transition-smooth) !important;
-    border: none !important;
+    border: 1px solid hsl(var(--parasite-rose)) !important;
     border-radius: 6px !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -2814,7 +2923,7 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
     background: linear-gradient(135deg, hsl(350 45% 50%), hsl(350 35% 35%)) !important;
     color: hsl(0 0% 95%) !important; /* foreground */
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    border: none !important;
+    border: 1px solid hsl(var(--parasite-rose)) !important;
     border-radius: 6px !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -2825,9 +2934,13 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
     font-family: 'Inter', sans-serif !important; /* body default */
     font-size: 1rem !important;
     width: auto !important;
-    /* Override any conflicting styles */
-    all: unset !important;
-    /* Reapply only our desired styles */
+    /* Override any conflicting styles but preserve text styling */
+    /* Only reset specific properties that conflict */
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    outline: none !important;
+    /* Preserve text styling */
     position: relative !important;
     display: inline-flex !important;
     padding: 0.75rem 2rem !important;
@@ -2848,6 +2961,8 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
     -webkit-text-stroke: 0px !important;
     text-shadow: none !important;
+    text-stroke: 0px !important;
+    -webkit-text-fill-color: currentColor !important;
 }
 
 END OF COMMENTED BUTTON STYLES */
@@ -3003,7 +3118,7 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
     color: var(--color-text);
     overflow: hidden;
     clip-path: inset(0 0 0 0);
-    animation: glitch-anim-2 3s infinite linear alternate-reverse;
+    animation: glitch-anim 2.5s infinite linear alternate-reverse;
     opacity: 0.7;
     z-index: -1;
 }
@@ -3019,7 +3134,7 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
     color: var(--color-primary);
     overflow: hidden;
     clip-path: inset(0 0 0 0);
-    animation: glitch-anim 2.5s infinite linear alternate-reverse;
+    animation: glitch-anim-2 3s infinite linear alternate-reverse;
     opacity: 0.7;
     z-index: -2;
 }
@@ -3056,7 +3171,7 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
     margin-bottom: 20px;
     position: relative;
     color: #fff;
-    text-shadow: 4px 4px 0 var(--color-primary);
+    /* Keep glitch effect by not overriding the text-shadow */
 }
 
 /* 2. Text Alignment & Cleaning */
@@ -3072,7 +3187,7 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
     font-size: 1.3rem !important;
     line-height: 1.6 !important;
     background: transparent !important; /* Remove any potential box background */
-    border: none !important;
+    border: none !important; /* Remove pink border */
     backdrop-filter: none !important;
     color: #e0e0e0 !important;
     text-shadow: 2px 2px 4px #000; /* Enhance legibility instead of box */
@@ -3129,6 +3244,9 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
     height: 90% !important; /* Reduce height to crop bottom */
     object-fit: cover;
     object-position: center top; /* Focus on top portion */
+    outline: none !important; /* Remove any outline effects */
+    border: none !important; /* Ensure no border */
+    box-shadow: none !important; /* Remove any shadow effects */
 }
 
 /* If user meant the alt text on missing image, we fixed that earlier. */
@@ -3144,6 +3262,16 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
 .article-hero-img {
     width: 100%;
     max-width: 800px;
+    height: auto;
+    display: block;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.article-hero-img-small {
+    width: 33.33%; /* Reduce image to 1/3 of original size */
+    max-width: 266px; /* 800px / 3 */
     height: auto;
     display: block;
     margin: 20px auto;
@@ -3838,5 +3966,237 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
     z-index: 2;
 }
 
+/* Search Container Styles */
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0 30px 0;
+    position: relative;
+    max-width: 520px; /* Account for input + button */
+    margin-left: auto;
+    margin-right: auto;
+}
 
+.search-input {
+    width: 100%;
+    padding: 12px 45px 12px 20px; /* Add padding on right to make space for the button */
+    font-size: 1rem;
+    border: 2px solid var(--color-border);
+    border-radius: 30px;
+    background-color: var(--color-card-bg);
+    color: var(--color-text);
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(176, 82, 106, 0.2);
+}
+
+.search-button {
+    position: absolute;
+    right: 15px; /* Move it closer to the edge */
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    z-index: 1; /* Ensure it's above the input */
+}
+
+.search-button:hover {
+    color: var(--color-primary);
+    background-color: rgba(176, 82, 106, 0.1);
+}
+
+/* Loading spinner for search */
+.search-loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(176, 82, 106, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--color-primary);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Search results specific styles */
+.search-results-header {
+    text-align: center;
+    margin: 20px 0;
+    color: var(--color-primary);
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+}
+
+.search-no-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+/* Responsive adjustments for search */
+@media (max-width: 768px) {
+    .search-container {
+        max-width: 90%;
+        margin: 15px auto;
+    }
+    
+    .search-input {
+        padding: 10px 40px 10px 15px;
+        font-size: 0.9rem;
+    }
+    
+    .search-button {
+        right: 12px;
+        padding: 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .search-container {
+        max-width: 95%;
+    }
+    
+    .search-input {
+        padding: 9px 35px 9px 12px;
+        font-size: 0.85rem;
+    }
+
+    .search-button {
+        right: 10px;
+        padding: 3px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Test Modal Styles */
+.test-progress {
+    margin-bottom: 20px;
+}
+
+.test-progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: #333;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.test-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-hover));
+    transition: width 0.3s ease;
+}
+
+.test-progress-text {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.test-question {
+    margin-bottom: 20px;
+}
+
+.test-question h3 {
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    color: var(--color-primary);
+}
+
+.test-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.test-option {
+    padding: 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.test-option:hover {
+    border-color: var(--color-primary);
+    background-color: rgba(176, 82, 106, 0.1);
+}
+
+.test-option-label {
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+    width: 100%;
+}
+
+.test-option-input {
+    margin-right: 10px;
+    margin-top: 5px;
+}
+
+.test-option-text {
+    flex: 1;
+}
+
+.test-navigation {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.test-results {
+    text-align: center;
+}
+
+.test-results h3 {
+    margin-bottom: 20px;
+    color: var(--color-primary);
+}
+
+.test-score {
+    margin: 20px 0;
+}
+
+.test-score-value {
+    font-size: 3rem;
+    font-weight: bold;
+    color: var(--color-primary);
+    margin-bottom: 10px;
+}
+
+.test-score-text {
+    font-size: 1.2rem;
+    color: var(--color-text-muted);
+}
+
+.test-feedback {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: rgba(176, 82, 106, 0.1);
+    border-radius: 4px;
+    border-left: 3px solid var(--color-primary);
+}
+
+.test-results-details {
+    margin-bottom: 20px;
+}
+
+/* Breadcrumb and Article Actions */
+.breadcrumb-nav { margin-bottom: 2rem; }
+.breadcrumb { display: flex; gap: 0.5rem; color: #b0b0b0; font-size: 0.9rem; }
+.breadcrumb a { color: #b0526a; }
+.article-actions { text-align: center; margin-top: 3rem; }
 

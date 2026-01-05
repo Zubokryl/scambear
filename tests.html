@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Психологические тесты - PARASITE</title>
+    <meta name="description" content="Психологические тесты на уязвимость к манипуляциям и социальной инженерии">
+    
+    <!-- Canonical -->
+    <link rel="canonical" href="/tests.html">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Психологические тесты — PARASITE">
+    <meta property="og:description" content="Проверьте свою устойчивость к манипуляциям и социальной инженерии">
+    <meta property="og:image" content="./img/og-tests.jpg">
+    <meta property="og:url" content="/tests.html">
+    
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Психологические тесты",
+      "description": "Тесты на устойчивость к манипуляциям и социальной инженерии",
+      "url": "/tests.html",
+      "publisher": {"@type": "Organization", "name": "PARASITE"}
+    }
+    </script>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4RP6L4CVG7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-4RP6L4CVG7');
+    </script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Lucide Icons -->
+    <link rel="stylesheet" href="https://unpkg.com/lucide@latest/dist/lucide.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/button-styles.css">
+    <link rel="stylesheet" href="test-styles.css">
+    
+    <!-- Quill Editor -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="css/style.min.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" as="style">
+
+    <!-- Fonts with font-display: swap for better performance -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.onload=null;this.media='all';">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
+
+    <!-- Styles with extracted inline styles -->
+    <link rel="stylesheet" href="css/style.min.css">
+    <link rel="stylesheet" href="css/responsive.min.css">
+    <link rel="stylesheet" href="css/button-styles.min.css">
+    <link rel="stylesheet" href="css/inline-styles.min.css">
+    
+
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="./index.html" class="nav-brand">
+                <img src="img/logo.jpg" loading="lazy" alt="Logo" class="logo-img enlarged-logo">
+            </a>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="./index.html" class="nav-link">Главная</a></li>
+                <li><a href="./schemes.html" class="nav-link" onclick="window.articlesManager?.clearHash(); return true;">Схемы</a></li>
+                <li><a href="./psychology.html" class="nav-link">Психология</a></li>
+                <li><a href="./tests.html" class="nav-link active">Тесты</a></li>
+                <li><a href="./gallery.html" class="nav-link">Галерея</a></li>
+                <li><a href="./contact.html" class="nav-link">Контакты</a></li>
+                <li><a href="./admin.html" class="nav-link admin-link"><i class="fas fa-user-shield"></i> Админ</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Tests Section -->
+    <main id="mainContent" class="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section">
+          <div class="container">
+            <div class="badge">
+              <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2a8 8 0 0 0-8 8c0 4 8 12 8 12s8-8 8-12a8 8 0 0 0-8-8z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span>Исследование манипуляций</span>
+            </div>
+            
+            <h2 class="hero-title">
+              <span class="text-gradient-rose">ПРОТЕСТИРУЙТЕ</span> СВОЮ УСТОЙЧИВОСТЬ
+            </h2>
+            
+            <p class="hero-description">
+              Мошенники используют проверенные психологические техники: создание срочности, 
+              апелляция к авторитетам, эмоциональный захват, социальное доказательство и НЛП-паттерны. 
+              Пройдите тесты, чтобы узнать свои уязвимые места.
+            </p>
+          </div>
+        </section>
+
+        <!-- Info Cards -->
+        <section class="info-cards">
+          <div class="container">
+            <div class="card-parasite">
+              <svg class="card-icon icon-orange" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+              <h3 class="card-title">Принцип Чалдини</h3>
+              <p class="card-text">
+                6 принципов влияния: взаимность, дефицит, авторитет, последовательность, 
+                симпатия и социальное доказательство — основа всех манипуляций.
+              </p>
+            </div>
+            
+            <div class="card-parasite">
+              <svg class="card-icon icon-yellow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+              <h3 class="card-title">Эмоциональный захват</h3>
+              <p class="card-text">
+                Страх, жадность, сочувствие — эмоции отключают рациональное мышление. 
+                Мошенники создают эмоциональный шторм для обхода защиты.
+              </p>
+            </div>
+            
+            <div class="card-parasite">
+              <svg class="card-icon icon-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <h3 class="card-title">НЛП-паттерны</h3>
+              <p class="card-text">
+                Пресуппозиции, якорение, рефрейминг — языковые конструкции, 
+                которые программируют согласие на бессознательном уровне.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Test Selection Title -->
+        <h2 class="section-title">ВЫБЕРИТЕ ТЕСТ</h2>
+
+        <!-- Test Cards Grid -->
+        <section class="test-cards-section">
+          <div class="container">
+            <div id="testsGrid" class="test-cards">
+              <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Загрузка тестов...</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Test Modal -->
+        <div id="testModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="testModalTitle">Прохождение теста</h3>
+                    <button class="modal-close" id="closeTestModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="testBody" class="modal-body">
+                    <!-- Test content will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            emailjs.init({
+                publicKey: "l37JhMGx5YPp3v7bA",  // Your actual Public Key from EmailJS dashboard
+            });
+        })();
+    </script>
+    <script src="js/supabase.js"></script>
+    <script src="js/api-core.js"></script>
+    <script src="js/tests-api.js"></script>
+    <script src="js/api-utils.js"></script>
+    <script src="js/api-index.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/articles.utils.js"></script>
+    <script src="js/tests.js"></script>
+    
+    <script src="js/admin.js"></script>
+    <script src="js/main.js"></script>
+    
+    <!-- Scroll to top button -->
+    <button class="scroll-to-top" id="scrollToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+
+    
+    <!-- Lucide Icons JS -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+    
+    <script>
+        // Initialize test card interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects to test cards
+            const testCards = document.querySelectorAll('.test-card');
+            testCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-4px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+    
+        <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-quote">
+                    <p class="section-quote">
+                        <span class="quote-text">Все линии, которые мы пересекаем, на самом деле просто линии.</span>
+                    </p>
+                </div>
+                
+                <div class="footer-brand">
+                    <div class="glitch-wrapper">
+                        <h3 class="footer-title glitch">
+                            <span class="glitch__text">ПАРАЗИТЫ</span>
+                            <span class="glitch__layer--cyan" aria-hidden="true">ПАРАЗИТЫ</span>
+                            <span class="glitch__layer--magenta" aria-hidden="true">ПАРАЗИТЫ</span>
+                        </h3>
+                        <p class="footer-description">
+                            Социально-психологический проект о грани между обманом и адаптацией, социальной борьбой и паразитизмом. Знание — ваша лучшая защита.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="footer-sections">
+                    <h4 class="footer-sections-title">ЭТАЖИ ДОМА</h4>
+                    <div class="footer-links">
+                        <a href="./index.html" class="footer-link">Главная</a>
+                        <a href="schemes.html" class="footer-link" onclick="window.articlesManager?.clearHash(); return true;">Схемы</a>
+                        <a href="psychology.html" class="footer-link">Психология</a>
+                        <a href="tests.html" class="footer-link active">Тесты</a>
+                        <a href="gallery.html" class="footer-link">Галерея</a>
+                        <a href="contact.html" class="footer-link">Контакты</a>
+                    </div>
+                </div>
+                
+                <p class="footer-copyright">
+                    2025 - Паразиты. Социально-психологический проект.<br>
+                    ⚠ Только в образовательных целях.
+                </p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

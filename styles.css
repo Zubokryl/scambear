@@ -1,0 +1,706 @@
+/* ==========================================
+   CSS Variables & Base Styles
+   ========================================== */
+
+:root {
+  /* Core Colors */
+  --background: hsl(0, 0%, 4%);
+  --foreground: hsl(0, 0%, 95%);
+  --card: hsl(0, 0%, 6%);
+  --card-foreground: hsl(0, 0%, 95%);
+  --primary: hsl(350, 45%, 50%);
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: hsl(0, 0%, 12%);
+  --secondary-foreground: hsl(0, 0%, 95%);
+  --muted: hsl(0, 0%, 15%);
+  --muted-foreground: hsl(0, 0%, 55%);
+  --border: hsl(0, 0%, 18%);
+  
+  /* Parasite Theme */
+  --parasite-dark: hsl(0, 0%, 4%);
+  --parasite-darker: hsl(0, 0%, 2%);
+  --parasite-rose: hsl(350, 45%, 50%);
+  --parasite-rose-muted: hsl(350, 35%, 35%);
+  --parasite-rose-glow: hsl(350, 60%, 60%);
+  
+  /* Profile Colors */
+  --pink-400: hsl(340, 82%, 62%);
+  --amber-400: hsl(38, 92%, 50%);
+  --blue-400: hsl(217, 91%, 60%);
+  --emerald-400: hsl(158, 64%, 52%);
+  --red-400: hsl(0, 84%, 60%);
+  
+  /* Block Colors */
+  --block-a-from: rgba(168, 85, 247, 0.3);   /* purple-500 с 30% opacity */
+  --block-a-to: rgba(139, 92, 246, 0.3);     /* violet-500 с 30% opacity */
+  --block-a-border: rgba(168, 85, 247, 0.5); /* purple-500 с 50% opacity */
+  
+  --block-b-from: rgba(249, 115, 22, 0.3);   /* orange-500 с 30% opacity */
+  --block-b-to: rgba(239, 68, 68, 0.3);      /* red-500 с 30% opacity */
+  --block-b-border: rgba(249, 115, 22, 0.5); /* orange-500 с 50% opacity */
+  
+  --block-c-from: rgba(6, 182, 212, 0.3);    /* cyan-500 с 30% opacity */
+  --block-c-to: rgba(59, 130, 246, 0.3);     /* blue-500 с 30% opacity */
+  --block-c-border: rgba(6, 182, 212, 0.5);  /* cyan-500 с 50% opacity */
+  
+  /* Transitions */
+  --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.2s ease;
+  
+  /* Shadows */
+  --shadow-glow: 0 0 40px hsla(350, 45%, 50%, 0.4);
+}
+
+/* Reset & Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+}
+
+/* ==========================================
+   Layout
+   ========================================== */
+
+.container {
+  max-width: 768px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.screen {
+  min-height: 100vh;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ==========================================
+   Icons
+   ========================================== */
+
+.icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+.icon-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+.icon-lg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* ==========================================
+   Test Header
+   ========================================== */
+
+.test-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: none;
+  color: var(--foreground);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  padding: 0.5rem;
+  margin-left: -0.5rem;
+}
+
+.back-button:hover {
+  color: var(--primary);
+}
+
+.question-counter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+/* ==========================================
+   Block Progress - КРИТИЧЕСКИ ВАЖНО!
+   Три блока располагаются ГОРИЗОНТАЛЬНО в ряд
+   ========================================== */
+
+.block-progress {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;  /* ТРИ РАВНЫЕ КОЛОНКИ! */
+  gap: 16px !important;                               /* Отступ между блоками */
+  margin-bottom: 24px !important;
+  width: 100% !important;
+}
+
+/* Адаптив для мобильных - остаётся в ряд, но меньше gap */
+@media (max-width: 640px) {
+  .block-progress {
+    gap: 8px !important;
+  }
+}
+
+/* ==========================================
+   Individual Block Item
+   Это КОМПАКТНАЯ карточка, а не длинная полоса
+   ========================================== */
+
+.block-item {
+  padding: 12px !important;
+  border-radius: 8px !important;
+  border: 1px solid transparent !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  min-height: auto !important;
+  
+  /* Полупрозрачный градиентный фон */
+  background: linear-gradient(135deg, var(--block-from), var(--block-to)) !important;
+}
+
+/* Активный блок (текущий) - добавляем обводку */
+.block-item.active {
+  box-shadow: 0 0 0 2px var(--primary) !important;  /* --primary: #b34d60 */
+}
+
+/* ЦВЕТА ДЛЯ КАЖДОГО БЛОКА */
+
+/* Блок A - Фиолетовый */
+.block-item.block-a {
+  --block-from: rgba(168, 85, 247, 0.3) !important;   /* purple-500 с 30% opacity */
+  --block-to: rgba(139, 92, 246, 0.3) !important;     /* violet-500 с 30% opacity */
+  border-color: rgba(168, 85, 247, 0.5) !important;   /* purple-500 с 50% opacity */
+}
+
+/* Блок B - Оранжевый/Красный */
+.block-item.block-b {
+  --block-from: rgba(249, 115, 22, 0.3) !important;   /* orange-500 с 30% opacity */
+  --block-to: rgba(239, 68, 68, 0.3) !important;      /* red-500 с 30% opacity */
+  border-color: rgba(249, 115, 22, 0.5) !important;   /* orange-500 с 50% opacity */
+}
+
+/* Блок C - Голубой/Синий */
+.block-item.block-c {
+  --block-from: rgba(6, 182, 212, 0.3) !important;    /* cyan-500 с 30% opacity */
+  --block-to: rgba(59, 130, 246, 0.3) !important;     /* blue-500 с 30% opacity */
+  border-color: rgba(6, 182, 212, 0.5) !important;    /* cyan-500 с 50% opacity */
+}
+
+/* ==========================================
+   Block Header (icon + text)
+   ========================================== */
+
+.block-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-bottom: 8px !important;
+}
+
+.block-info {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex: 1 !important;
+  min-width: 0 !important;  /* Для корректного обрезания текста */
+}
+
+.block-label {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  
+  /* Обрезка текста на маленьких экранах */
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.block-count {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
+  font-size: 11px !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  flex-shrink: 0 !important;
+  margin-left: 4px !important;
+}
+
+/* ==========================================
+   Mini Progress Bar Inside Block
+   Тонкая полоска внизу карточки
+   ========================================== */
+
+.progress-bar {
+  height: 4px !important;                              /* Очень тонкий! */
+  background-color: rgba(0, 0, 0, 0.3) !important;     /* Тёмный фон */
+  border-radius: 2px !important;
+  overflow: hidden !important;
+  width: 100% !important;
+  margin-top: 8px !important;
+}
+
+.progress-fill {
+  height: 100% !important;
+  background-color: rgba(255, 255, 255, 0.7) !important;  /* Светлая заливка */
+  border-radius: 2px !important;
+  transition: width 0.3s ease !important;
+}
+
+/* ==========================================
+   Card Parasite (Reusable Card Style)
+   ========================================== */
+
+.card-parasite {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: linear-gradient(145deg, var(--card), var(--parasite-darker));
+  border: 1px solid var(--border);
+  transition: var(--transition-smooth);
+}
+
+.card-parasite:hover {
+  border-color: hsla(350, 45%, 50%, 0.5);
+  box-shadow: 0 0 30px hsla(350, 45%, 50%, 0.15);
+  transform: translateY(-4px);
+}
+
+/* ==========================================
+   Question Card
+   ========================================== */
+
+.question-card {
+  padding: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .question-card {
+    padding: 2rem;
+  }
+}
+
+.question-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-family: monospace;
+  border: 1px solid;
+}
+
+.badge.block-a-badge {
+  background: linear-gradient(to right, var(--block-a-from), var(--block-a-to));
+  border-color: var(--block-a-border);
+}
+
+.badge.block-b-badge {
+  background: linear-gradient(to right, var(--block-b-from), var(--block-b-to));
+  border-color: var(--block-b-border);
+}
+
+.badge.block-c-badge {
+  background: linear-gradient(to right, var(--block-c-from), var(--block-c-to));
+  border-color: var(--block-c-border);
+}
+
+.category-label {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.question-text {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .question-text {
+    font-size: 1.5rem;
+  }
+}
+
+/* ==========================================
+   Answer Options
+   ========================================== */
+
+.options {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1rem !important;
+}
+
+.option-button {
+  width: 100% !important;
+  padding: 1.25rem !important;
+  text-align: left !important;
+  border-radius: 0.5rem !important;
+  border: 1px solid var(--border) !important;
+  background: hsla(0, 0%, 12%, 0.3) !important;
+  cursor: pointer !important;
+  transition: var(--transition-fast) !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 1rem !important;
+}
+
+.option-button:hover:not(:disabled) {
+  border-color: hsla(350, 45%, 50%, 0.5) !important;
+  background: hsla(0, 0%, 12%, 0.5) !important;
+}
+
+.option-button.selected {
+  border-color: var(--primary) !important;
+  background: hsla(350, 45%, 50%, 0.1) !important;
+}
+
+.letter-circle {
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.125rem !important;
+  font-family: monospace !important;
+  flex-shrink: 0 !important;
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+  transition: var(--transition-fast) !important;
+  margin-right: 0.75rem !important;
+}
+
+.option-button:hover:not(:disabled) .letter-circle {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+}
+
+.option-button.selected .letter-circle {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+}
+
+.option-text {
+  color: var(--foreground) !important;
+  line-height: 1.5 !important;
+  padding-top: 0.25rem !important;
+  font-size: 0.9375rem !important;
+  flex: 1 !important;
+}
+
+/* ==========================================
+   Instruction
+   ========================================== */
+
+.instruction {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.instruction p {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  font-style: italic;
+}
+
+/* ==========================================
+   Result Screen - Profile Header
+   ========================================== */
+
+.profile-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.profile-emoji {
+  font-size: 6rem;
+  margin-bottom: 1.5rem;
+  line-height: 1;
+}
+
+.profile-name {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .profile-name {
+    font-size: 3rem;
+  }
+}
+
+.profile-name.pink { color: var(--pink-400); }
+.profile-name.amber { color: var(--amber-400); }
+.profile-name.blue { color: var(--blue-400); }
+.profile-name.emerald { color: var(--emerald-400); }
+
+.profile-description {
+  font-size: 1.125rem;
+  color: var(--muted-foreground);
+  max-width: 42rem;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ==========================================
+   Profile Cards
+   ========================================== */
+
+.profile-cards {
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .profile-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.profile-card {
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background: linear-gradient(145deg, var(--card), var(--parasite-darker));
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: hsla(0, 0%, 100%, 0.02);
+}
+
+.card-header svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.card-header h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.card-header.strengths-header svg {
+  color: var(--pink-400);
+}
+
+.card-header.vulnerabilities-header svg {
+  color: var(--red-400);
+}
+
+.card-header.recommendations-header svg {
+  color: var(--amber-400);
+}
+
+.card-header.summary-header svg {
+  color: var(--blue-400);
+}
+
+.card-list {
+  padding: 1.5rem;
+  list-style: none;
+}
+
+.card-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.card-list li:last-child {
+  margin-bottom: 0;
+}
+
+.card-list li::before {
+  content: "•";
+  color: var(--primary);
+  font-weight: bold;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+/* ==========================================
+   Recommendations
+   ========================================== */
+
+.recommendations-card {
+  margin-bottom: 2rem;
+}
+
+.recommendations-list {
+  padding: 1.5rem;
+  list-style: none;
+}
+
+.recommendations-list li {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.5;
+}
+
+.recommendations-list li:last-child {
+  margin-bottom: 0;
+}
+
+.recommendations-list .number {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: var(--primary);
+  min-width: 1.5rem;
+}
+
+/* ==========================================
+   Summary Block
+   ========================================== */
+
+.summary-card {
+  margin-bottom: 2rem;
+}
+
+.summary-blocks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.summary-block {
+  text-align: center;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: hsla(0, 0%, 100%, 0.02);
+  border: 1px solid var(--border);
+}
+
+.summary-block h4 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--muted-foreground);
+}
+
+.summary-block .counts {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+}
+
+.counts .a { color: var(--pink-400); }
+.counts .b { color: var(--amber-400); }
+.counts .c { color: var(--blue-400); }
+
+/* ==========================================
+   Result Actions
+   ========================================== */
+
+.result-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.btn-parasite {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: var(--transition-fast);
+  border: 1px solid var(--parasite-rose);
+  background: linear-gradient(135deg, var(--parasite-rose), var(--parasite-rose-muted));
+  color: var(--primary-foreground);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-parasite:hover {
+  background: linear-gradient(135deg, var(--parasite-rose-glow), var(--parasite-rose));
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-2px);
+}
+
+.btn-outline-parasite {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: var(--transition-fast);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+}
+
+.btn-outline-parasite:hover {
+  border-color: var(--parasite-rose);
+  color: var(--parasite-rose);
+}
+
+/* ==========================================
+   Quote
+   ========================================== */
+
+.quote {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.quote p {
+  font-style: italic;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}

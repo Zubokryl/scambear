@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Гибридный тест уязвимости</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Core Colors */
+      --background: hsl(0, 0%, 4%);
+      --foreground: hsl(0, 0%, 95%);
+      --card: hsl(0, 0%, 6%);
+      --card-foreground: hsl(0, 0%, 95%);
+      --primary: hsl(350, 45%, 50%);
+      --primary-foreground: hsl(0, 0%, 98%);
+      --secondary: hsl(0, 0%, 12%);
+      --secondary-foreground: hsl(0, 0%, 95%);
+      --muted: hsl(0, 0%, 15%);
+      --muted-foreground: hsl(0, 0%, 55%);
+      --border: hsl(0, 0%, 18%);
+      
+      /* Parasite Theme */
+      --parasite-dark: hsl(0, 0%, 4%);
+      --parasite-darker: hsl(0, 0%, 2%);
+      --parasite-rose: hsl(350, 45%, 50%);
+      --parasite-rose-muted: hsl(350, 35%, 35%);
+      --parasite-rose-glow: hsl(350, 60%, 60%);
+      
+      /* Profile Colors */
+      --pink-400: hsl(340, 82%, 62%);
+      --amber-400: hsl(38, 92%, 50%);
+      --blue-400: hsl(217, 91%, 60%);
+      --emerald-400: hsl(158, 64%, 52%);
+      --red-400: hsl(0, 84%, 60%);
+      
+      /* Block Colors */
+      --block-a-from: hsla(270, 50%, 50%, 0.3);
+      --block-a-to: hsla(265, 50%, 50%, 0.3);
+      --block-a-border: hsla(270, 50%, 50%, 0.5);
+      
+      --block-b-from: hsla(30, 100%, 50%, 0.3);
+      --block-b-to: hsla(0, 100%, 50%, 0.3);
+      --block-b-border: hsla(30, 100%, 50%, 0.5);
+      
+      --block-c-from: hsla(185, 75%, 50%, 0.3);
+      --block-c-to: hsla(217, 75%, 50%, 0.3);
+      --block-c-border: hsla(185, 75%, 50%, 0.5);
+      
+      /* Transitions */
+      --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-fast: all 0.2s ease;
+      
+      /* Shadows */
+      --shadow-glow: 0 0 40px hsla(350, 45%, 50%, 0.4);
+    }
+
+    /* Reset & Base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--background);
+      color: var(--foreground);
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Typography */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 0.05em;
+      line-height: 1.2;
+    }
+
+    /* Layout */
+    .container {
+      max-width: 768px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .screen {
+      min-height: 100vh;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Icons */
+    .icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .icon-sm {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .icon-lg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    /* Test Header */
+    .test-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+
+    .back-button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: none;
+      border: none;
+      color: var(--muted-foreground);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      padding: 0.5rem;
+      margin-left: -0.5rem;
+    }
+
+    .back-button:hover {
+      color: var(--foreground);
+    }
+
+    .question-counter {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+    }
+
+    /* Block Progress */
+    .block-progress {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .block-item {
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      border: 1px solid;
+      transition: var(--transition-fast);
+    }
+
+    .block-item.active {
+      box-shadow: 0 0 0 2px var(--primary);
+    }
+
+    .block-a {
+      background: linear-gradient(to bottom right, var(--block-a-from), var(--block-a-to));
+      border-color: var(--block-a-border);
+    }
+
+    .block-b {
+      background: linear-gradient(to bottom right, var(--block-b-from), var(--block-b-to));
+      border-color: var(--block-b-border);
+    }
+
+    .block-c {
+      background: linear-gradient(to bottom right, var(--block-c-from), var(--block-c-to));
+      border-color: var(--block-c-border);
+    }
+
+    .block-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .block-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .block-label {
+      font-family: monospace;
+      font-size: 0.75rem;
+    }
+
+    .block-count {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: hsla(0, 0%, 4%, 0.5);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: hsla(0, 0%, 95%, 0.7);
+      border-radius: 9999px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    /* Card Parasite (Reusable Card Style) */
+    .card-parasite {
+      position: relative;
+      overflow: hidden;
+      border-radius: 0.5rem;
+      background: linear-gradient(145deg, var(--card), var(--parasite-darker));
+      border: 1px solid var(--border);
+      transition: var(--transition-smooth);
+    }
+
+    .card-parasite:hover {
+      border-color: hsla(350, 45%, 50%, 0.5);
+      box-shadow: 0 0 30px hsla(350, 45%, 50%, 0.15);
+      transform: translateY(-4px);
+    }
+
+    /* Question Card */
+    .question-card {
+      padding: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .question-card {
+        padding: 2rem;
+      }
+    }
+
+    .question-badges {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-family: monospace;
+      border: 1px solid;
+    }
+
+    .badge.block-a-badge {
+      background: linear-gradient(to right, var(--block-a-from), var(--block-a-to));
+      border-color: var(--block-a-border);
+    }
+
+    .badge.block-b-badge {
+      background: linear-gradient(to right, var(--block-b-from), var(--block-b-to));
+      border-color: var(--block-b-border);
+    }
+
+    .badge.block-c-badge {
+      background: linear-gradient(to right, var(--block-c-from), var(--block-c-to));
+      border-color: var(--block-c-border);
+    }
+
+    .category-label {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+    }
+
+    .question-text {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    @media (min-width: 768px) {
+      .question-text {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* Answer Options */
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .option-btn {
+      width: 100%;
+      padding: 1.25rem;
+      text-align: left;
+      border-radius: 0.5rem;
+      border: 1px solid var(--border);
+      background: hsla(0, 0%, 12%, 0.3);
+      cursor: pointer;
+      transition: var(--transition-fast);
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: hsla(350, 45%, 50%, 0.5);
+      background: hsla(0, 0%, 12%, 0.5);
+    }
+
+    .option-btn:disabled {
+      cursor: not-allowed;
+    }
+
+    .option-btn.selected {
+      border-color: var(--primary);
+      background: hsla(350, 45%, 50%, 0.1);
+    }
+
+    .option-btn.dimmed {
+      opacity: 0.5;
+    }
+
+    .option-letter {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.125rem;
+      font-family: monospace;
+      flex-shrink: 0;
+      background: var(--background);
+      color: var(--foreground);
+      transition: var(--transition-fast);
+    }
+
+    .option-btn:hover:not(:disabled) .option-letter {
+      background: var(--primary);
+      color: var(--primary-foreground);
+    }
+
+    .option-btn.selected .option-letter {
+      background: var(--primary);
+      color: var(--primary-foreground);
+    }
+
+    .option-text {
+      color: var(--foreground);
+      line-height: 1.5;
+      padding-top: 0.5rem;
+      font-size: 0.9375rem;
+    }
+
+    /* Instruction */
+    .instruction {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+
+    .instruction p {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      font-style: italic;
+    }
+
+    /* Result Screen - Profile Header */
+    .profile-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .profile-emoji {
+      font-size: 6rem;
+      margin-bottom: 1.5rem;
+      line-height: 1;
+    }
+
+    .profile-name {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .profile-name {
+        font-size: 3rem;
+      }
+    }
+
+    .profile-name.pink { color: var(--pink-400); }
+    .profile-name.amber { color: var(--amber-400); }
+    .profile-name.blue { color: var(--blue-400); }
+    .profile-name.emerald { color: var(--emerald-400); }
+
+    .profile-description {
+      font-size: 1.125rem;
+      color: var(--muted-foreground);
+      max-width: 42rem;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Profile Cards Grid */
+    .profile-cards {
+      display: grid;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .profile-cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .profile-card {
+      padding: 1.5rem;
+    }
+
+    .profile-card:hover {
+      transform: none;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-header .icon {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    .card-header h3 {
+      font-size: 1.25rem;
+    }
+
+    .strengths-header .icon,
+    .strengths-header h3 {
+      color: var(--emerald-400);
+    }
+
+    .vulnerabilities-header .icon,
+    .vulnerabilities-header h3 {
+      color: var(--red-400);
+    }
+
+    .recommendations-header .icon,
+    .recommendations-header h3 {
+      color: var(--primary);
+    }
+
+    .summary-header .icon,
+    .summary-header h3 {
+      color: var(--primary);
+    }
+
+    .card-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .card-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+    }
+
+    .card-list li .icon {
+      width: 1rem;
+      height: 1rem;
+      flex-shrink: 0;
+      margin-top: 0.125rem;
+    }
+
+    .card-list li.strength-item .icon {
+      color: var(--emerald-400);
+    }
+
+    .card-list li.vulnerability-item .icon {
+      color: var(--red-400);
+    }
+
+    /* Recommendations Card */
+    .recommendations-card {
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .recommendations-card:hover {
+      transform: none;
+    }
+
+    .recommendations-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .recommendations-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      color: var(--muted-foreground);
+    }
+
+    .recommendation-number {
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      background: hsla(350, 45%, 50%, 0.2);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      flex-shrink: 0;
+    }
+
+    /* Summary Card */
+    .summary-card {
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .summary-card:hover {
+      transform: none;
+    }
+
+    .summary-blocks {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .summary-block {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid;
+    }
+
+    .summary-block.block-a {
+      background: linear-gradient(to bottom right, var(--block-a-from), var(--block-a-to));
+      border-color: var(--block-a-border);
+    }
+
+    .summary-block.block-b {
+      background: linear-gradient(to bottom right, var(--block-b-from), var(--block-b-to));
+      border-color: var(--block-b-border);
+    }
+
+    .summary-block.block-c {
+      background: linear-gradient(to bottom right, var(--block-c-from), var(--block-c-to));
+      border-color: var(--block-c-border);
+    }
+
+    .summary-block-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .summary-block-header span {
+      font-family: monospace;
+      font-size: 0.875rem;
+    }
+
+    .summary-stats {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .summary-stat {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .summary-stat .count-a { color: var(--pink-400); }
+    .summary-stat .count-b { color: var(--amber-400); }
+    .summary-stat .count-c { color: var(--emerald-400); }
+
+    /* Action Buttons */
+    .result-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    @media (min-width: 640px) {
+      .result-actions {
+        flex-direction: row;
+      }
+    }
+
+    .btn-parasite {
+      position: relative;
+      overflow: hidden;
+      padding: 0.75rem 2rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 0.875rem;
+      background: linear-gradient(135deg, var(--parasite-rose), var(--parasite-rose-muted));
+      color: var(--foreground);
+      border: none;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-parasite::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--parasite-rose-glow), var(--parasite-rose));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .btn-parasite:hover::before {
+      opacity: 1;
+    }
+
+    .btn-parasite:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .btn-outline-parasite {
+      position: relative;
+      padding: 0.75rem 2rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 0.875rem;
+      background: transparent;
+      border: 1px solid var(--parasite-rose);
+      color: var(--parasite-rose);
+      border-radius: 0.25rem;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-outline-parasite:hover {
+      background: hsla(350, 45%, 50%, 0.1);
+      box-shadow: 0 0 20px hsla(350, 45%, 50%, 0.3);
+    }
+
+    /* Quote */
+    .quote {
+      margin-top: 3rem;
+      text-align: center;
+    }
+
+    .quote p {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Test Screen -->
+    <div id="test-screen" class="screen">
+      <div class="container">
+        <!-- Header -->
+        <div class="test-header">
+          <button id="back-btn" class="back-button" onclick="window.location.href='tests.html'">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            <span>Назад к тестам</span>
+          </button>
+          
+          <div class="question-counter">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2a9 9 0 0 1 9 9c0 3.9-3.3 7.2-6 9.5C13.5 21.8 12.8 22 12 22s-1.5-.2-3-1.5c-2.7-2.3-6-5.6-6-9.5a9 9 0 0 1 9-9z"/>
+              <circle cx="12" cy="11" r="3"/>
+            </svg>
+            <span id="progress-text">1 / 15</span>
+          </div>
+        </div>
+
+        <!-- Block Progress -->
+        <div class="block-progress">
+          <div class="block-item block-a" id="block-a">
+            <div class="block-header">
+              <div class="block-info">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="8" r="4"/>
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                </svg>
+                <span class="block-label">Блок A</span>
+              </div>
+              <span class="block-count" id="block-a-count">0/6</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="block-a-fill"></div>
+            </div>
+          </div>
+          
+          <div class="block-item block-b" id="block-b">
+            <div class="block-header">
+              <div class="block-info">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <circle cx="12" cy="12" r="6"/>
+                  <circle cx="12" cy="12" r="2"/>
+                </svg>
+                <span class="block-label">Блок B</span>
+              </div>
+              <span class="block-count" id="block-b-count">0/4</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="block-b-fill"></div>
+            </div>
+          </div>
+          
+          <div class="block-item block-c" id="block-c">
+            <div class="block-header">
+              <div class="block-info">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 18h6M10 22h4M12 2v1M12 6a4 4 0 0 0-4 4c0 2.5 2 4.5 4 6 2-1.5 4-3.5 4-6a4 4 0 0 0-4-4z"/>
+                </svg>
+                <span class="block-label">Блок C</span>
+              </div>
+              <span class="block-count" id="block-c-count">0/5</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="block-c-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question Card -->
+        <div class="question-card card-parasite">
+          <div class="question-badges">
+            <span class="badge" id="block-badge">Личностный профиль</span>
+            <span class="category-label" id="category-label">Новые знакомства и доверие</span>
+          </div>
+          
+          <h2 class="question-text" id="question-text">
+            Когда незнакомый человек начинает со мной активно общаться онлайн (чаты, соцсети, мессенджеры)…
+          </h2>
+          
+          <div class="options" id="options">
+            <!-- Options will be inserted here by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Instruction -->
+        <div class="instruction">
+          <p>Отвечайте так, как вы живёте обычно, а не как «следовало бы»</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result Screen -->
+    <div id="result-screen" class="screen hidden">
+      <div class="container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+          <div class="profile-emoji" id="profile-emoji">💝</div>
+          <h1 class="profile-name" id="profile-name">Эмоциональный эмпат</h1>
+          <p class="profile-description" id="profile-description">
+            Ваша сильная сторона — эмпатия и способность устанавливать глубокие связи.
+          </p>
+        </div>
+
+        <!-- Profile Cards -->
+        <div class="profile-cards">
+          <!-- Strengths -->
+          <div class="profile-card card-parasite">
+            <div class="card-header strengths-header">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              <h3>Ваши сильные стороны</h3>
+            </div>
+            <ul class="card-list" id="strengths-list">
+              <!-- Strengths will be inserted here -->
+            </ul>
+          </div>
+
+          <!-- Vulnerabilities -->
+          <div class="profile-card card-parasite">
+            <div class="card-header vulnerabilities-header">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+              <h3>Зоны уязвимости</h3>
+            </div>
+            <ul class="card-list" id="vulnerabilities-list">
+              <!-- Vulnerabilities will be inserted here -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="recommendations-card card-parasite">
+          <div class="card-header recommendations-header">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18h6M10 22h4M12 2v1M12 6a4 4 0 0 0-4 4c0 2.5 2 4.5 4 6 2-1.5 4-3.5 4-6a4 4 0 0 0-4-4z"/>
+            </svg>
+            <h3>Персональные рекомендации</h3>
+          </div>
+          <ul class="recommendations-list" id="recommendations-list">
+            <!-- Recommendations will be inserted here -->
+          </ul>
+        </div>
+
+        <!-- Answer Summary -->
+        <div class="summary-card card-parasite">
+          <div class="card-header summary-header">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <h3>Ваши ответы по блокам</h3>
+          </div>
+          <div class="summary-blocks" id="summary-blocks">
+            <!-- Block summaries will be inserted here -->
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="result-actions">
+          <button id="reset-btn" class="btn-outline-parasite">Пройти заново</button>
+          <button id="back-to-tests-btn" class="btn-parasite" onclick="window.location.href='tests.html'">
+            <span>К списку тестов</span>
+          </button>
+        </div>
+
+        <!-- Quote -->
+        <div class="quote">
+          <p>«Знаешь, какой у этого плана лучший план? Не иметь плана.»</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Test data and logic
+    const testData = {
+      questions: [
+        // Блок A: Личностный профиль
+        {
+          id: "a1-1",
+          block: "A",
+          blockName: "Личностный профиль",
+          category: "Новые знакомства и доверие",
+          text: "Когда незнакомый человек начинает со мной активно общаться онлайн (чаты, соцсети, мессенджеры)…",
+          options: [
+            { letter: "A", text: "Я легко вовлекаюсь: приятно, что мной интересуются, могу быстро перейти к личным темам.", traits: ["empath", "trust"] },
+            { letter: "B", text: "Нравится общение, но я какое-то время держу дистанцию, прежде чем что-то раскрывать.", traits: ["pragmatic"] },
+            { letter: "C", text: "Я отношусь настороженно и долго проверяю человека, прежде чем доверять хоть что-то личное.", traits: ["observer"] }
+          ]
+        },
+        {
+          id: "a1-2",
+          block: "A",
+          blockName: "Личностный профиль",
+          category: "Новые знакомства и доверие",
+          text: "Если кто-то рассказывает мне эмоциональную историю о своей беде (болезнь, долг, тяжёлая ситуация)…",
+          options: [
+            { letter: "A", text: "Я быстро эмоционально включаюсь и готов помочь, иногда даже в ущерб себе.", traits: ["empath", "impulse"] },
+            { letter: "B", text: "Мне его жалко, но я стараюсь сначала понять, насколько история реальна.", traits: ["pragmatic"] },
+            { letter: "C", text: "Я чувствую эмпатию, но помощь для меня — это всегда про факты и проверки.", traits: ["observer"] }
+          ]
+        },
+        {
+          id: "a2-1",
+          block: "A",
+          blockName: "Личностный профиль",
+          category: "Импульсивность и риск",
+          text: "Как часто вы соглашаетесь на рискованные финансовые решения «на эмоциях»?",
+          options: [
+            { letter: "A", text: "Часто: если идея «зайдёт» и меня вдохновит, могу вложиться почти сразу.", traits: ["investor", "impulse"] },
+            { letter: "B", text: "Иногда: если идея совпадает с моим мнением, могу поторопиться.", traits: ["pragmatic", "bias"] },
+            { letter: "C", text: "Редко: мне нужно время, документы, мнения разных источников.", traits: ["observer"] }
+          ]
+        },
+        {
+          id: "a2-2",
+          block: "A",
+          blockName: "Личностный профиль",
+          category: "Импульсивность и риск",
+          text: "Отношение к идее «шанс бывает только раз»:",
+          options: [
+            { letter: "A", text: "Верю: если долго думать, всё хорошее уплывёт мимо.", traits: ["investor", "scarcity"] },
+            { letter: "B", text: "Иногда так думаю, но стараюсь себя притормозить.", traits: ["pragmatic"] },
+            { letter: "C", text: "Для меня это красный флаг: ценность не исчезает за 15 минут.", traits: ["observer"] }
+          ]
+        },
+        {
+          id: "a3-1",
+          block: "A",
+          blockName: "Личностный профиль",
+          category: "Самооценка и доверие к себе",
+          text: "Если я чувствую лёгкое сомнение, но «эксперт» уверяет, что всё безопасно…",
+          options: [
+            { letter: "A", text: "Я склонен(на) доверять эксперту — «он знает лучше».", traits: ["authority", "trust"] },
+            { letter: "B", text: "Я колеблюсь, могу посоветоваться с кем-то ещё.", traits: ["pragmatic"] },
+            { letter: "C", text: "Моё сомнение для меня важнее чужой уверенности, пока оно не снято фактами.", traits: ["observer"] }
+          ]
+        },
+        {
+          id: "a3-2",
+          block: "A",
+          blockName: "Личностный профиль",
+          category: "Самооценка и доверие к себе",
+          text: "Насколько вы считаете себя защищённым от обмана?",
+          options: [
+            { letter: "A", text: "Я уверен(а), что достаточно умён(умна) и опытен(опытна), чтобы не стать жертвой.", traits: ["overconfident"] },
+            { letter: "B", text: "В целом уверен(а), но допускаю, что могу ошибиться.", traits: ["pragmatic"] },
+            { letter: "C", text: "Понимаю, что никто не застрахован, и именно это меня делает осторожнее.", traits: ["observer"] }
+          ]
+        },
+        
+        // Блок B: Поведенческие сценарии
+        {
+          id: "b1",
+          block: "B",
+          blockName: "Поведенческие сценарии",
+          category: "Телефонный звонок «из банка»",
+          text: "Вам звонят с «номера банка» и говорят: «По вашей карте идёт подозрительная операция. Если вы сейчас не подтвердите личность и не продиктуете код из SMS, завтра деньги могут быть списаны». Что вы делаете?",
+          options: [
+            { letter: "A", text: "Сильно нервничаю и склонен(на) назвать код, чтобы «спасти деньги».", traits: ["empath", "impulse", "urgency"] },
+            { letter: "B", text: "Прошу уточнить детали и тяну время, параллельно пытаясь проверить номер в интернете.", traits: ["pragmatic"] },
+            { letter: "C", text: "Немедленно прекращаю разговор и сам(а) перезваниваю в банк по номеру с карты.", traits: ["observer"] }
+          ]
+        },
+        {
+          id: "b2",
+          block: "B",
+          blockName: "Поведенческие сценарии",
+          category: "«Родственник в беде»",
+          text: "В мессенджере пишет «сын/дочь/родственник»: «Мама/папа, я в беде, срочно нужно перевести деньги на этот счёт, позже всё объясню, не звоните, я не могу говорить». Ваше первое действие?",
+          options: [
+            { letter: "A", text: "Пытаюсь сразу перевести деньги, потом разберёмся.", traits: ["empath", "impulse"] },
+            { letter: "B", text: "Пишу уточняющие вопросы, но перевожу, если текст достаточно убедителен.", traits: ["pragmatic", "trust"] },
+            { letter: "C", text: "Сначала проверяю по другому каналу: звоню по известному номеру, проверяю голос/видео и только потом принимаю решение.", traits: ["observer"] }
+          ]
+        },
+        {
+          id: "b3",
+          block: "B",
+          blockName: "Поведенческие сценарии",
+          category: "Онлайн-инвестиции и крипта",
+          text: "Вы видите рекламу: «Закрытый клуб. Средняя доходность 8–10% в месяц. Доступ только по приглашению. Осталось 5 мест». Как вы реагируете?",
+          options: [
+            { letter: "A", text: "Чувствую, что это «шанс», и оставляю заявку, чтобы «успеть».", traits: ["investor", "scarcity", "impulse"] },
+            { letter: "B", text: "Сохраняю и проверяю отзывы, но если всё выглядит красиво — могу зайти на небольшой суммой.", traits: ["pragmatic", "investor"] },
+            { letter: "C", text: "Увидев обещание доходности выше рынка и дефицит мест, воспринимаю это как сигнал опасности и не вписываюсь.", traits: ["observer"] }
+          ]
+        },
+        {
+          id: "b4",
+          block: "B",
+          blockName: "Поведенческие сценарии",
+          category: "Соцсети и «экспертные» курсы",
+          text: "В Instagram/Telegram человек показывает «кейсы учеников» и заработок за месяц, продаёт курс за крупную сумму. Ваше поведение:",
+          options: [
+            { letter: "A", text: "Если кейсы впечатляют, мне хочется купить: «раз у других получилось, почему нет?»", traits: ["trust", "social_proof"] },
+            { letter: "B", text: "Сначала ищу этого человека в других источниках, потом решаю.", traits: ["pragmatic"] },
+            { letter: "C", text: "Я воспринимаю любые «чудо-кейсы» как рекламу, пока не вижу верифицированных данных и реальных людей.", traits: ["observer"] }
+          ]
+        },
+        
+        // Блок C: Когнитивные искажения
+        {
+          id: "c1",
+          block: "C",
+          blockName: "Когнитивные искажения",
+          category: "Оптимизм и «со мной не случится»",
+          text: "Как вы относитесь к мысли: «Мошенники обычно ловят доверчивых, но я слишком внимателен(на) для этого»?",
+          options: [
+            { letter: "A", text: "Это про меня: мне искренне кажется, что я не тот человек, кого обманут.", traits: ["overconfident"] },
+            { letter: "B", text: "Иногда так думаю, но понимаю, что могу ошибиться.", traits: ["pragmatic"] },
+            { letter: "C", text: "Осознанно избегаю такой мысли: считаю, что это опасная иллюзия.", traits: ["observer"] }
+          ]
+        },
+        {
+          id: "c2",
+          block: "C",
+          blockName: "Когнитивные искажения",
+          category: "Авторитет и сложный язык",
+          text: "Если человек говорит сложными терминами и уверенно оперирует цифрами…",
+          options: [
+            { letter: "A", text: "Я склонен(на) считать, что он разбирается лучше меня, и доверяю его рекомендациям.", traits: ["authority", "trust"] },
+            { letter: "B", text: "Мне это внушает уважение, но я всё равно ищу второе мнение.", traits: ["pragmatic"] },
+            { letter: "C", text: "Сложный язык для меня — повод спросить: «Объясните проще» и не соглашаться, пока не понял(а).", traits: ["observer"] }
+          ]
+        },
+        {
+          id: "c3",
+          block: "C",
+          blockName: "Когнитивные искажения",
+          category: "Дефицит и срочность",
+          text: "Маркер «только сегодня», «осталось 3 места», «цена вырастет через час» для вас — это:",
+          options: [
+            { letter: "A", text: "Реальное чувство, что надо спешить, иначе упущу выгоду.", traits: ["scarcity", "impulse"] },
+            { letter: "B", text: "Неприятное давление, но иногда оно на меня действует.", traits: ["pragmatic", "scarcity"] },
+            { letter: "C", text: "Триггер осторожности: если меня торопят, я замедляюсь.", traits: ["observer"] }
+          ]
+        },
+        {
+          id: "c4",
+          block: "C",
+          blockName: "Когнитивные искажения",
+          category: "Confirmation bias",
+          text: "Если предложение идеально совпадает с тем, во что вы уже верите (например, «криптовалюта — будущее», «госбанк — всегда надёжно»):",
+          options: [
+            { letter: "A", text: "Я меньше сомневаюсь: «раз всё вписывается, значит, логично».", traits: ["bias", "trust"] },
+            { letter: "B", text: "Я рад(а) совпадению, но стараюсь найти хотя бы один сильный аргумент «против».", traits: ["pragmatic"] },
+            { letter: "C", text: "Идеальное совпадение с моим мнением — повод насторожиться: меня могут ловить на моей вере.", traits: ["observer"] }
+          ]
+        },
+        {
+          id: "c5",
+          block: "C",
+          blockName: "Когнитивные искажения",
+          category: "Sunk cost — «уже вложился»",
+          text: "Вы вложили деньги в проект, а затем появились тревожные сигналы: обещания меняются, документы путаные, поддержка давит. Ваше типичное поведение:",
+          options: [
+            { letter: "A", text: "«Раз уже вложился(лась), нужно дойти до конца, иначе всё будет зря» — могу вложить ещё.", traits: ["sunk_cost", "investor"] },
+            { letter: "B", text: "Долго мучаюсь, но всё-таки стараюсь выйти с меньшими потерями.", traits: ["pragmatic"] },
+            { letter: "C", text: "Считаю уже вложенное «ценой урока» и предпочитаю остановиться, даже если больно.", traits: ["observer"] }
+          ]
+        }
+      ],
+      
+      profiles: {
+        "empath": {
+          id: "empath",
+          name: "Эмоциональный эмпат",
+          emoji: "💝",
+          description: "Ваша сильная сторона — эмпатия и способность устанавливать глубокие связи. Однако эти же качества делают вас уязвимым к романтическим и социальным мошенничествам, где манипуляторы эксплуатируют вашу готовность помогать.",
+          strengths: [
+            "Глубокая эмпатия и эмоциональный интеллект",
+            "Способность создавать доверительные отношения",
+            "Отзывчивость и готовность помочь"
+          ],
+          vulnerabilities: [
+            "Романтические скамы (catfishing, love scams)",
+            "Схемы «помоги родственнику в беде»",
+            "Благотворительные мошенничества"
+          ],
+          recommendations: [
+            "Установите правило «24 часа» — никаких переводов денег без суточной паузы",
+            "Всегда проверяйте личность через альтернативный канал связи",
+            "Помните: настоящая любовь и дружба не требуют денег в первые месяцы"
+          ],
+          color: "text-pink-400",
+          bgColor: "from-pink-500/20 to-rose-500/20"
+        },
+        "investor": {
+          id: "investor",
+          name: "Импульсивный инвестор",
+          emoji: "📈",
+          description: "Вы склонны к риску и быстрым решениям, особенно когда видите возможность заработка. Это делает вас целью для инвестиционных пирамид, криптоскамов и схем «бизнес под ключ».",
+          strengths: [
+            "Готовность к действию и решительность",
+            "Умение видеть возможности",
+            "Не боитесь рисковать"
+          ],
+          vulnerabilities: [
+            "Инвестиционные пирамиды и хайпы",
+            "Криптовалютные скамы",
+            "Fake trading platforms и «гарантированная доходность»"
+          ],
+          recommendations: [
+            "Правило: любая доходность выше 2% в месяц — красный флаг",
+            "Никогда не инвестируйте под давлением «последнего шанса»",
+            "Проверяйте лицензии через официальные реестры ЦБ"
+          ],
+          color: "text-amber-400",
+          bgColor: "from-amber-500/20 to-orange-500/20"
+        },
+        "pragmatic": {
+          id: "pragmatic",
+          name: "Доверчивый рационалист",
+          emoji: "🤔",
+          description: "Вы стараетесь анализировать ситуацию, но уязвимы к давлению авторитетов, времени и собственной уверенности. Мошенники могут «дожать» вас через убедительную подачу и социальное доказательство.",
+          strengths: [
+            "Способность к анализу и сомнению",
+            "Баланс между доверием и осторожностью",
+            "Готовность искать второе мнение"
+          ],
+          vulnerabilities: [
+            "Псевдоэкспертные курсы и коучинг",
+            "Сложные финансовые продукты с мелким шрифтом",
+            "Манипуляции через авторитет и «сложный язык»"
+          ],
+          recommendations: [
+            "Если не понимаете продукт — не покупайте, пока не объяснят на пальцах",
+            "Проверяйте «экспертов» в независимых источниках",
+            "Установите личный лимит на спонтанные покупки"
+          ],
+          color: "text-blue-400",
+          bgColor: "from-blue-500/20 to-indigo-500/20"
+        },
+        "observer": {
+          id: "observer",
+          name: "Метанаблюдатель",
+          emoji: "🔍",
+          description: "У вас развитые когнитивные фильтры и здоровый скептицизм. Однако главная опасность — ловушка «я неуязвим». Мошенники умеют работать и с теми, кто считает себя слишком умным для обмана.",
+          strengths: [
+            "Критическое мышление и анализ",
+            "Устойчивость к эмоциональному давлению",
+            "Умение распознавать манипулятивные паттерны"
+          ],
+          vulnerabilities: [
+            "Сложные многоходовые схемы, рассчитанные на «умных»",
+            "Ловушки подтверждения (confirmation bias)",
+            "Переоценка собственной защищённости"
+          ],
+          recommendations: [
+            "Помните: умные люди — любимая цель «элитных» мошенников",
+            "Не отключайте осторожность, когда кто-то «говорит на вашем языке»",
+            "Регулярно обновляйте знания о новых схемах"
+          ],
+          color: "text-emerald-400",
+          bgColor: "from-emerald-500/20 to-green-500/20"
+        }
+      }
+    };
+
+    class HybridTest {
+      constructor() {
+        this.currentQuestionIndex = 0;
+        this.answers = {};
+        this.questions = testData.questions;
+        this.profiles = testData.profiles;
+        
+        this.testScreen = document.getElementById('test-screen');
+        this.resultScreen = document.getElementById('result-screen');
+        this.questionText = document.getElementById('question-text');
+        this.optionsContainer = document.getElementById('options');
+        this.progressText = document.getElementById('progress-text');
+        this.blockACount = document.getElementById('block-a-count');
+        this.blockBCount = document.getElementById('block-b-count');
+        this.blockCCount = document.getElementById('block-c-count');
+        this.blockAFill = document.getElementById('block-a-fill');
+        this.blockBFill = document.getElementById('block-b-fill');
+        this.blockCFill = document.getElementById('block-c-fill');
+        
+        this.init();
+      }
+      
+      init() {
+        this.showQuestion();
+        this.updateProgress();
+        this.updateBlockProgress();
+      }
+      
+      showQuestion() {
+        const currentQ = this.questions[this.currentQuestionIndex];
+        this.questionText.textContent = currentQ.text;
+        
+        // Update block badge and category label
+        document.getElementById('block-badge').textContent = currentQ.blockName;
+        document.getElementById('category-label').textContent = currentQ.category;
+        
+        // Clear previous options
+        this.optionsContainer.innerHTML = '';
+        
+        // Add new options
+        currentQ.options.forEach(option => {
+          const optionElement = document.createElement('div');
+          optionElement.className = 'option-btn';
+          if (this.answers[currentQ.id] === option.letter) {
+            optionElement.classList.add('selected');
+          }
+          
+          optionElement.innerHTML = `
+            <div class="option-letter">${option.letter}</div>
+            <div class="option-text">${option.text}</div>
+          `;
+          
+          optionElement.addEventListener('click', () => {
+            this.selectAnswer(currentQ.id, option.letter);
+          });
+          
+          this.optionsContainer.appendChild(optionElement);
+        });
+        
+        // Update progress
+        this.updateProgress();
+        this.updateBlockProgress();
+      }
+      
+      selectAnswer(questionId, letter) {
+        this.answers[questionId] = letter;
+        
+        // Update UI
+        this.updateSelectedOption(questionId, letter);
+        this.updateProgress();
+        this.updateBlockProgress();
+        
+        // Auto advance if there are more questions
+        if (this.currentQuestionIndex < this.questions.length - 1) {
+          setTimeout(() => {
+            this.currentQuestionIndex++;
+            this.showQuestion();
+          }, 300);
+        } else {
+          // Show results
+          setTimeout(() => {
+            this.showResults();
+          }, 300);
+        }
+      }
+      
+      updateSelectedOption(questionId, letter) {
+        // Update option buttons
+        const optionButtons = this.optionsContainer.querySelectorAll('.option-btn');
+        optionButtons.forEach(btn => {
+          btn.classList.remove('selected');
+          if (btn.querySelector('.option-letter').textContent === letter) {
+            btn.classList.add('selected');
+          }
+        });
+      }
+      
+      updateProgress() {
+        // Update block counts
+        const blockACount = this.questions.filter(q => q.block === 'A').length;
+        const blockBCount = this.questions.filter(q => q.block === 'B').length;
+        const blockCCount = this.questions.filter(q => q.block === 'C').length;
+        
+        const answeredA = this.questions.filter(q => q.block === 'A' && this.answers[q.id]).length;
+        const answeredB = this.questions.filter(q => q.block === 'B' && this.answers[q.id]).length;
+        const answeredC = this.questions.filter(q => q.block === 'C' && this.answers[q.id]).length;
+        
+        this.blockACount.textContent = `${answeredA}/${blockACount}`;
+        this.blockBCount.textContent = `${answeredB}/${blockBCount}`;
+        this.blockCCount.textContent = `${answeredC}/${blockCCount}`;
+      
+        // Update question counter
+        const totalAnswered = Object.keys(this.answers).length;
+        this.progressText.textContent = `${totalAnswered} / ${this.questions.length}`;
+      }
+      
+      updateBlockProgress() {
+        const blockACount = this.questions.filter(q => q.block === 'A').length;
+        const blockBCount = this.questions.filter(q => q.block === 'B').length;
+        const blockCCount = this.questions.filter(q => q.block === 'C').length;
+        
+        const answeredA = this.questions.filter(q => q.block === 'A' && this.answers[q.id]).length;
+        const answeredB = this.questions.filter(q => q.block === 'B' && this.answers[q.id]).length;
+        const answeredC = this.questions.filter(q => q.block === 'C' && this.answers[q.id]).length;
+        
+        const percentA = blockACount > 0 ? (answeredA / blockACount) * 100 : 0;
+        const percentB = blockBCount > 0 ? (answeredB / blockBCount) * 100 : 0;
+        const percentC = blockCCount > 0 ? (answeredC / blockCCount) * 100 : 0;
+        
+        this.blockAFill.style.width = `${percentA}%`;
+        this.blockBFill.style.width = `${percentB}%`;
+        this.blockCFill.style.width = `${percentC}%`;
+        
+        // Update block item active state based on current question
+        const currentBlock = this.questions[this.currentQuestionIndex]?.block;
+        document.querySelectorAll('.block-item').forEach(item => {
+          item.classList.remove('active');
+        });
+        if (currentBlock) {
+          document.getElementById(`block-${currentBlock.toLowerCase()}`).classList.add('active');
+        }
+      }
+      
+      showResults() {
+        // Calculate profile based on answers
+        const profile = this.calculateProfile();
+        
+        // Update profile header
+        document.getElementById('profile-emoji').textContent = profile.emoji;
+        document.getElementById('profile-name').textContent = profile.name;
+        document.getElementById('profile-name').className = 'profile-name ' + profile.color;
+        document.getElementById('profile-description').textContent = profile.description;
+        
+        // Update strengths list
+        const strengthsList = document.getElementById('strengths-list');
+        strengthsList.innerHTML = '';
+        profile.strengths.forEach((strength, index) => {
+          const li = document.createElement('li');
+          li.className = 'strength-item';
+          li.innerHTML = `
+            <svg class="icon">
+              <path d="M20 6L9 17l-5-5"/>
+            </svg>
+            <span>${strength}</span>
+          `;
+          strengthsList.appendChild(li);
+        });
+        
+        // Update vulnerabilities list
+        const vulnerabilitiesList = document.getElementById('vulnerabilities-list');
+        vulnerabilitiesList.innerHTML = '';
+        profile.vulnerabilities.forEach((vuln, index) => {
+          const li = document.createElement('li');
+          li.className = 'vulnerability-item';
+          li.innerHTML = `
+            <svg class="icon">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <span>${vuln}</span>
+          `;
+          vulnerabilitiesList.appendChild(li);
+        });
+        
+        // Update recommendations list
+        const recommendationsList = document.getElementById('recommendations-list');
+        recommendationsList.innerHTML = '';
+        profile.recommendations.forEach((rec, index) => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <div class="recommendation-number">${index + 1}</div>
+            <div>${rec}</div>
+          `;
+          recommendationsList.appendChild(li);
+        });
+        
+        // Update summary blocks
+        this.updateSummaryBlocks();
+        
+        // Show result screen and hide test screen
+        this.testScreen.classList.add('hidden');
+        this.resultScreen.classList.remove('hidden');
+      }
+      
+      calculateProfile() {
+        // Calculate trait scores based on answers
+        const traitScores = {
+          "empath": 0,
+          "investor": 0,
+          "pragmatic": 0,
+          "observer": 0,
+          "overconfident": 0,
+          "authority": 0,
+          "scarcity": 0,
+          "impulse": 0,
+          "trust": 0,
+          "social_proof": 0,
+          "sunk_cost": 0,
+          "bias": 0,
+          "urgency": 0
+        };
+        
+        // Count trait occurrences in answers
+        for (const questionId in this.answers) {
+          const answerLetter = this.answers[questionId];
+          const question = this.questions.find(q => q.id === questionId);
+          
+          if (question) {
+            const selectedOption = question.options.find(opt => opt.letter === answerLetter);
+            if (selectedOption && selectedOption.traits) {
+              selectedOption.traits.forEach(trait => {
+                if (traitScores.hasOwnProperty(trait)) {
+                  traitScores[trait]++;
+                }
+              });
+            }
+          }
+        }
+        
+        // Determine dominant profile based on trait scores
+        let dominantProfile = "pragmatic"; // default
+        let maxScore = 0;
+        
+        // Check each profile's key traits
+        const profileTraits = {
+          "empath": ["empath", "impulse", "trust"],
+          "investor": ["investor", "impulse", "scarcity"],
+          "pragmatic": ["pragmatic", "trust", "bias"],
+          "observer": ["observer", "authority", "bias"]
+        };
+        
+        for (const profile in profileTraits) {
+          let score = 0;
+          profileTraits[profile].forEach(trait => {
+            score += traitScores[trait] || 0;
+          });
+          
+          if (score > maxScore) {
+            maxScore = score;
+            dominantProfile = profile;
+          }
+        }
+        
+        // If no dominant profile emerged, use pragmatic as default
+        if (maxScore === 0) {
+          dominantProfile = "pragmatic";
+        }
+        
+        // Ensure the profile exists in our data
+        if (!this.profiles[dominantProfile]) {
+          dominantProfile = "pragmatic";
+        }
+        
+        // Return the calculated profile
+        return this.profiles[dominantProfile];
+      }
+      
+      updateSummaryBlocks() {
+        const summaryBlocks = document.getElementById('summary-blocks');
+        summaryBlocks.innerHTML = '';
+        
+        ['A', 'B', 'C'].forEach(block => {
+          const blockElement = document.createElement('div');
+          blockElement.className = `summary-block block-${block.toLowerCase()}`;
+          
+          const totalBlockQuestions = this.questions.filter(q => q.block === block).length;
+          const answeredBlockQuestions = this.questions.filter(q => q.block === block && this.answers[q.id]).length;
+          
+          blockElement.innerHTML = `
+            <div class="summary-block-header">
+              <svg class="icon">
+                ${block === 'A' ? '<circle cx="12" cy="8" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>' : 
+                  block === 'B' ? '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>' : 
+                  '<path d="M9 18h6M10 22h4M12 2v1M12 6a4 4 0 0 0-4 4c0 2.5 2 4.5 4 6 2-1.5 4-3.5 4-6a4 4 0 0 0-4-4z"/>'}
+              </svg>
+              <span>Блок ${block}</span>
+            </div>
+            <div class="summary-stats">
+              <div class="summary-stat">
+                <span>Отвечено:</span>
+                <span class="count-${block.toLowerCase()}">${answeredBlockQuestions}/${totalBlockQuestions}</span>
+              </div>
+            </div>
+          `;
+          
+          summaryBlocks.appendChild(blockElement);
+        });
+      }
+      
+      resetTest() {
+        this.currentQuestionIndex = 0;
+        this.answers = {};
+        
+        // Hide result screen and show test screen
+        this.resultScreen.classList.add('hidden');
+        this.testScreen.classList.remove('hidden');
+        
+        this.init();
+      }
+    }
+
+
+
+    // Initialize the test when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      window.hybridTest = new HybridTest();
+      
+      // Add reset button event listener
+      document.getElementById('reset-btn').addEventListener('click', () => {
+        window.hybridTest.resetTest();
+      });
+    });
+  </script>
+</body>
+</html>

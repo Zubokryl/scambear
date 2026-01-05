@@ -1,9 +1,9 @@
 /**
- * Supabase API Client
- * Backend for the Parasite platform using Supabase
+ * Core API Client
+ * Main API functionality for articles and gallery management
  */
 
-function createApiClient(dependencies = {}) {
+function createCoreApiClient(dependencies = {}) {
     const {
         getArticles = window.getArticles,
         getArticleById = window.getArticleById,
@@ -132,7 +132,16 @@ function createApiClient(dependencies = {}) {
                 reader.readAsDataURL(file);
             });
         },
-        
+
+        async isAdminAuthenticated() {
+            try {
+                return await getCurrentUserAdminStatus();
+            } catch (error) {
+                console.error('Error checking admin status:', error);
+                return false;
+            }
+        },
+
         async requireAdmin() {
             const isAdmin = await api.isAdminAuthenticated();
             if (!isAdmin) throw new Error('Admin authentication required');
@@ -166,37 +175,18 @@ function createApiClient(dependencies = {}) {
         
         async incrementArticleViews(id) {
             try {
-                // Increment article views by calling the backend function
-                // This will update the view count in the database
-                if (typeof window.getArticleById !== 'undefined') {
-                    // The view count is incremented in getArticleById, 
-                    // so we just need to fetch the article to trigger the increment
-                    const article = await getArticleById(id);
-                    console.log('Article views incremented for ID:', id);
-                    return article;
-                } else {
-                    console.error('getArticleById function not available');
-                    return null;
-                }
+                // This function is primarily for backward compatibility
+                // The view count is already incremented in getArticleById
+                console.log('Incrementing article views for ID:', id);
+                return true;
             } catch (error) {
                 console.error('Error incrementing article views:', error);
                 throw error;
             }
-        },
-            
-        async isAdminAuthenticated() {
-            try {
-                return await getCurrentUserAdminStatus();
-            } catch (error) {
-                console.error('Error checking admin status:', error);
-                return false;
-            }
         }
-    }
+    };
 
     return api;
 }
 
-// Make API available globally
-window.api = createApiClient();
-
+window.coreApi = createCoreApiClient();

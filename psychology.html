@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Психология мошенничества - PARASITE</title>
+    <meta name="description" content="Анализ методов социальной инженерии и психологических приёмов мошенников">
+    
+    <!-- Canonical -->
+    <link rel="canonical" href="/psychology.html">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Психология мошенничества — PARASITE">
+    <meta property="og:description" content="Социальная инженерия мошенников">
+    <meta property="og:image" content="./img/og-psychology.jpg">
+    <meta property="og:url" content="/psychology.html">
+    
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Психология мошенничества",
+      "description": "Методы социальной инженерии мошенников",
+      "url": "/psychology.html",
+      "publisher": {"@type": "Organization", "name": "PARASITE"}
+    }
+    </script>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4RP6L4CVG7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-4RP6L4CVG7');
+    </script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Lucide Icons -->
+    <link rel="stylesheet" href="https://unpkg.com/lucide@latest/dist/lucide.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/button-styles.css">
+    
+    <!-- Quill Editor -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="css/style.min.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" as="style">
+
+    <!-- Fonts with font-display: swap for better performance -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.onload=null;this.media='all';">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
+
+    <!-- Styles with extracted inline styles -->
+    <link rel="stylesheet" href="css/style.min.css">
+    <link rel="stylesheet" href="css/responsive.min.css">
+    <link rel="stylesheet" href="css/button-styles.min.css">
+    <link rel="stylesheet" href="css/inline-styles.min.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="./index.html" class="nav-brand">
+                <img src="img/logo.jpg" loading="lazy" alt="Logo" class="logo-img enlarged-logo">
+            </a>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="./index.html" class="nav-link">Главная</a></li>
+                <li><a href="./schemes.html" class="nav-link" onclick="window.articlesManager?.clearHash(); return true;">Схемы</a></li>
+                <li><a href="./psychology.html" class="nav-link active">Психология</a></li>
+                <li><a href="./tests.html" class="nav-link">Тесты</a></li>
+                <li><a href="./gallery.html" class="nav-link">Галерея</a></li>
+                <li><a href="./contact.html" class="nav-link">Контакты</a></li>
+                <li><a href="./admin.html" class="nav-link admin-link"><i class="fas fa-user-shield"></i> Админ</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Psychology Section -->
+    <main id="mainContent">
+        <section id="psychology" class="page-section active">
+            <div class="container">
+                <div class="section-header">
+                    <h1 class="section-title" data-text="Психология мошенничества">Психология мошенничества</h1>
+                    <p class="section-subtitle">>> АНАЛИЗ МЕТОДОВ СОЦИАЛЬНОЙ ИНЖЕНЕРИИ</p>
+                </div>
+
+                <div id="psychologyGrid" class="articles-grid">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Загрузка статей...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Lightbox -->
+        <div id="lightbox" class="lightbox">
+            <span id="lightboxClose" class="lightbox-close">&times;</span>
+            <img id="lightboxImage" class="lightbox-content" alt="">
+            <div id="lightboxTitle" class="lightbox-title"></div>
+            <div id="lightboxDescription" class="lightbox-description"></div>
+            <a id="lightboxPrev" class="lightbox-nav lightbox-prev">&#10094;</a>
+            <a id="lightboxNext" class="lightbox-nav lightbox-next">&#10095;</a>
+        </div>
+
+        <!-- Read Article Modal -->
+        <div id="readArticleModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Статья</h3>
+                    <button class="modal-close" id="closeReadModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="readArticleBody" class="modal-body">
+                    <!-- Article content will be loaded here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Admin Article Modal (for inline editing) -->
+        <div id="articleModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="articleModalTitle">Редактировать статью</h3>
+                    <button class="modal-close" id="closeArticleModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="articleForm" class="admin-form">
+                    <input type="hidden" id="articleId" name="id">
+
+                    <div class="form-group">
+                        <label for="articleTitle">Заголовок *</label>
+                        <input type="text" id="articleTitle" name="title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="articleCategory">Категория *</label>
+                        <select id="articleCategory" name="category" required>
+                            <option value="architects">Архитекторы иллюзий</option>
+                            <option value="social_networks">Социальные сети паразитизма</option>
+                            <option value="simulacra">Симулякры успеха</option>
+                            <option value="deception_zones">Зоны обмана</option>
+                            <option value="ethical_wardrobe">Этический чердак</option>
+                            <option value="psychology">Психология</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="subcategoryGroup" style="display: none;">
+                        <label for="articleSubcategory">Подкатегория</label>
+                        <select id="articleSubcategory" name="subcategory">
+                            <option value="">Выберите подкатегорию</option>
+                            <option value="finances">Финансы</option>
+                            <option value="education">Образование</option>
+                            <option value="entrepreneurship">Предпринимательство</option>
+                            <option value="network_marketing">Сетевой маркетинг</option>
+                            <option value="cyber_fraud">Кибермошенничество</option>
+                            <option value="it_fraud">IT-мошенничество</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="articleExcerpt">Краткое описание *</label>
+                        <textarea id="articleExcerpt" name="excerpt" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="articleContent">Содержание *</label>
+                        <div id="articleContentToolbar">
+                            <span class="ql-formats">
+                                <select class="ql-header">
+                                    <option value="1">Заголовок 1</option>
+                                    <option value="2">Заголовок 2</option>
+                                    <option value="3">Заголовок 3</option>
+                                    <option value="">Обычный</option>
+                                </select>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-bold" title="Жирный"></button>
+                                <button class="ql-italic" title="Курсив"></button>
+                                <button class="ql-underline" title="Подчеркнутый"></button>
+                                <button class="ql-strike" title="Зачеркнутый"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <select class="ql-color"></select>
+                                <select class="ql-background"></select>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-list" value="ordered" title="Нумерованный список"></button>
+                                <button class="ql-list" value="bullet" title="Маркированный список"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-link" title="Ссылка"></button>
+                                <button class="ql-image" title="Изображение"></button>
+                                <button class="ql-video" title="Видео"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-clean" title="Очистить форматирование"></button>
+                            </span>
+                        </div>
+                        <div id="articleContent" name="content" required
+                            placeholder="Введите содержание статьи"></div>
+                    </div>
+
+                    <!-- Changed: Upload file capability -->
+                    <div class="form-group">
+                        <label for="articleImageFile">Изображение (Загрузить файл)</label>
+                        <input type="file" id="articleImageFile" name="image_file" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label for="articleImage">Или URL изображения</label>
+                        <input type="url" id="articleImage" name="image_url"
+                            placeholder="https://example.com/image.jpg">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="articleAuthor">Автор</label>
+                        <input type="text" id="articleAuthor" name="author" value="Администратор">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="articleTags">Теги (через запятую)</label>
+                        <input type="text" id="articleTags" name="tags"
+                            placeholder="фишинг, защита, безопасность">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Сохранить
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="cancelArticleBtn">
+                            Отмена
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            emailjs.init({
+                publicKey: "l37JhMGx5YPp3v7bA",  // Your actual Public Key from EmailJS dashboard
+            });
+        })();
+    </script>
+    <script src="js/supabase.js"></script>
+    <script src="js/api-core.js"></script>
+    <script src="js/tests-api.js"></script>
+    <script src="js/api-utils.js"></script>
+    <script src="js/api-index.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/articles.utils.js"></script>
+    <script src="js/articles.js"></script>
+    
+    <script src="js/admin.js"></script>
+    <script src="js/main.js"></script>
+    
+    <!-- Scroll to top button -->
+    <button class="scroll-to-top" id="scrollToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <!-- Lucide Icons JS -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-quote">
+                    <p class="section-quote">
+                        <span class="quote-text">Все линии, которые мы пересекаем, на самом деле просто линии.</span>
+                    </p>
+                </div>
+                
+                <div class="footer-brand">
+                    <div class="glitch-wrapper">
+                        <h3 class="footer-title glitch">
+                            <span class="glitch__text">ПАРАЗИТЫ</span>
+                            <span class="glitch__layer--cyan" aria-hidden="true">ПАРАЗИТЫ</span>
+                            <span class="glitch__layer--magenta" aria-hidden="true">ПАРАЗИТЫ</span>
+                        </h3>
+                        <p class="footer-description">
+                            Социально-психологический проект о грани между обманом и адаптацией, социальной борьбой и паразитизмом. Знание — ваша лучшая защита.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="footer-sections">
+                    <h4 class="footer-sections-title">ЭТАЖИ ДОМА</h4>
+                    <div class="footer-links">
+                        <a href="./index.html" class="footer-link">Главная</a>
+                        <a href="schemes.html" class="footer-link" onclick="window.articlesManager?.clearHash(); return true;">Схемы</a>
+                        <a href="psychology.html" class="footer-link active">Психология</a>
+                        <a href="tests.html" class="footer-link">Тесты</a>
+                        <a href="gallery.html" class="footer-link">Галерея</a>
+                        <a href="contact.html" class="footer-link">Контакты</a>
+                    </div>
+                </div>
+                
+                <p class="footer-copyright">
+                    2025 - Паразиты. Социально-психологический проект.<br>
+                    ⚠ Только в образовательных целях.
+                </p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

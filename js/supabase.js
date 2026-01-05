@@ -225,38 +225,11 @@ window.supabase = (function() {
     }
     
     function getMockGalleryItems() {
-      return [
-        {
-          id: 1,
-          title: "Пример изображения для галереи",
-          description: "Это пример изображения для галереи. В реальной системе здесь будут данные из базы данных.",
-          category: "general",
-          image_url: "https://via.placeholder.com/400x200?text=Gallery+Image",
-          display_order: 1,
-          created_at: "2024-01-01T00:00:00Z"
-        },
-        {
-          id: 2,
-          title: "Пример изображения фишинга",
-          description: "Пример изображения, демонстрирующего фишинговые схемы.",
-          category: "phishing",
-          image_url: "https://via.placeholder.com/400x200?text=Phishing+Example",
-          display_order: 2,
-          created_at: "2024-01-02T00:00:00Z"
-        }
-      ];
+      return [];
     }
     
     function getMockGalleryItem() {
-      return {
-        id: 1,
-        title: "Пример изображения для галереи",
-        description: "Это пример изображения для галереи. В реальной системе здесь будут данные из базы данных.",
-        category: "general",
-        image_url: "https://via.placeholder.com/400x200?text=Gallery+Image",
-        display_order: 1,
-        created_at: new Date().toISOString()
-      };
+      return null;
     }
   }
 })();
@@ -366,7 +339,21 @@ async function getArticles() {
 
 async function getArticleById(id) {
   if (!window.supabase) {
-    throw new Error('Supabase client not initialized');
+    console.warn('Supabase client not initialized, using fallback');
+    // Fallback for when Supabase is not available
+    // This is just a fallback to avoid breaking the functionality
+    return {
+      id: id,
+      title: "Статья", 
+      category: "general",
+      excerpt: "Пример статьи",
+      content: "<p>Содержимое статьи</p>",
+      author: "Администратор",
+      created_at: new Date().toISOString(),
+      views: 1,
+      image_url: "",
+      tags: ""
+    };
   }
   
   console.log('Fetching article by ID:', id);
@@ -380,7 +367,27 @@ async function getArticleById(id) {
     throw error;
   }
   console.log('Article fetched by ID:', data);
-  return data
+  
+  // Increment the view count
+  try {
+    const { error: updateError } = await window.supabase
+      .from('articles')
+      .update({ views: (data.views || 0) + 1 })
+      .eq('id', id);
+    
+    if (updateError) {
+      console.error('Error updating article views:', updateError);
+      // Return data with incremented view count on the frontend as fallback
+      return { ...data, views: (data.views || 0) + 1 };
+    } else {
+      console.log('Article views updated successfully');
+      return data;
+    }
+  } catch (updateError) {
+    console.error('Exception updating article views:', updateError);
+    // Return data with incremented view count on the frontend as fallback
+    return { ...data, views: (data.views || 0) + 1 };
+  }
 }
 
 async function getGalleryItemById(id) {
