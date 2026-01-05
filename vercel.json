@@ -1,0 +1,55 @@
+{
+  "rewrites": [
+    {
+      "source": "/articles/:slug",
+      "destination": "/article.html?slug=:slug"
+    },
+    {
+      "source": "/fraud/:slug",
+      "destination": "/article.html?slug=:slug"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/article.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "slug",
+          "value": ":slug"
+        },
+        {
+          "type": "query",
+          "key": "ref",
+          "value": ":ref"
+        }
+      ],
+      "destination": "/articles/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/article.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "slug",
+          "value": ":slug"
+        }
+      ],
+      "destination": "/articles/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/psychology-article.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "slug",
+          "value": ":slug"
+        }
+      ],
+      "destination": "/articles/:slug",
+      "permanent": true
+    }
+  ]
+}
