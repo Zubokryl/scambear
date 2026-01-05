@@ -159,7 +159,8 @@ ul {
 }
 
 #articleBody p {
-    margin-bottom: 1.5em;
+    margin-bottom: 1.2em;
+    line-height: 1.7;
 }
 
 #articleBody h1,

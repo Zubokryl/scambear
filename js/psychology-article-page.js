@@ -409,20 +409,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                     // Add admin class to body to show delete buttons
                     document.body.classList.add('admin');
                     
-                    // Add event listener for delete buttons
-                    document.addEventListener('click', function(e) {
-                        if (e.target.classList.contains('delete-comment-btn')) {
-                            e.preventDefault();
-                            const commentId = e.target.getAttribute('data-comment-id');
-                            if (commentId) {
-                                deleteComment(commentId);
-                            }
-                        }
-                    });
+                    // Add event listener for delete buttons once
+                    document.addEventListener('click', handleDeleteCommentClick, true);
                 }
             }
         } catch (error) {
             console.error('Error checking admin status:', error);
+        }
+    }
+    
+    // Separate function to handle delete comment clicks
+    function handleDeleteCommentClick(e) {
+        if (e.target.classList.contains('delete-comment-btn')) {
+            e.preventDefault();
+            e.stopPropagation();
+            const commentId = e.target.getAttribute('data-comment-id');
+            if (commentId) {
+                deleteComment(commentId);
+            }
         }
     }
     
