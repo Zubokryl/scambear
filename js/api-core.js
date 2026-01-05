@@ -163,10 +163,26 @@ function createCoreApiClient(dependencies = {}) {
             try {
                 const articles = await api.getArticles();
                 // Find article that matches the slug
-                return articles.find(a => {
+                const article = articles.find(a => {
                     const articleSlug = window.articlesUtils.generateSlug(a.title);
                     return articleSlug === slug;
                 });
+                
+                // If article is found and has an ID, increment views by calling getArticleById
+                if (article && article.id) {
+                    try {
+                        // Call getArticleById to increment the view count
+                        const updatedArticle = await api.getArticleById(article.id);
+                        // Return the updated article with incremented view count
+                        return updatedArticle;
+                    } catch (viewError) {
+                        console.error('Error incrementing views for article by slug:', viewError);
+                        // Return original article if view incrementing fails
+                        return article;
+                    }
+                }
+                
+                return article;
             } catch (error) {
                 console.error('Error fetching article by slug:', error);
                 return null;

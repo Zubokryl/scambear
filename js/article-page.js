@@ -51,15 +51,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         return window.articlesUtils.getCategoryName(slug);
     };
     
+    // Generate SEO-friendly canonical URL first
+    const canonicalUrl = generateCanonicalUrl(article);
+    
     // Meta + SEO (безопасно)
     setMeta('articleTitle', article.title);
     setMeta('pageTitle', `${article.title} | PARASITE`);
     setMeta('pageDescription', article.excerpt?.substring(0, 155) + '...', 'content');
     setMeta('ogTitle', `${article.title} | PARASITE`, 'content');
     setMeta('ogDescription', article.excerpt || article.title, 'content');
-    setMeta('ogUrl', window.location.href, 'content');
+    setMeta('ogUrl', canonicalUrl, 'content');
     setMeta('twitterTitle', `${article.title} | PARASITE`, 'content');
-    setMeta('canonicalLink', window.location.href, 'href'); // ✅ ФИКС
+    setMeta('canonicalLink', canonicalUrl, 'href'); // ✅ ФИКС
     setMeta('breadcrumbTitle', article.title);
     
     // Остальной код...
@@ -130,7 +133,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             "name": "PARASITE",
             "logo": { "@type": "ImageObject", "url": "./img/logo.jpg" }
         },
-        "mainEntityOfPage": { "@type": "WebPage", "@id": window.location.href }
+        "mainEntityOfPage": { "@type": "WebPage", "@id": canonicalUrl }
     }, null, 2);
     
     // FAQ Schema (если есть FAQ в тексте)
@@ -173,13 +176,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 "@type": "ListItem",
                 "position": 4,
                 "name": article.title,
-                "item": window.location.href
+                "item": canonicalUrl
             }
         ]
     }, null, 2);
     
-    // Views counter
-    if (window.api && window.api.incrementArticleViews) window.api.incrementArticleViews(article.id);
+    // Views counter - the view count is incremented when the article is loaded via getArticleById
+    // This is handled in the backend API when fetching the article
+    console.log('Article loaded, view should be incremented in getArticleById:', article.id);
     
     // Set up back button functionality based on ref parameter
     const ref = urlParams.get('ref');
@@ -233,12 +237,31 @@ document.addEventListener('DOMContentLoaded', async () => {
                 try {
                     // Assuming there's a global function to get articles
                     if (typeof getArticleById !== 'undefined') {
-                        return await getArticleById(id);
+                        const article = await getArticleById(id);
+                        // Try to increment views
+                        try {
+                            if (window.api && typeof window.api.incrementArticleViews === 'function') {
+                                await window.api.incrementArticleViews(id);
+                            } else {
+                                // As a fallback, try to call the increment function directly
+                                await this.incrementArticleViews(id);
+                            }
+                        } catch (viewError) {
+                            console.error('Error incrementing views in getArticleById:', viewError);
+                        }
+                        return article;
                     } else {
                         // Fallback: make direct fetch request
                         const response = await fetch(`/api/articles/${id}`);
                         if (response.ok) {
-                            return await response.json();
+                            const article = await response.json();
+                            // Try to increment views via a separate API call
+                            try {
+                                await fetch(`/api/articles/${id}/incrementViews`, { method: 'POST' });
+                            } catch (viewError) {
+                                console.error('Error incrementing views via fallback API:', viewError);
+                            }
+                            return article;
                         } else {
                             return null;
                         }
@@ -252,10 +275,28 @@ document.addEventListener('DOMContentLoaded', async () => {
                 try {
                     const articles = await this.getArticles();
                     // Find article that matches the slug
-                    return articles.find(a => {
+                    const article = articles.find(a => {
                         const articleSlug = window.articlesUtils.generateSlug(a.title);
                         return articleSlug === slug;
                     });
+                    
+                    // If we found the article by slug, try to increment its views
+                    if (article && article.id) {
+                        try {
+                            // Use the main API if available, otherwise use our own increment method
+                            if (window.api && typeof window.api.getArticleById === 'function') {
+                                // Call getArticleById to increment views properly
+                                const updatedArticle = await window.api.getArticleById(article.id);
+                                return updatedArticle;
+                            } else {
+                                await this.incrementArticleViews(article.id);
+                            }
+                        } catch (viewError) {
+                            console.error('Error incrementing views for article by slug:', viewError);
+                        }
+                    }
+                    
+                    return article;
                 } catch (error) {
                     console.error('Error fetching article by slug:', error);
                     return null;
@@ -268,14 +309,43 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (window.api && typeof window.api.incrementArticleViews === 'function') {
                         return await window.api.incrementArticleViews(id);
                     } else {
-                        // Fallback: try the global function
-                        if (typeof getArticleById !== 'undefined') {
-                            // Fetch the article to trigger view increment in getArticleById
-                            const article = await getArticleById(id);
-                            console.log('Incremented article views for ID:', id);
-                            return article;
+                        // Try to call the Supabase function directly if available
+                        if (window.supabase) {
+                            try {
+                                // Get the current article to get its current view count
+                                const { data: currentArticle, error } = await window.supabase
+                                    .from('articles')
+                                    .select('views')
+                                    .eq('id', id)
+                                    .single();
+                                
+                                if (!error && currentArticle) {
+                                    // Update the view count by incrementing it
+                                    const newViewCount = (currentArticle.views || 0) + 1;
+                                    const { error: updateError } = await window.supabase
+                                        .from('articles')
+                                        .update({ views: newViewCount })
+                                        .eq('id', id);
+                                    
+                                    if (updateError) {
+                                        console.error('Error updating views in incrementArticleViews:', updateError);
+                                        return false;
+                                    } else {
+                                        console.log('Article views updated to:', newViewCount);
+                                        return true;
+                                    }
+                                } else {
+                                    console.error('Could not fetch current article views:', error);
+                                    return false;
+                                }
+                            } catch (supabaseError) {
+                                console.error('Supabase error in incrementArticleViews:', supabaseError);
+                                return false;
+                            }
                         } else {
-                            console.log('Incrementing article views for ID (fallback):', id);
+                            // In fallback mode without Supabase, we can't actually update the database
+                            // But we can at least log that the view should be incremented
+                            console.log('View increment called for article ID:', id, '(using fallback - not persisted)');
                             return true;
                         }
                     }
@@ -356,6 +426,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         
         return faqItems.slice(0, 10); // Ограничиваем 10 вопросами
+    }
+    
+    // Function to generate SEO-friendly canonical URL
+    function generateCanonicalUrl(article) {
+        const articleSlug = window.articlesUtils.generateSlug(article.title);
+        const domain = window.location.origin;
+        
+        // Determine the best URL structure based on article category
+        if (article.category && (article.category.includes('fraud') || article.category.includes('scam'))) {
+            // For fraud/scam related articles
+            return `${domain}/fraud/${articleSlug}`;
+        } else {
+            // For other articles, use general articles path
+            return `${domain}/articles/${articleSlug}`;
+        }
     }
     
     function showArticleError() {

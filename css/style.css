@@ -1510,6 +1510,24 @@ ul {
     hyphens: auto;
     text-align: justify;
     margin-top: 20px;
+    max-width: 100%;
+}
+
+/* Ensure proper text wrapping for all elements in article body */
+#articleBody span,
+#articleBody div,
+#articleBody p,
+#articleBody h1,
+#articleBody h2,
+#articleBody h3,
+#articleBody h4,
+#articleBody h5,
+#articleBody h6 {
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
 }
 
 /* Article tags */
@@ -4199,4 +4217,61 @@ div.fade-in-up.delay-400.flex.flex-col.sm\:flex-row.items-center.justify-center.
 .breadcrumb { display: flex; gap: 0.5rem; color: #b0b0b0; font-size: 0.9rem; }
 .breadcrumb a { color: #b0526a; }
 .article-actions { text-align: center; margin-top: 3rem; }
+
+/* Responsive text width for red-colored elements */
+span[style*="rgb(240, 102, 102)"],
+span[style*="#f06666"],
+span[style*="#F06666"],
+div[style*="rgb(240, 102, 102)"],
+div[style*="#f06666"],
+div[style*="#F06666"],
+*[style*="color: rgb(240, 102, 102)"] {
+    max-width: 100%;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+/* On larger screens, make text more compact */
+@media (min-width: 768px) {
+    span[style*="rgb(240, 102, 102)"],
+    span[style*="#f06666"],
+    span[style*="#F06666"],
+    div[style*="rgb(240, 102, 102)"],
+    div[style*="#f06666"],
+    div[style*="#F06666"],
+    *[style*="color: rgb(240, 102, 102)"] {
+        max-width: 650px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/* On even larger screens */
+@media (min-width: 1024px) {
+    span[style*="rgb(240, 102, 102)"],
+    span[style*="#f06666"],
+    span[style*="#F06666"],
+    div[style*="rgb(240, 102, 102)"],
+    div[style*="#f06666"],
+    div[style*="#F06666"],
+    *[style*="color: rgb(240, 102, 102)"] {
+        max-width: 800px;
+    }
+}
+
+/* On smaller screens, allow more width as requested */
+@media (max-width: 767px) {
+    span[style*="rgb(240, 102, 102)"],
+    span[style*="#f06666"],
+    span[style*="#F06666"],
+    div[style*="rgb(240, 102, 102)"],
+    div[style*="#f06666"],
+    div[style*="#F06666"],
+    *[style*="color: rgb(240, 102, 102)"] {
+        max-width: 100%;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+}
 

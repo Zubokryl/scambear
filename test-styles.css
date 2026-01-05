@@ -853,3 +853,130 @@ footer {
   }
 }
 
+/* ========================================
+   RESPONSIVE ADJUSTMENTS FOR TEST STYLES
+======================================== */
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 0.75rem;
+  }
+  
+  .main-content {
+    padding: 1.5rem 0.75rem;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .test-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+  
+  .main-content {
+    padding: 1rem 0.5rem;
+  }
+  
+  .section-title {
+    font-size: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .test-card {
+    padding: 1rem;
+  }
+  
+  .test-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .test-card-title {
+    font-size: 1.125rem;
+  }
+  
+  .test-card-description {
+    font-size: 0.8125rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .container {
+    padding: 0 0.25rem;
+  }
+  
+  .section-title {
+    font-size: 1.125rem;
+  }
+  
+  .test-card {
+    padding: 0.75rem;
+  }
+  
+  .test-card-title {
+    font-size: 1rem;
+  }
+  
+  .test-card-description {
+    font-size: 0.75rem;
+  }
+  
+  .meta-item {
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .section-title {
+    font-size: 1rem;
+  }
+  
+  .test-card-title {
+    font-size: 0.9375rem;
+  }
+  
+  .test-card-description {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 300px) {
+  .container {
+    padding: 0 0.125rem;
+  }
+  
+  .section-title {
+    font-size: 0.9375rem;
+  }
+  
+  .test-card {
+    padding: 0.5rem;
+  }
+  
+  .test-card-title {
+    font-size: 0.875rem;
+  }
+  
+  .test-card-description {
+    font-size: 0.65rem;
+  }
+  
+  .meta-item {
+    font-size: 0.6rem;
+  }
+  
+  .difficulty-badge {
+    font-size: 0.6rem;
+    padding: 0.125rem 0.25rem;
+  }
+}
+

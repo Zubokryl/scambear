@@ -621,6 +621,7 @@ class ArticlesManager {
             return `./psychology-article.html?slug=${window.articlesUtils.generateSlug(article.title)}`;
         } else {
             // For other categories, use the general article page with ref parameter
+            // The ref parameter is for navigation tracking, not for SEO
             return `./article.html?slug=${window.articlesUtils.generateSlug(article.title)}&ref=schemes-${this.currentCategory}`;
         }
     }
