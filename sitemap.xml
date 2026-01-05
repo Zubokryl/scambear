@@ -31,7 +31,29 @@
 
   <!-- Пример статьи -->
   <url>
-    <loc>https://www.01bearscommunity.at/article.html?slug=feykovye-sayty-kak-arkhitekturnye-ulovki-moshennikov</loc>
+    <loc>https://www.01bearscommunity.at/articles/feykovye-sayty-kak-arkhitekturnye-ulovki-moshennikov</loc>
+    <lastmod>2026-01-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Additional example articles -->
+  <url>
+    <loc>https://www.01bearscommunity.at/articles/arkhitektory-illyuziy</loc>
+    <lastmod>2026-01-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.01bearscommunity.at/articles/sotsialnye-seti-parazitizma</loc>
+    <lastmod>2026-01-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.01bearscommunity.at/articles/simulyarkry-yspexa</loc>
     <lastmod>2026-01-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

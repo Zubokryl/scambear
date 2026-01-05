@@ -5,7 +5,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Check if we're using slug-based routing or ID-based routing
     const urlParams = new URLSearchParams(window.location.search);
     const articleId = urlParams.get('id');
-    const articleSlug = urlParams.get('slug');
+    let articleSlug = urlParams.get('slug');
+    
+    // Extract slug from URL path if not in query parameter
+    if (!articleSlug) {
+        const pathParts = window.location.pathname.split('/');
+        const lastPart = pathParts[pathParts.length - 1];
+        if (lastPart && lastPart !== 'article.html') {
+            articleSlug = lastPart.replace(/\.html$/, '');
+        }
+    }
     
     // ✅ ЕДИНЫЙ API
     const api = window.api || createFallbackApi();
@@ -433,14 +442,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const articleSlug = window.articlesUtils.generateSlug(article.title);
         const domain = window.location.origin;
         
-        // Determine the best URL structure based on article category
-        if (article.category && (article.category.includes('fraud') || article.category.includes('scam'))) {
-            // For fraud/scam related articles
-            return `${domain}/fraud/${articleSlug}`;
-        } else {
-            // For other articles, use general articles path
-            return `${domain}/articles/${articleSlug}`;
-        }
+        // Use clean URL structure
+        return `${domain}/articles/${articleSlug}`;
     }
     
     function showArticleError() {

@@ -616,13 +616,12 @@ class ArticlesManager {
     }
     
     getArticleLink(article) {
-        // For psychology category, use dedicated psychology article page
+        // For psychology category, use clean URL structure
         if (this.currentCategory === 'psychology') {
-            return `./psychology-article.html?slug=${window.articlesUtils.generateSlug(article.title)}`;
+            return `./articles/${window.articlesUtils.generateSlug(article.title)}`;
         } else {
-            // For other categories, use the general article page with ref parameter
-            // The ref parameter is for navigation tracking, not for SEO
-            return `./article.html?slug=${window.articlesUtils.generateSlug(article.title)}&ref=schemes-${this.currentCategory}`;
+            // For other categories, use the clean articles URL structure
+            return `./articles/${window.articlesUtils.generateSlug(article.title)}`;
         }
     }
     
