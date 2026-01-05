@@ -449,4 +449,219 @@ document.addEventListener('DOMContentLoaded', async () => {
     function showArticleError() {
         document.querySelector('#articleContent').innerHTML = '<h1 class="error">Статья не найдена</h1><a href="./schemes.html" class="btn-parasite">← Все схемы</a>';
     }
+    
+    // Comments functionality
+    async function loadComments(articleId) {
+        try {
+            const commentsList = document.getElementById('comments-list');
+            
+            if (!window.supabase) {
+                commentsList.innerHTML = '<div class="no-comments">Комментарии временно недоступны</div>';
+                return;
+            }
+            
+            const { data: comments, error } = await window.supabase
+                .from('comments')
+                .select('*')
+                .eq('article_id', articleId)
+                .order('created_at', { ascending: false });
+            
+            if (error) {
+                console.error('Error loading comments:', error);
+                commentsList.innerHTML = '<div class="no-comments">Ошибка загрузки комментариев</div>';
+                return;
+            }
+            
+            if (!comments || comments.length === 0) {
+                commentsList.innerHTML = '<div class="no-comments">Пока нет комментариев. Будьте первым!</div>';
+                return;
+            }
+            
+            const commentsHTML = comments.map(comment => `
+                <div class="comment-item">
+                    <div class="comment-header">
+                        <span class="comment-author">${escapeHtml(comment.author_name)}</span>
+                        <span class="comment-date">${formatDate(comment.created_at)}</span>
+                        <span class="comment-actions">
+                            <!-- Delete button will appear for admin users -->
+                            <button class="delete-comment-btn" data-comment-id="${comment.id}" title="Удалить комментарий">Удалить</button>
+                        </span>
+                    </div>
+                    <div class="comment-content">${escapeHtml(comment.content)}</div>
+                </div>
+            `).join('');
+            
+            commentsList.innerHTML = commentsHTML;
+        } catch (error) {
+            console.error('Error in loadComments:', error);
+            const commentsList = document.getElementById('comments-list');
+            commentsList.innerHTML = '<div class="no-comments">Ошибка загрузки комментариев</div>';
+        }
+    }
+    
+    async function addComment(articleId) {
+        const authorInput = document.getElementById('comment-author');
+        const contentInput = document.getElementById('comment-content');
+        const submitBtn = document.getElementById('submit-comment');
+        
+        const authorName = authorInput.value.trim();
+        const content = contentInput.value.trim();
+        
+        if (!authorName || !content) {
+            alert('Пожалуйста, заполните все поля');
+            return;
+        }
+        
+        if (authorName.length > 50) {
+            alert('Имя слишком длинное (максимум 50 символов)');
+            return;
+        }
+        
+        if (content.length > 1000) {
+            alert('Комментарий слишком длинный (максимум 1000 символов)');
+            return;
+        }
+        
+        // Disable submit button to prevent duplicate submissions
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Отправка...';
+        
+        try {
+            if (!window.supabase) {
+                alert('Система комментариев временно недоступна');
+                return;
+            }
+            
+            const { error } = await window.supabase
+                .from('comments')
+                .insert([{
+                    article_id: articleId,
+                    author_name: authorName,
+                    content: content
+                }]);
+            
+            if (error) {
+                console.error('Error adding comment:', error);
+                alert('Ошибка при добавлении комментария');
+                return;
+            }
+            
+            // Clear form and reload comments
+            authorInput.value = '';
+            contentInput.value = '';
+            
+            // Reload comments to show the new one
+            await loadComments(articleId);
+            
+        } catch (error) {
+            console.error('Error in addComment:', error);
+            alert('Ошибка при добавлении комментария');
+        } finally {
+            // Re-enable submit button
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Оставить комментарий';
+        }
+    }
+    
+    // Helper function to escape HTML to prevent XSS
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    // Helper function to format date
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleString('ru-RU', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+    
+    // Function to delete a comment
+    async function deleteComment(commentId) {
+        if (!confirm('Вы уверены, что хотите удалить этот комментарий?')) {
+            return;
+        }
+        
+        try {
+            if (!window.supabase) {
+                alert('Система комментариев временно недоступна');
+                return;
+            }
+            
+            const { error } = await window.supabase
+                .from('comments')
+                .delete()
+                .eq('id', commentId);
+            
+            if (error) {
+                console.error('Error deleting comment:', error);
+                alert('Ошибка при удалении комментария');
+                return;
+            }
+            
+            // Reload comments to reflect the deletion
+            await loadComments(article.id);
+            
+        } catch (error) {
+            console.error('Error in deleteComment:', error);
+            alert('Ошибка при удалении комментария');
+        }
+    }
+    
+    // Function to check if user is admin and update UI accordingly
+    async function checkAdminStatus() {
+        try {
+            // Check if admin is authenticated
+            if (window.api && typeof window.api.isAdminAuthenticated === 'function') {
+                const isAdmin = await window.api.isAdminAuthenticated();
+                if (isAdmin) {
+                    // Add admin class to body to show delete buttons
+                    document.body.classList.add('admin');
+                    
+                    // Add event listener for delete buttons
+                    document.addEventListener('click', function(e) {
+                        if (e.target.classList.contains('delete-comment-btn')) {
+                            const commentId = e.target.getAttribute('data-comment-id');
+                            if (commentId) {
+                                deleteComment(commentId);
+                            }
+                        }
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Error checking admin status:', error);
+        }
+    }
+    
+    // Initialize comments functionality after article is loaded
+    if (article && article.id) {
+        // Load comments for this article
+        loadComments(article.id);
+        
+        // Check if user is admin to show delete buttons
+        checkAdminStatus();
+        
+        // Add event listener for comment submission
+        const submitBtn = document.getElementById('submit-comment');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', () => addComment(article.id));
+        }
+        
+        // Also allow submitting with Enter key in textarea (with Ctrl/Cmd)
+        const contentInput = document.getElementById('comment-content');
+        if (contentInput) {
+            contentInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                    addComment(article.id);
+                }
+            });
+        }
+    }
 });

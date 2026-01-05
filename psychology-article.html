@@ -134,6 +134,24 @@
                 </div>
             </noscript>
 
+            <!-- Comments Section -->
+            <section id="comments-section" class="comments-section">
+                <h3 class="comments-title">Комментарии</h3>
+                
+                <!-- Add Comment Form -->
+                <div class="add-comment-form">
+                    <input type="text" id="comment-author" placeholder="Ваше имя" maxlength="50" required>
+                    <textarea id="comment-content" placeholder="Написать комментарий..." maxlength="1000" required></textarea>
+                    <button id="submit-comment" class="btn-parasite">Оставить комментарий</button>
+                </div>
+                
+                <!-- Comments List -->
+                <div id="comments-list" class="comments-list">
+                    <!-- Comments will be loaded here -->
+                    <div class="loading-comments">Загрузка комментариев...</div>
+                </div>
+            </section>
+            
             <!-- Back button -->
             <div class="article-actions">
                 <a href="/psychology.html" id="backToCategory" class="btn-parasite back-to-category-btn"><i class="fas fa-arrow-left"></i> Назад</a>
