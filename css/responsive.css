@@ -1571,6 +1571,38 @@
     }
 }
 
+/* FINAL ULTIMATE OVERRIDES FOR 300-359PX RANGE */
+@media (max-width: 359px) and (min-width: 300px) {
+    /* Ultimate navbar override */
+    body nav.navbar,
+    html body nav.navbar,
+    * nav.navbar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 9999 !important;
+        background-color: #000 !important;
+        width: 100% !important;
+    }
+    
+    /* Ultimate scroll indicator override */
+    body .scroll-indicator,
+    html body .scroll-indicator,
+    * .scroll-indicator {
+        position: fixed !important;
+        right: 10px !important;
+        left: auto !important;
+        bottom: 20px !important;
+        top: auto !important;
+        transform: none !important;
+        opacity: 0.7 !important;
+        z-index: 9999 !important;
+        display: block !important;
+        font-size: 1.5rem !important;
+    }
+}
+
 /* Hybrid test summary blocks responsive styles */
 @media (max-width: 360px) {
   .summary-blocks {

@@ -12,8 +12,8 @@ window.supabase = (function() {
     return createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       // Ensure no custom parameters that might cause issues
       auth: {
-        persistSession: true,
-        autoRefreshToken: true,
+        persistSession: false,  // Disable session persistence to prevent auto-login
+        autoRefreshToken: false,  // Disable auto-refresh to prevent auto-reauth
         detectSessionInUrl: true,
       },
       global: {
@@ -175,6 +175,43 @@ window.supabase = (function() {
             then: function(callback) {
               // Clear mock session
               window._mockSession = null;
+              
+              // Clear ALL Supabase session storage to ensure complete logout
+              if (window.localStorage) {
+                // Clear ALL Supabase-related data from localStorage
+                Object.keys(localStorage).forEach(key => {
+                  if (key.startsWith('sb-')) {
+                    localStorage.removeItem(key);
+                  }
+                });
+              }
+              
+              // Also clear sessionStorage for Supabase data
+              if (window.sessionStorage) {
+                Object.keys(sessionStorage).forEach(key => {
+                  if (key.startsWith('sb-')) {
+                    sessionStorage.removeItem(key);
+                  }
+                });
+              }
+              
+              // Clear any cached admin status to ensure complete logout
+              if (window.sessionStorage) {
+                sessionStorage.removeItem('cachedAdminStatus');
+              }
+              if (window.localStorage) {
+                localStorage.removeItem('cachedAdminStatus');
+              }
+              
+              // Set logout timestamp to prevent auto-reauthentication
+              const logoutTime = new Date().toISOString();
+              if (window.sessionStorage) {
+                sessionStorage.setItem('lastLogout', logoutTime);
+              }
+              if (window.localStorage) {
+                localStorage.setItem('lastLogout', logoutTime);
+              }
+              
               return callback({ error: null });
             }
           };
@@ -250,6 +287,81 @@ window.supabase = (function() {
   }
 })();
 
+// Check immediately if there was a recent logout and clear any restored session
+(async () => {
+  if (window.supabase && window.supabase.auth) {
+    // Check if there's a recent logout timestamp
+    const lastLogout = sessionStorage.getItem('lastLogout') || localStorage.getItem('lastLogout');
+    if (lastLogout) {
+      const logoutTime = new Date(lastLogout).getTime();
+      const currentTime = new Date().getTime();
+      
+      // If logged out within the last 5 minutes, clear any restored session
+      if (currentTime - logoutTime < 5 * 60 * 1000) {
+        console.log('Clearing restored session after recent logout');
+        
+        // Get current session to check if it exists
+        const { data: { session } } = await window.supabase.auth.getSession();
+        if (session) {
+          // Sign out to clear the restored session
+          await window.supabase.auth.signOut();
+          
+          // Ensure all Supabase storage is cleared again
+          if (window.localStorage) {
+            Object.keys(localStorage).forEach(key => {
+              if (key.startsWith('sb-')) {
+                localStorage.removeItem(key);
+              }
+            });
+          }
+          
+          if (window.sessionStorage) {
+            Object.keys(sessionStorage).forEach(key => {
+              if (key.startsWith('sb-')) {
+                sessionStorage.removeItem(key);
+              }
+            });
+          }
+        }
+      } else {
+        // Clear the logout timestamp if it's older than 5 minutes
+        sessionStorage.removeItem('lastLogout');
+        localStorage.removeItem('lastLogout');
+      }
+    }
+  }
+})();
+
+// Add authentication state change listener to handle unexpected auth state changes
+if (window.supabase && window.supabase.auth) {
+  window.supabase.auth.onAuthStateChange((event, session) => {
+    // Check if there's a recent logout timestamp
+    const lastLogout = sessionStorage.getItem('lastLogout') || localStorage.getItem('lastLogout');
+    if (lastLogout) {
+      const logoutTime = new Date(lastLogout).getTime();
+      const currentTime = new Date().getTime();
+      
+      // If logged out within the last 5 minutes and auth state is changing, prevent re-auth
+      if (currentTime - logoutTime < 5 * 60 * 1000) {
+        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+          console.log('Blocking auto-reauthentication after recent logout');
+          // We can't directly cancel the auth state change, but we can clear the session again
+          setTimeout(() => {
+            if (sessionStorage.getItem('lastLogout') || localStorage.getItem('lastLogout')) {
+              // Ensure the session is cleared again if we detect an unauthorized auth state change
+              window.supabase.auth.signOut();
+            }
+          }, 100);
+        }
+      } else {
+        // Clear the logout timestamp if it's older than 5 minutes
+        sessionStorage.removeItem('lastLogout');
+        localStorage.removeItem('lastLogout');
+      }
+    }
+  });
+}
+
 // --- Auth functions ---
 async function loginAdmin(email, password) {
   if (!window.supabase) {
@@ -274,6 +386,46 @@ async function logoutAdmin() {
   }
   
   const { error } = await window.supabase.auth.signOut()
+  
+  // Clear ALL Supabase session storage to ensure complete logout
+  if (window.localStorage) {
+    // Clear ALL Supabase-related data from localStorage
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith('sb-')) {
+        localStorage.removeItem(key);
+      }
+    });
+  }
+  
+  // Also clear sessionStorage for Supabase data
+  if (window.sessionStorage) {
+    Object.keys(sessionStorage).forEach(key => {
+      if (key.startsWith('sb-')) {
+        sessionStorage.removeItem(key);
+      }
+    });
+  }
+  
+  // Clear mock session if it exists
+  window._mockSession = null;
+  
+  // Clear any cached admin status to ensure complete logout
+  if (window.sessionStorage) {
+    sessionStorage.removeItem('cachedAdminStatus');
+  }
+  if (window.localStorage) {
+    localStorage.removeItem('cachedAdminStatus');
+  }
+  
+  // Set logout timestamp to prevent auto-reauthentication
+  const logoutTime = new Date().toISOString();
+  if (window.sessionStorage) {
+    sessionStorage.setItem('lastLogout', logoutTime);
+  }
+  if (window.localStorage) {
+    localStorage.setItem('lastLogout', logoutTime);
+  }
+  
   if (error) throw error
 }
 
@@ -320,8 +472,24 @@ async function checkAdminStatus(userId) {
 async function getCurrentUserAdminStatus() {
   if (!window.supabase) {
     // Development fallback when Supabase is unavailable
-    console.log('Supabase not initialized, returning admin status as true for development');
-    return true;
+    console.log('Supabase not initialized, returning admin status as false for security');
+    return false;
+  }
+  
+  // Check if there's a recent logout timestamp
+  const lastLogout = sessionStorage.getItem('lastLogout') || localStorage.getItem('lastLogout');
+  if (lastLogout) {
+    const logoutTime = new Date(lastLogout).getTime();
+    const currentTime = new Date().getTime();
+    
+    // If logged out within the last 5 minutes, return false to prevent auto-reauth
+    if (currentTime - logoutTime < 5 * 60 * 1000) {  // 5 minutes in milliseconds
+      return false;
+    } else {
+      // Clear the logout timestamp if it's older than 5 minutes
+      sessionStorage.removeItem('lastLogout');
+      localStorage.removeItem('lastLogout');
+    }
   }
   
   const {
