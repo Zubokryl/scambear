@@ -243,7 +243,7 @@ class StaticArticleGenerator {
     }
 
     // Generate static HTML for an article
-    generateStaticArticleHTML(article, domain = 'https://www.01bearscommunity.at') {
+    generateStaticArticleHTML(article, domain = 'https://www.01bearscommunity.at', slug = null) {
         const metadata = this.generateArticleMetadata(article, domain);
         
         // Replace dynamic elements in the template with static content
@@ -377,10 +377,29 @@ class StaticArticleGenerator {
         );
         
         // Remove the JavaScript that loads the article content since it's already static
-        // This is a more complex regex to remove the article loading script
+        // Remove only the loading spinner
         html = html.replace(
-            /<!-- Контент заполняется article-page\.js -->[\s\S]*?<script src="\/js\/article-page\.js"><\/script>/,
-            '<!-- Static content already loaded -->'
+            /<div class="loading-spinner" id="articleLoadingSpinner">[\s\S]*?<\/div>\s*/,
+            ''
+        );
+        
+        // Remove only the article-page.js script tag while keeping all other scripts
+        html = html.replace(
+            /\s*<script src="\/js\/article-page\.js"><\/script>/,
+            ''
+        );
+        
+        // Add Disqus comments section before closing body tag
+        const disqusSection = `
+        <!-- Disqus Comments -->
+        <div id="disqus_thread"></div>
+        <script>window.initDisqus('${slug}');</script>
+        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <!-- End Disqus Comments -->`;
+        
+        html = html.replace(
+            /<\/body>/,
+            `${disqusSection}\n    </body>`
         );
         
         return html;
@@ -435,8 +454,8 @@ class StaticArticleGenerator {
             
             for (const article of articles) {
                 try {
-                    const staticHtml = this.generateStaticArticleHTML(article, domain);
                     const slug = this.generateSlug(article.title);
+                    const staticHtml = this.generateStaticArticleHTML(article, domain, slug);
                     const fileName = path.join(this.outputDir, `${slug}.html`);
                     
                     await fs.writeFile(fileName, staticHtml);
