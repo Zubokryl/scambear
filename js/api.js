@@ -15,12 +15,15 @@ function createApiClient(dependencies = {}) {
         deleteGalleryItem = window.deleteGalleryItem,
         uploadFile = window.uploadFile,
         getCurrentUserAdminStatus = window.getCurrentUserAdminStatus,
-        loginAdmin = window.loginAdmin
+        loginAdmin = window.loginAdmin,
+        logoutAdmin = window.logoutAdmin
     } = dependencies;
 
     const api = {
         // --- Login ---
         loginAdmin: async (email, password) => loginAdmin(email, password),
+        
+        logoutAdmin: async () => logoutAdmin(),
 
         // --- Articles ---
         async getArticles(filter = {}) {
@@ -199,4 +202,5 @@ function createApiClient(dependencies = {}) {
 
 // Make API available globally
 window.api = createApiClient();
+
 

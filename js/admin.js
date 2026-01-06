@@ -144,32 +144,22 @@ class AdminPanel {
     showAdminContent() {
         if (this.adminLoginForm) this.adminLoginForm.style.display = 'none';
         if (this.adminContent) this.adminContent.style.display = 'block';
-        this.addLogoutButton();
-    }
-
-    addLogoutButton() {
-        if (document.getElementById('adminLogoutBtn')) return;
-        const adminActions = document.querySelector('.admin-actions');
-        if (!adminActions) return;
-
-        const logoutBtn = document.createElement('button');
-        logoutBtn.id = 'adminLogoutBtn';
-        logoutBtn.className = 'btn btn-secondary';
-        logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Выйти';
-        logoutBtn.onclick = () => this.handleLogout();
-
-        adminActions.insertBefore(logoutBtn, adminActions.firstChild);
     }
 
     async handleLogout() {
         if (!confirm('Вы уверены, что хотите выйти?')) return;
         try {
             await this.api.requireAdmin(); // Just to validate
+            await this.api.logoutAdmin(); // Actually logout from Supabase
             if (this.loginForm) this.loginForm.reset();
             if (this.adminContent) this.adminContent.style.display = 'none';
             if (this.adminLoginForm) this.adminLoginForm.style.display = 'block';
         } catch (error) {
             console.error('Logout error:', error);
+            // Still reset UI even if logout fails
+            if (this.loginForm) this.loginForm.reset();
+            if (this.adminContent) this.adminContent.style.display = 'none';
+            if (this.adminLoginForm) this.adminLoginForm.style.display = 'block';
         }
     }
 

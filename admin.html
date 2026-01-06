@@ -110,6 +110,14 @@
                 </div>
                 
                 <div id="adminContent" class="admin-content" style="display: none;">
+                    <div class="admin-header">
+                        <div class="admin-status">
+                            <span id="adminStatusText">Вы вошли как администратор</span>
+                            <button class="btn btn-secondary" id="adminLogoutBtn" onclick="window.adminPanel?.handleLogout()">
+                                <i class="fas fa-sign-out-alt"></i> Выйти
+                            </button>
+                        </div>
+                    </div>
                     <div class="admin-tabs">
                         <button class="admin-tab-btn active" data-tab="articles">
                             <i class="fas fa-newspaper"></i> Статьи

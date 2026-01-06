@@ -1,6 +1,37 @@
 // Загрузка утилит для статей
 // Функции generateSlug и getCategoryName доступны через window.articlesUtils
 
+// Preconnect and preload for performance
+(function() {
+    // Preconnect to API endpoint
+    const link = document.createElement('link');
+    link.rel = 'preconnect';
+    link.href = '/api';  // Supabase/ваш API
+    document.head.appendChild(link);
+
+    // Preload article data if article ID is available
+    const urlParams = new URLSearchParams(window.location.search);
+    const articleId = urlParams.get('id');
+    let articleSlug = urlParams.get('slug');
+    
+    // Extract slug from URL path if not in query parameter
+    if (!articleSlug) {
+        const pathParts = window.location.pathname.split('/');
+        const lastPart = pathParts[pathParts.length - 1];
+        if (lastPart && lastPart !== 'article.html') {
+            articleSlug = lastPart.replace(/\.html$/, '');
+        }
+    }
+    
+    if (articleId) {
+        const preload = document.createElement('link');
+        preload.rel = 'preload';
+        preload.as = 'fetch';
+        preload.href = `/api/articles/${articleId}?t=${Date.now()}`;
+        document.head.appendChild(preload);
+    }
+})();
+
 document.addEventListener('DOMContentLoaded', async () => {
     // Check if we're using slug-based routing or ID-based routing
     const urlParams = new URLSearchParams(window.location.search);
@@ -63,6 +94,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Generate SEO-friendly canonical URL first
     const canonicalUrl = generateCanonicalUrl(article);
     
+    // Generate dynamic OG image
+    const ogImage = `https://parasite-project.ru/og/${articleSlug}?title=${encodeURIComponent(article.title.substring(0,50))}`;
+    
     // Meta + SEO (безопасно)
     setMeta('articleTitle', article.title);
     setMeta('pageTitle', `${article.title} | PARASITE`);
@@ -70,7 +104,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     setMeta('ogTitle', `${article.title} | PARASITE`, 'content');
     setMeta('ogDescription', article.excerpt || article.title, 'content');
     setMeta('ogUrl', canonicalUrl, 'content');
+    setMeta('ogImage', ogImage, 'content'); // Dynamic OG image
     setMeta('twitterTitle', `${article.title} | PARASITE`, 'content');
+    setMeta('twitterImage', ogImage, 'content'); // Twitter image
     setMeta('canonicalLink', canonicalUrl, 'href'); // ✅ ФИКС
     setMeta('breadcrumbTitle', article.title);
     
@@ -78,15 +114,39 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('articleDate').textContent = new Date(article.created_at).toLocaleDateString('ru-RU');
     document.getElementById('articleDate').setAttribute('datetime', article.created_at);
     document.getElementById('articleCategory').textContent = getCategoryName(article.category);
-    // Sanitize article content to prevent glitch effects and unwanted text from appearing in wrong places
-    let sanitizedContent = article.content;
-    // Remove glitch effect elements
+    // More aggressive sanitization using DOMPurify for XSS protection
+    let sanitizedContent = DOMPurify.sanitize(article.content);
+    
+    // Additional sanitization to remove glitch effect elements
     sanitizedContent = sanitizedContent.replace(/<span[^>]*class=["'][^"']*(glitch|glitch__layer)[^"']*["'][^>]*>.*?<\/span>/gi, '');
     sanitizedContent = sanitizedContent.replace(/<div[^>]*class=["'][^"']*(glitch|glitch__layer)[^"']*["'][^>]*>.*?<\/div>/gi, '');
     sanitizedContent = sanitizedContent.replace(/<p[^>]*class=["'][^"']*(glitch|glitch__layer)[^"']*["'][^>]*>.*?<\/p>/gi, '');
     // Remove unwanted text patterns
     sanitizedContent = sanitizedContent.replace(/всего\s+\d+\s+схем/gi, '');
+    
     document.getElementById('articleBody').innerHTML = sanitizedContent;
+    
+    // Implement IntersectionObserver for lazy loading images
+    const imgObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                if (img.dataset.src) {
+                    img.src = img.dataset.src;
+                    img.onload = function() {
+                        img.style.display = 'block';
+                    };
+                    imgObserver.unobserve(img); // Stop observing after loading
+                }
+            }
+        });
+    });
+    
+    // Observe all images in the article body that have data-src attribute
+    const articleImages = document.querySelectorAll('#articleBody img[data-src]');
+    articleImages.forEach(img => {
+        imgObserver.observe(img);
+    });
     
     // Hide the loading spinner after content is loaded
     const loadingSpinner = document.getElementById('articleLoadingSpinner');
@@ -626,6 +686,96 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
     
+    // Function to generate static HTML for an article (for SEO purposes)
+    function generateStaticArticleHTML(article) {
+        // This function would be used server-side to generate static HTML
+        // with pre-populated metadata for better SEO
+        
+        // In a real implementation, this would be handled by a server-side script
+        // like the generate-static-articles-node.js we created
+        
+        // For now, we'll just return the basic structure
+        const articleSlug = window.articlesUtils.generateSlug(article.title);
+        const canonicalUrl = generateCanonicalUrl(article);
+        const categoryName = window.articlesUtils.getCategoryName(article.category);
+        
+        // Truncate description to 155 characters for meta description
+        const description = (article.excerpt || article.title).substring(0, 155) + '...';
+        
+        // Create structured data
+        const schemaArticle = {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": article.title,
+            "description": article.excerpt,
+            "datePublished": article.created_at,
+            "dateModified": article.updated_at || article.created_at,
+            "author": { "@type": "Organization", "name": "PARASITE" },
+            "image": article.image_url,
+            "articleSection": article.category,
+            "articleBody": article.content.substring(0, 5000) + '...',
+            "publisher": {
+                "@type": "Organization",
+                "name": "PARASITE",
+                "logo": { "@type": "ImageObject", "url": "/img/logo.jpg" }
+            },
+            "mainEntityOfPage": { "@type": "WebPage", "@id": canonicalUrl }
+        };
+        
+        // Extract FAQ if available
+        const faqData = extractFAQFromContent(article.content);
+        let schemaFAQ = null;
+        if (faqData.length > 0) {
+            schemaFAQ = {
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                "mainEntity": faqData
+            };
+        }
+        
+        const schemaBreadcrumb = {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Главная",
+                    "item": "https://parasite-project.ru/"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Схемы мошенничества",
+                    "item": "https://parasite-project.ru/schemes"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": categoryName,
+                    "item": `https://parasite-project.ru/schemes#${article.category}`
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 4,
+                    "name": article.title,
+                    "item": canonicalUrl
+                }
+            ]
+        };
+        
+        // In a real implementation, this would be used to generate static HTML
+        console.log('Static HTML would be generated for:', article.title);
+        
+        return {
+            schemaArticle,
+            schemaFAQ,
+            schemaBreadcrumb,
+            canonicalUrl,
+            description
+        };
+    }
+    
     // Function to check if user is admin and update UI accordingly
     async function checkAdminStatus() {
         try {
@@ -659,11 +809,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
     }
-    
+
     // Initialize comments functionality after article is loaded
     if (article && article.id) {
-        // Load comments for this article
-        loadComments(article.id);
+        // Load comments for this article with error boundary
+        try { 
+            loadComments(article.id); 
+        } 
+        catch(e) { 
+            console.error('Error loading comments:', e);
+            showCommentsFallback(); 
+        }
         
         // Check if user is admin to show delete buttons
         checkAdminStatus();
@@ -684,4 +840,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
     }
+    
+    // Function to show comments fallback when loading fails
+    function showCommentsFallback() {
+        const commentsSection = document.getElementById('comments-section');
+        if (commentsSection) {
+            const fallbackHTML = `
+                <div class="comments-fallback">
+                    <p>Комментарии временно недоступны. Пожалуйста, попробуйте позже.</p>
+                    <button onclick="location.reload()" class="btn-parasite">Обновить страницу</button>
+                </div>
+            `;
+            commentsSection.innerHTML = fallbackHTML + commentsSection.innerHTML;
+        }
+    }
 });
+
+// Register service worker for PWA functionality
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+}

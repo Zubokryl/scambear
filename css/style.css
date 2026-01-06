@@ -936,6 +936,7 @@ ul {
     border: 1px solid var(--color-border);
     text-align: center;
     transition: all 0.3s ease;
+    min-width: 0; /* Ensure flexbox/grid items can shrink below content size */
 }
 
 .info-card:hover {
@@ -995,6 +996,7 @@ ul {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 30px;
+    min-width: 0; /* Ensure flexbox/grid items can shrink below content size */
 }
 
 /* Article Card */
@@ -1164,6 +1166,7 @@ ul {
     display: flex;
     flex-direction: column;
     padding: 24px;
+    min-width: 0; /* Ensure flexbox/grid items can shrink below content size */
 }
 
 .scheme-card:hover {
@@ -2497,6 +2500,14 @@ ul {
     text-align: center;
     max-width: 800px;
     margin: 0 auto;
+}
+
+/* Ensure hero text container doesn't exceed screen width on small screens */
+@media (max-width: 480px) {
+    .hero-text.full-width {
+        max-width: 100%;
+        padding: 0 1rem;
+    }
 }
 
 .hero-title {

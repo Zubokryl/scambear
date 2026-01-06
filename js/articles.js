@@ -616,13 +616,8 @@ class ArticlesManager {
     }
     
     getArticleLink(article) {
-        // For psychology category, use clean URL structure
-        if (this.currentCategory === 'psychology') {
-            return `./articles/${window.articlesUtils.generateSlug(article.title)}`;
-        } else {
-            // For other categories, use the clean articles URL structure
-            return `./articles/${window.articlesUtils.generateSlug(article.title)}`;
-        }
+        // For static article pages, use clean URL structure
+        return `./articles/${window.articlesUtils.generateSlug(article.title)}.html`;
     }
     
     updateSubtitle(filterValue) {

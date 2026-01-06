@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Страница не найдена | PARASITE</title>
+    <meta name="description" content="Запрашиваемая страница не найдена. Вернитесь на главную или изучите схемы мошенничества.">
+    
+    <!-- Canonical -->
+    <link rel="canonical" href="https://www.01bearscommunity.at/404.html">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Страница не найдена | PARASITE">
+    <meta property="og:description" content="Запрашиваемая страница не найдена. Вернитесь на главную или изучите схемы мошенничества.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.01bearscommunity.at/404.html">
+    
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Страница не найдена | PARASITE",
+      "description": "Запрашиваемая страница не найдена. Вернитесь на главную или изучите схемы мошенничества.",
+      "url": "https://www.01bearscommunity.at/404.html"
+    }
+    </script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Lucide Icons -->
+    <link rel="stylesheet" href="https://unpkg.com/lucide@latest/dist/lucide.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/button-styles.css">
+    
+    <style>
+        .error-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: white;
+        }
+        
+        .error-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .error-code {
+            font-size: 6rem;
+            font-weight: 700;
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+            line-height: 1;
+        }
+        
+        .error-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-family: 'Bebas Neue', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .error-message {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #ccc;
+            line-height: 1.6;
+        }
+        
+        .error-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .btn-error {
+            background: linear-gradient(135deg, #ff6b6b 0%, #d63384 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-error:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+        }
+        
+        .btn-error-outline {
+            background: transparent;
+            border: 2px solid #ff6b6b;
+            color: #ff6b6b;
+        }
+        
+        .btn-error-outline:hover {
+            background: rgba(255, 107, 107, 0.1);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.2);
+        }
+        
+        .error-icon {
+            font-size: 4rem;
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .error-code {
+                font-size: 4rem;
+            }
+            
+            .error-title {
+                font-size: 2rem;
+            }
+            
+            .error-message {
+                font-size: 1rem;
+            }
+            
+            .error-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-error {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="./index.html" class="nav-brand">
+                <img src="img/logo.jpg" loading="lazy" alt="Logo" class="logo-img enlarged-logo">
+            </a>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="./index.html" class="nav-link">Главная</a></li>
+                <li><a href="schemes.html" class="nav-link" onclick="window.articlesManager?.clearHash(); return true;">Схемы</a></li>
+                <li><a href="psychology.html" class="nav-link">Психология</a></li>
+                <li><a href="tests.html" class="nav-link">Тесты</a></li>
+                <li><a href="gallery.html" class="nav-link">Галерея</a></li>
+                <li><a href="contact.html" class="nav-link">Контакты</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="mainContent">
+        <div class="error-container">
+            <div class="error-content">
+                <div class="error-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h1 class="error-code">404</h1>
+                <h2 class="error-title">Страница не найдена</h2>
+                <p class="error-message">
+                    К сожалению, запрашиваемая вами страница не существует или была перемещена. 
+                    Возможно, мошенники украли её, но не волнуйтесь — мы здесь, чтобы помочь вам вернуться на путь истинный.
+                </p>
+                
+                <div class="error-actions">
+                    <a href="./index.html" class="btn-error">
+                        <i class="fas fa-home"></i> На главную
+                    </a>
+                    <a href="schemes.html" class="btn-error btn-error-outline" onclick="window.articlesManager?.clearHash(); return true;">
+                        <i class="fas fa-book-open"></i> Изучить схемы
+                    </a>
+                </div>
+                
+                <div class="error-suggestions" style="margin-top: 3rem; color: #aaa;">
+                    <p>Попробуйте:</p>
+                    <ul style="text-align: left; margin-top: 1rem; padding-left: 1.5rem;">
+                        <li>Проверить правильность введенного URL</li>
+                        <li>Воспользоваться навигацией сайта</li>
+                        <li>Вернуться на главную страницу</li>
+                        <li>Связаться с нами, если считаете, что это ошибка</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-quote">
+                    <p class="section-quote">
+                        <span class="quote-text">Все линии, которые мы пересекаем, на самом деле просто линии.</span>
+                    </p>
+                </div>
+                
+                <div class="footer-brand">
+                    <div class="glitch-wrapper">
+                        <h3 class="footer-title glitch">
+                            <span class="glitch__text">ПАРАЗИТЫ</span>
+                            <span class="glitch__layer--cyan" aria-hidden="true">ПАРАЗИТЫ</span>
+                            <span class="glitch__layer--magenta" aria-hidden="true">ПАРАЗИТЫ</span>
+                        </h3>
+                        <p class="footer-description">
+                            Социально-психологический проект о грани между обманом и адаптацией, социальной борьбой и паразитизмом. Знание — ваша лучшая защита.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="footer-sections">
+                    <h4 class="footer-sections-title">ЭТАЖИ ДОМА</h4>
+                    <div class="footer-links">
+                        <a href="./index.html" class="footer-link">Главная</a>
+                        <a href="schemes.html" class="footer-link" onclick="window.articlesManager?.clearHash(); return true;">Схемы</a>
+                        <a href="psychology.html" class="footer-link">Психология</a>
+                        <a href="tests.html" class="footer-link">Тесты</a>
+                        <a href="gallery.html" class="footer-link">Галерея</a>
+                        <a href="contact.html" class="footer-link">Контакты</a>
+                    </div>
+                </div>
+                
+                <p class="footer-copyright">
+                    2025 - Паразиты. Социально-психологический проект.<br>
+                    ⚠ Только в образовательных целях.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/api-core.js"></script>
+    <script src="js/api-utils.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/main.js"></script>
+    
+    <!-- Lucide Icons JS -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

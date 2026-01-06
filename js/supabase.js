@@ -17,10 +17,12 @@ window.supabase = (function() {
         detectSessionInUrl: true,
       },
       global: {
-        // No custom headers that might set app.current_admin_id
         headers: {
           'X-Client': 'parasite-project'
         }
+      },
+      db: {
+        // Custom query functions if needed
       }
     });
   } else {
