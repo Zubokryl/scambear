@@ -12,8 +12,8 @@ window.supabase = (function() {
     return createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       // Ensure no custom parameters that might cause issues
       auth: {
-        persistSession: true,
-        autoRefreshToken: true,
+        persistSession: false,
+        autoRefreshToken: false,
         detectSessionInUrl: true,
       },
       global: {
