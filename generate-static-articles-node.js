@@ -174,7 +174,7 @@ class StaticArticleGenerator {
             ogTitle: `${article.title} | PARASITE`,
             ogDescription: article.excerpt || article.title,
             ogUrl: canonicalUrl,
-            ogImage: article.image_url || './img/og-default.jpg',
+            ogImage: article.image_url || '/img/og-default.jpg',
             twitterTitle: `${article.title} | PARASITE`,
             categoryName: categoryName,
             // Generate structured data
