@@ -503,6 +503,28 @@ class StaticArticleGenerator {
         const indexPath = path.join(this.outputDir, 'index.html');
         await fs.writeFile(indexPath, indexHtml);
         console.log(`Generated static index page with ${articles.length} articles`);
+        
+        // Generate sitemap for the articles
+        await this.generateSitemap(articles, domain);
+    }
+    
+    // Generate sitemap for Google Search Console
+    async generateSitemap(articles, domain = 'https://parasite-project.ru') {
+        const sitemapEntries = articles.map(article => {
+            const slug = this.generateSlug(article.title);
+            return `  <url>
+    <loc>${domain}/articles/${slug}.html</loc>
+    <lastmod>${new Date(article.updated_at || article.created_at).toISOString().split('T')[0]}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+        }).join('\n');
+        
+        const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapEntries}\n</urlset>`;
+        
+        const sitemapPath = path.join(this.outputDir, 'sitemap-articles.xml');
+        await fs.writeFile(sitemapPath, sitemapContent);
+        console.log(`Generated sitemap for ${articles.length} articles: ${sitemapPath}`);
     }
 }
 
@@ -511,7 +533,7 @@ if (require.main === module) {
     // Get environment variables
     const SUPABASE_URL = process.env.SUPABASE_URL || 'your_supabase_url_here';
     const SUPABASE_KEY = process.env.SUPABASE_KEY || 'your_supabase_key_here';
-    const DOMAIN = process.env.DOMAIN || 'https://parasite-project.ru';
+    const DOMAIN = process.env.DOMAIN || 'https://www.01bearscommunity.at';
     
     if (!SUPABASE_URL || SUPABASE_URL === 'your_supabase_url_here') {
         console.error('Please set SUPABASE_URL environment variable');
