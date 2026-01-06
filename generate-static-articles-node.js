@@ -9,7 +9,7 @@ require('dotenv').config(); // For environment variables
  */
 
 class StaticArticleGenerator {
-    constructor(supabaseUrl, supabaseKey, outputDir = './static-articles') {
+    constructor(supabaseUrl, supabaseKey, outputDir = './articles') {
         this.supabaseUrl = supabaseUrl;
         this.supabaseKey = supabaseKey;
         this.outputDir = outputDir;
@@ -151,13 +151,13 @@ class StaticArticleGenerator {
     }
 
     // Generate canonical URL for an article
-    generateCanonicalUrl(article, domain = 'https://parasite-project.ru') {
+    generateCanonicalUrl(article, domain = 'https://www.01bearscommunity.at') {
         const articleSlug = this.generateSlug(article.title);
         return `${domain}/articles/${articleSlug}`;
     }
 
     // Generate all metadata for an article
-    generateArticleMetadata(article, domain = 'https://parasite-project.ru') {
+    generateArticleMetadata(article, domain = 'https://www.01bearscommunity.at') {
         const articleSlug = this.generateSlug(article.title);
         const canonicalUrl = this.generateCanonicalUrl(article, domain);
         const categoryName = this.getCategoryName(article.category);
@@ -205,19 +205,19 @@ class StaticArticleGenerator {
                         "@type": "ListItem",
                         "position": 1,
                         "name": "Главная",
-                        "item": "https://parasite-project.ru/"
+                        "item": "https://www.01bearscommunity.at/"
                     },
                     {
                         "@type": "ListItem",
                         "position": 2,
                         "name": "Схемы мошенничества",
-                        "item": "https://parasite-project.ru/schemes"
+                        "item": "https://www.01bearscommunity.at/schemes"
                     },
                     {
                         "@type": "ListItem",
                         "position": 3,
                         "name": categoryName,
-                        "item": `https://parasite-project.ru/schemes#${article.category}`
+                        "item": `https://www.01bearscommunity.at/schemes#${article.category}`
                     },
                     {
                         "@type": "ListItem",
@@ -243,7 +243,7 @@ class StaticArticleGenerator {
     }
 
     // Generate static HTML for an article
-    generateStaticArticleHTML(article, domain = 'https://parasite-project.ru') {
+    generateStaticArticleHTML(article, domain = 'https://www.01bearscommunity.at') {
         const metadata = this.generateArticleMetadata(article, domain);
         
         // Replace dynamic elements in the template with static content
@@ -425,7 +425,7 @@ class StaticArticleGenerator {
     }
 
     // Generate static pages for all articles
-    async generateAllStaticArticles(domain = 'https://parasite-project.ru') {
+    async generateAllStaticArticles(domain = 'https://www.01bearscommunity.at') {
         try {
             console.log('Starting static article generation...');
             
@@ -454,7 +454,7 @@ class StaticArticleGenerator {
     }
 
     // Generate a static index file that lists all articles for SEO
-    async generateStaticIndex(articles, domain = 'https://parasite-project.ru') {
+    async generateStaticIndex(articles, domain = 'https://www.01bearscommunity.at') {
         // Get the main index.html template
         let indexTemplate;
         try {
